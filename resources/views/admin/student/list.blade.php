@@ -17,8 +17,10 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <select id="my-select" class="custom-select" name="" style="display: inline">
-                        <option>18IT5</option>
-                        <option>18IT5</option>
+                        <option value="all"> Tất cả </option>
+                        @foreach ($class as $value)
+                            <option value="{{ $value->name }}"> {{ $value->name }} </option>
+                        @endforeach
                     </select>
                 </div>
             </div>

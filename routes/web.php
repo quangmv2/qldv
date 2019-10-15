@@ -29,14 +29,6 @@ Route::group(['prefix' => 'admin'], function () {
         return view('admin.index');
     })->name('adminIndex');
 
-    Route::group(['prefix' => 'student'], function () {
-        
-        Route::get('/', "AdminController\StudentController@getList")->name('adminListStudent');
-
-        Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
-
-    });
-
     Route::group(['prefix' => 'class'], function () {
         
         Route::get('/', "AdminController\ClassController@getList")->name('adminListClass');
@@ -44,6 +36,18 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('add', "AdminController\ClassController@getAdd")->name('adminAddClass');
 
         Route::post('add', "AdminController\ClassController@postAdd");
+
+        Route::get('edit/{class}', "AdminController\ClassController@getEdit")->name('adminEditClass');
+
+        Route::post('edit/{class}', "AdminController\ClassController@postEdit");
+
+    });
+
+    Route::group(['prefix' => 'student'], function () {
+        
+        Route::get('/', "AdminController\StudentController@getList")->name('adminListStudent');
+
+        Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
 
     });
     

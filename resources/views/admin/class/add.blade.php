@@ -25,6 +25,11 @@
                                 @endforeach
                             </div>
                     @endif
+                    @if (session('myError'))
+                            <div class="alert alert-danger">
+                                {{ session('myError') }}
+                            </div>
+                    @endif
                     @if (session('notification'))
                             <div class="alert alert-success">
                                 {{ session('notification') }}

@@ -56,7 +56,8 @@ class LoginController extends Controller
         $user = Socialite::driver($provider)->stateless()->user();
 
         $user = (object) $user->user;
-        
+        var_dump($user);
+        die();
         return redirect()->route('adminIndex');
     }
 }

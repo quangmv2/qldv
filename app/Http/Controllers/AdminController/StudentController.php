@@ -4,13 +4,15 @@ namespace App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Classs;
 
 class StudentController extends Controller
 {
     
     function getList()
     {
-       return view('admin.student.list');
+        $class = Classs::all();
+        return view('admin.student.list', ['class' => $class]);
     }
 
     function getAdd()

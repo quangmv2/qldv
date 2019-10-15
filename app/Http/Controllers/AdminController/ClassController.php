@@ -42,11 +42,60 @@ class ClassController extends Controller
             'end.date' => "Sai kiểu dữ liệu giờ",
         ]);
         $class = new Classs;
-        $class->name = $request->input('name');
+        $class->name = strtoupper($request->input('name'));
         $class->teacher = $request->input('teacher');
         $class->start_study = $request->input('begin');
         $class->end_study = $request->input('end');
         $class->save();
         return redirect()->route('adminListClass');
     }
+
+    function getEdit(Request $request, $class)
+    {
+        $class = Classs::where('name', $class)->get();
+        if (!count($class)>0) return redirect()->route('adminListClass')->with('myError', "Không tìm thấy lớp học.");
+        $teachers = Teacher::all();
+        return view('admin.class.edit', ['teachers'=>$teachers, 'class'=>$class[0]]);
+    }
+
+    function postEdit(Request $request, $class)
+    {
+        $class = Classs::where('name', $class)->get();
+        if (!count($class)>0) return redirect()->route('adminListClass')->with('myError', "Không tìm thấy lớp học.");
+        $class = $class[0];
+        if (strtoupper($request->input('name')) == strtoupper($class->name)) goto nextED;
+        $this->validate($request, [
+            'name' => 'required|unique:class,name',
+        ],
+        [
+            'name.required' => "Bạn chưa nhập tên lớp.",
+            'name.unique' => "Lớp đã tồn tại.",
+        ]);
+        nextED: 
+        $this->validate($request, [
+            'teacher' => 'required',
+            'begin' => 'required|date',
+            'end' => 'required|date',
+        ],
+        [
+            'teacher.required' => "Chưa chọn Giảng viên chủ nhiệm.",
+            'begin.required' => "Chưa chọn ngày bắt đầu.",
+            'begin.date' => "Sai kiểu dữ liệu ngày.",
+            'end.required' => "Chưa chọn ngày kết thúc.",
+            'end.date' => "Sai kiểu dữ liệu giờ",
+        ]);
+
+        $arr = [
+            'name' => strtoupper($request->input('name')),
+            'teacher' => $request->input('teacher'),
+            'start_study' => $request->input('begin'),
+            'end_study' => $request->input('end'),
+        ];
+
+        Classs::where('name', $class->name)->update($arr);
+        return redirect()->route('adminListClass')->with('notification', "Cập nhật thành công thông tin lớp học ".$class->name.".");
+
+
+    }
+
 }

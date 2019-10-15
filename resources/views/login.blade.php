@@ -54,7 +54,7 @@
                         <label class="custom-control-label" for="customCheck">Lưu mật khẩu</label>
                       </div>
                     </div>
-                    <a href="index.html" class="btn btn-primary btn-user btn-block" >
+                    <a href="{{ route('adminIndex') }}" class="btn btn-primary btn-user btn-block" >
                       Đăng nhập
                     </a>
                     <hr>

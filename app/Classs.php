@@ -8,4 +8,10 @@ class Classs extends Model
 {
     protected $table = 'class';
     public $timestamps = false;
+
+    public function teachers()
+    {
+        return $this->hasOne('App\Teacher', 'id', 'teacher');
+    }
+
 }

@@ -56,8 +56,7 @@ class LoginController extends Controller
         $user = Socialite::driver($provider)->stateless()->user();
 
         $user = (object) $user->user;
-        print_r($user);
-        die();
-        return redirect()->route('information')->with('account', $user);
+        
+        return redirect()->route('adminIndex');
     }
 }

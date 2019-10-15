@@ -34,6 +34,19 @@
                         </tr>
                     </thead>
 
+                    <tbody>
+                        @foreach ($class as $index => $value)
+                            <tr>
+                                <td>{{ $index+1 }}</td>
+                                <td>{{ $value->name }}</td>
+                                <td>{{ \Carbon\Carbon::parse($value->start_study)->format('Y') }} - {{ \Carbon\Carbon::parse($value->end_study)->format('Y') }}</td>
+                                <td>{{ $value->teachers->profile->name }}</td>
+                                <td>Đang học</td>
+                                <td>Xóa</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
                 </table>
             </div>
         </div>

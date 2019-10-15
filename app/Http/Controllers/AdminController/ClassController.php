@@ -5,13 +5,17 @@ namespace App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 use App\Teacher;
+use App\Classs;
 
 class ClassController extends Controller
 {
     function getList()
     {
-        return view('admin.class.list');
+        $class = Classs::all();
+        return view('admin.class.list',['class' => $class]);
     }
 
     function getAdd()
@@ -37,6 +41,12 @@ class ClassController extends Controller
             'end.required' => "Chưa chọn ngày kết thúc.",
             'end.date' => "Sai kiểu dữ liệu giờ",
         ]);
-        return back();
+        $class = new Classs;
+        $class->name = $request->input('name');
+        $class->teacher = $request->input('teacher');
+        $class->start_study = $request->input('begin');
+        $class->end_study = $request->input('end');
+        $class->save();
+        return redirect()->route('adminListClass');
     }
 }

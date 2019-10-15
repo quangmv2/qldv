@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::get('login', function() {
     return view('login');
-});
+})->name('getLogin');
 
 Route::get('auth/{provider}', "Auth\LoginController@redirectToProvider")->name('loginGG');
 
@@ -25,6 +25,10 @@ Route::get('auth/{provider}/callback', "Auth\LoginController@handleProviderCallb
 
 Route::group(['prefix' => 'admin'], function () {
     
+    Route::get('/', function () {
+        return view('admin.index');
+    })->name('adminIndex');
+
     Route::group(['prefix' => 'student'], function () {
         
         Route::get('/', "AdminController\StudentController@getList")->name('adminListStudent');

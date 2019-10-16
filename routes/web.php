@@ -49,6 +49,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
 
+        Route::post('add', "AdminController\StudentController@postAdd");
+
     });
     
 });

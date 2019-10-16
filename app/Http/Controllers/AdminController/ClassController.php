@@ -47,7 +47,7 @@ class ClassController extends Controller
         $class->start_study = $request->input('begin');
         $class->end_study = $request->input('end');
         $class->save();
-        return redirect()->route('adminListClass');
+        return redirect()->route('adminListClass')->with('notification', "Thêm thành công lớp học ".$class->name.".");
     }
 
     function getEdit(Request $request, $class)

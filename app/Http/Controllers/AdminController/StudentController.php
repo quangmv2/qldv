@@ -18,9 +18,30 @@ class StudentController extends Controller
     
     function getList()
     {
-        $students = Student::all();
+        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')->select('students.*')->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
         $class = Classs::all();
         return view('admin.student.list', ['class' => $class, 'students' => $students]);
+    }
+
+    function getListAjax(Request $request)
+    {
+        $class = $request->input('id_class');
+
+        if (empty($class)){
+            $result = [
+                "code" => "500",
+                "message" => "undefined class"
+            ];
+            return json_encode($result);
+        } 
+
+        $students = Student::join('profiles', 'profiles.id', '=', 'students.id')->where('students.id_class', $class)->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
+        $result = [
+            "code" => "200",
+            "data" => $students,
+            "message" => "ok",
+        ];
+        return json_encode($result);
     }
 
     function getAdd()
@@ -57,7 +78,12 @@ class StudentController extends Controller
         if (!count($position) > 0) return back()->with('myError', "Chức vụ không tồn tại");
         $email = createEmailStudent($request->input('name'), $class[0]->name);
         $rd = Str::random(9);
-    
+        $names = explode(' ', $request->input('name'));
+        $first_name = "";
+        for ($i=0; $i < count($names) - 1; $i++) { 
+            if ($i == count($names)-2) $first_name.=$names[$i];
+             else $first_name.=$names[$i]." ";
+        }
         $user = new User;
         $user->email = $email;        
         $user->password =  password_hash($rd, PASSWORD_BCRYPT);
@@ -65,7 +91,8 @@ class StudentController extends Controller
         $user->save();
 
         $profile = new Profile;
-        $profile->name = $request->input('name');
+        $profile->first_name = $first_name;
+        $profile->last_name = $names[count($names)-1];
         $profile->phone_number = $request->input('phone_number');
         $profile->address = $request->input('address');
         $profile->birthday = $request->input('birthday');

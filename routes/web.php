@@ -12,12 +12,37 @@
 */
 
 Route::get('/', function () {
-    return view('admin.index');
+    return view('client.index');
 });
 
 Route::get('login', function() {
     return view('login');
 })->name('getLogin');
+
+Route::get('sv', function () {
+    return view('client.login');
+});
+
+Route::get('hoat-dong-moi', function () {
+    return view('client.action.newActionList');
+})->name('newAction');
+
+Route::group(['prefix' => 'hoat-dong'], function () {
+    
+    Route::get('/', function () {
+        return view('client.action.myActionList');
+    })->name('myAction');
+
+    Route::get('danh-sach', function ($id) {
+        
+    });
+
+    Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
+
+    Route::post('them-moi', "ClientController\ActionController@postAdd");
+
+
+});
 
 Route::get('auth/{provider}', "Auth\LoginController@redirectToProvider")->name('loginGG');
 
@@ -50,6 +75,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
 
         Route::post('add', "AdminController\StudentController@postAdd");
+
+        Route::get('ajaxList', "AdminController\StudentController@getListAjax")->name('ajaxStudentList');
 
     });
     

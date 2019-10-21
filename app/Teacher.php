@@ -11,7 +11,7 @@ class Teacher extends Model
 
     public function profile()
     {
-        return $this->hasOne('App\Profile', 'id', 'id');
+        return $this->hasOne('App\Profile', 'id_profile', 'id_profile');
     }
 
 }

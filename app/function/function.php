@@ -30,18 +30,24 @@ function utf8convert($str) {
 
 function utf8tourl($text) {
     $text = strtolower(utf8convert($text));
-    $text = str_replace( "ß", "ss", $text);
-    $text = str_replace( "%", "", $text);
-    $text = preg_replace("/[^_a-zA-Z0-9 -] /", "",$text);
-    $text = str_replace(array('%20', ' '), '-', $text);
-    $text = str_replace("----","-",$text);
-    $text = str_replace("---","-",$text);
-    $text = str_replace("--","-",$text);
+    // echo $text;
+    // die();
+    // $text = str_replace( "ß", "ss", $text);
+    // $text = str_replace( "%", "", $text);
+    // $text = preg_replace("/[^_a-zA-Z0-9 -] /", "",$text);
+    // $text = str_replace(array('%20', ' '), '-', $text);
+    // $text = str_replace("----","-",$text);
+    // $text = str_replace("---","-",$text);
+    // $text = str_replace("--","-",$text);
     $str = "";
+    // echo $text;
+    // die();
     for ($i = 0; $i < strlen($text); $i++) {
         $k = ord($text[$i]);
-        if (($k<=122 && $k>=97) || ($text[$i] == "-")) {
+        if (($k<=122 && $k>=97) || ($text[$i] == " ")) {
             $str .=$text[$i];
+        }else{
+
         }
     }
     return $str;
@@ -50,7 +56,7 @@ function utf8tourl($text) {
 function createEmailStudent($text, $class)
 {
     $text = utf8tourl($text);
-    $k = explode('-', $text);
+    $k = explode(' ', $text);
     $name = "";
     $class = strtolower($class);
     for ($i=0; $i < count($k) - 1; $i++) { 

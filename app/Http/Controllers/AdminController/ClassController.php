@@ -20,7 +20,7 @@ class ClassController extends Controller
 
     function getAdd()
     {       
-        $teachers = Teacher::all();
+        $teachers = Teacher::join('profiles', 'profiles.id_profile', '=', 'teachers.id_profile')->orderby('profiles.last_name')->orderby('profiles.first_name')->select('teachers.*')->get();
         return view('admin.class.add', ['teachers'=>$teachers]);
     }
 
@@ -94,7 +94,6 @@ class ClassController extends Controller
 
         Classs::where('name', $class->name)->update($arr);
         return redirect()->route('adminListClass')->with('notification', "Cập nhật thành công thông tin lớp học ".$class->name.".");
-
 
     }
 

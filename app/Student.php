@@ -11,12 +11,12 @@ class Student extends Model
 
     public function profile()
     {
-        return $this->hasOne('App\Profile', 'id', 'id');
+        return $this->hasOne('App\Profile', 'id_profile', 'id_profile');
     }
 
     public function classs()
     {
-        return $this->hasOne('App\Classs', 'id', 'id_class');
+        return $this->hasOne('App\Classs', 'id_class', 'id_class');
     }
 
 }

@@ -11,7 +11,7 @@ class Classs extends Model
 
     public function teachers()
     {
-        return $this->hasOne('App\Teacher', 'id', 'teacher');
+        return $this->hasOne('App\Teacher', 'id_teacher', 'id_teacher');
     }
 
 }

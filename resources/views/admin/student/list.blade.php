@@ -3,7 +3,9 @@
 
     <div class="container-fluid" style="margin-left: 0px;">
 
-        
+        {{-- <div id="preloader" style="display: none;">
+            <div id="status" style="display: none;">&nbsp;</div>
+        </div> --}}
 
         <div class="row">
         
@@ -16,10 +18,10 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <select id="my-select" class="custom-select" name="" style="display: inline">
-                        <option value="all"> Tất cả </option>
+                    <select id="selectClass" class="custom-select" name="" style="display: inline">
+                        <option value="0"> Tất cả </option>
                         @foreach ($class as $value)
-                            <option value="{{ $value->name }}"> {{ $value->name }} </option>
+                            <option value="{{ $value->id }}"> {{ $value->name }} </option>
                         @endforeach
                     </select>
                 </div>
@@ -51,8 +53,9 @@
                             </div>
                         @endif
             </div>
-            <div class="col-lg-12">
-                <table class="table table-striped table-bordered table-hover">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <form action="" class="form-group">
+                <table class="table table-striped table-bordered table-hover" style="width: 100%">
 
                     <thead>
                         <tr>
@@ -66,21 +69,22 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="dataStudent">
                         @foreach ($students as $index => $value)
                             <tr>
                                 <td> {{ $value->id_student }} </td>
-                                <td> {{ $value->profile->name }} </td>
+                                <td> {{ $value->profile->first_name." ".$value->profile->last_name}} </td>
                                 <td> {{ $value->profile->email }} </td>
                                 <td> {{ \Carbon\Carbon::parse($value->profile->birthday)->format('d-m-Y') }} </td>
                                 <td> {{ $value->profile->address }} </td>
-                                <td> {{ $value->classs->name }} </td>
+                                <td> {{ $value->classs->id_class }} </td>
                                 <td> Xóa </td>
                             </tr>
                         @endforeach
                     </tbody>
 
                 </table>
+            </form>
             </div>
         </div>
     </div>

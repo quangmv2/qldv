@@ -58,9 +58,9 @@
                         @foreach ($class as $index => $value)
                             <tr>
                                 <td>{{ $index+1 }}</td>
-                                <td><a style="color: #858796" href="{{ route('adminEditClass', ['class'=> $value->name]) }}">{{ $value->name }}</a></td>
+                                <td><a style="color: #858796" href="{{ route('adminEditClass', ['class'=> $value->id_class]) }}">{{ $value->id_class }}</a></td>
                                 <td>{{ \Carbon\Carbon::parse($value->start_study)->format('Y') }} - {{ \Carbon\Carbon::parse($value->end_study)->format('Y') }}</td>
-                                <td>{{ $value->teachers->profile->name }}</td>
+                                <td>{{ $value->teachers->profile->first_name." ".$value->teachers->profile->last_name }}</td>
                                 <td>Đang học</td>
                                 <td>Xóa</td>
                             </tr>

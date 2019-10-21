@@ -60,7 +60,7 @@
                                         @if ($class->teacher == $value->id)
                                             selected
                                         @endif
-                                    >{{$value->profile->name}}</option>
+                                    >{{$value->profile->first_name." ".$value->profile->last_name}}</option>
                                 @endforeach
                             </select>
         

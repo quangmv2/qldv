@@ -35,7 +35,9 @@ class StudentController extends Controller
             return json_encode($result);
         } 
 
-        $students = Student::join('profiles', 'profiles.id', '=', 'students.id')->where('students.id_class', $class)->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
+        
+
+        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_student')->where('students.id_class', $class)->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
         $result = [
             "code" => "200",
             "data" => $students,
@@ -72,12 +74,14 @@ class StudentController extends Controller
             'address.required' => "Chưa nhập địa chỉ.",
         ]);
 
-        $class = Classs::where('id', $request->input('class'))->get();
+        $class = Classs::where('id_class', $request->input('class'))->get();
         if (!count($class) > 0) return back()->with('myError', "Lớp học không tồn tại");
-        $position = Position::where('id', $request->input('position'))->get();
+        $position = Position::where('id_position', $request->input('position'))->get();
         if (!count($position) > 0) return back()->with('myError', "Chức vụ không tồn tại");
-        $email = createEmailStudent($request->input('name'), $class[0]->name);
-        $rd = Str::random(9);
+        $email = createEmailStudent($request->input('name'), $class[0]->id_class);
+
+        // $rd = Str::random(9);
+        $rd = 1;
         $names = explode(' ', $request->input('name'));
         $first_name = "";
         for ($i=0; $i < count($names) - 1; $i++) { 
@@ -98,12 +102,12 @@ class StudentController extends Controller
         $profile->birthday = $request->input('birthday');
         $profile->email = $email;
         $profile->save();
-
+        
         $student = new Student;
-        $student->id = $profile->id;
-        $student->id_student = $request->input('id_student');
+        $student->id_profile = $profile->id;
+        $student->id_student = strtoupper($request->input('id_student'));
         $student->id_class = $request->input('class');
-        $student->position = $request->input('position');
+        $student->id_position = $request->input('position');
         $student->save();
 
         return redirect()->route('adminListStudent')->with('notification', "Thêm thành công sinh viên ".$profile->name.".");

@@ -56,8 +56,8 @@
         
                             <select name="teacher" id="" class="form-control">
                                 @foreach ($teachers as $value)
-                                    <option value="{{$value->id}}"
-                                        @if ($class->teacher == $value->id)
+                                    <option value="{{$value->id_teacher}}"
+                                        @if ($class->id_teacher == $value->id_teacher)
                                             selected
                                         @endif
                                     >{{$value->profile->first_name." ".$value->profile->last_name}}</option>

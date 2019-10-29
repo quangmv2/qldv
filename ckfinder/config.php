@@ -123,7 +123,7 @@ $config['roleSessionVar'] = 'CKFinder_UserRole';
         'IMAGE_RESIZE_CUSTOM' => true
     );
 
-}
+
 
 
 /*================================ Other Settings =====================================*/

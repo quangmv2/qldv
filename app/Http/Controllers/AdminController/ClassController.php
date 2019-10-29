@@ -27,7 +27,7 @@ class ClassController extends Controller
     function postAdd(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:class,name',
+            'name' => 'required|unique:class,id_class',
             'teacher' => 'required',
             'begin' => 'required|date',
             'end' => 'required|date',
@@ -42,8 +42,8 @@ class ClassController extends Controller
             'end.date' => "Sai kiểu dữ liệu giờ",
         ]);
         $class = new Classs;
-        $class->name = strtoupper($request->input('name'));
-        $class->teacher = $request->input('teacher');
+        $class->id_class = strtoupper($request->input('name'));
+        $class->id_teacher = $request->input('teacher');
         $class->start_study = $request->input('begin');
         $class->end_study = $request->input('end');
         $class->save();

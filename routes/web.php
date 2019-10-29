@@ -19,34 +19,47 @@ Route::get('login', function() {
     return view('login');
 })->name('getLogin');
 
+Route::get('logout', "LoginController@logout")->name('logout');
+
+Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('loginGG');
+
+Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback");
+
 Route::get('sv', function () {
     return view('client.login');
 });
 
-Route::get('hoat-dong-moi', function () {
-    return view('client.action.newActionList');
-})->name('newAction');
+Route::get('hoat-dong-moi', "ClientController\ActionController@getNewAction")->name('newAction');
+
+
+Route::get('diem-ren-luyen', function () {
+    return view("client.index");
+})->name('myPoint');
+
+Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
+
+Route::group(['prefix' => 'diem-danh'], function () {
+    
+    Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
+
+    Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
+
+    Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
+
+});
 
 Route::group(['prefix' => 'hoat-dong'], function () {
-    
-    Route::get('/', function () {
-        return view('client.action.myActionList');
-    })->name('myAction');
 
-    Route::get('danh-sach', function ($id) {
-        
-    });
+    Route::get('danh-sach', "ClientController\ActionController@getList")->name("actionList");
 
     Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
 
     Route::post('them-moi', "ClientController\ActionController@postAdd");
 
+    Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
+
 
 });
-
-Route::get('auth/{provider}', "Auth\LoginController@redirectToProvider")->name('loginGG');
-
-Route::get('auth/{provider}/callback', "Auth\LoginController@handleProviderCallback");
 
 Route::group(['prefix' => 'admin'], function () {
     

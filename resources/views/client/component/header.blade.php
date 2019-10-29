@@ -13,8 +13,14 @@
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Mai Văn Quang</span>
-        <img class="img-profile rounded-circle" src="https://lh3.googleusercontent.com/a-/AAuE7mDA628S9B7fKuhM2OKmpOt4ZPb5lkqeD8DpQZgR">
+        <span class="mr-2 d-none d-lg-inline text-gray-600 small">@if (session('account'))
+          {{ session('account')->name }}
+         @endif</span>
+        <img class="img-profile rounded-circle" src="@if (session('account'))
+        {{ session('account')->picture }}
+     @endif" alt="@if (session('account'))
+      {{ session('account')->name }}
+      @endif">
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

@@ -18,7 +18,9 @@
     </div>
     <div class="col-sm-8" style="padding: 0">
         <p class="m-auto">Xin chào,</p>
-        <h5 style="color: white">Mai Văn Quang</h5>
+        <h5 style="color: white">@if (session('account'))
+          {{ session('account')->name }}
+      @endif</h5>
     </div>
   </div>
  
@@ -50,9 +52,15 @@
     </a>
   </li>
   <li class="nav-item" >
-    <a class="nav-link collapsed" href="{{ route('adminListStudent') }}">
+    <a class="nav-link collapsed" href="{{ route('myPoint') }}">
       <i class="fas fa-fw fa-cog"></i>
       <span>Điểm rèn luyện của tôi</span>
+    </a>
+  </li>
+  <li class="nav-item" >
+    <a class="nav-link collapsed" href="{{ route('attendanceList') }}">
+      <i class="fas fa-fw fa-cog"></i>
+      <span>Điểm danh</span>
     </a>
   </li>
   <li class="nav-item">
@@ -62,27 +70,16 @@
     </a>
     <div id="collapse1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('adminListStudent') }}">Danh sách hoạt động</a>
+        <a class="collapse-item" href="{{ route('actionList') }}">Danh sách hoạt động</a>
         <a class="collapse-item" href="{{ route('addAction') }}">Thêm hoạt động</a>
       </div>
     </div>
   </li>
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse">
-      <i class="fas fa-fw fa-cog"></i>
-      <span>Giảng viên</span>
-    </a>
-    <div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="">Danh sách giảng viên</a>
-        <a class="collapse-item" href="">Thêm giảng viên</a>
-      </div>
-    </div>
-  </li>
+  
 
 
   <!-- Nav Item - Utilities Collapse Menu -->
-  <li class="nav-item">
+  {{-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
       <i class="fas fa-fw fa-wrench"></i>
       <span>Utilities</span>
@@ -96,7 +93,7 @@
         <a class="collapse-item" href="utilities-other.html">Other</a>
       </div>
     </div>
-  </li>
+  </li> --}}
 
   <!-- Divider -->
   <hr class="sidebar-divider">

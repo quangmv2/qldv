@@ -7,7 +7,7 @@
 
         <div class="col-sm-12" >
             
-            <h1>DANH SÁCH <small>Hoạt động của tôi</small> </h1>
+            <h1>ĐIỂM DANH <small>Hoạt động {{ $action->name }}</small> </h1>
 
         </div>
 
@@ -52,43 +52,34 @@
 
                 <thead>
                     <tr>
-                        <td>STT</td>
-                        <td>Tên hoạt động</td>
-                        <td>Thời gian</td>
-                        <td>Trạng thái</td>
-                        <td>Kiểu</td>
-                        <td>Xem</td>
+                        <td>MÃ SV</td>
+                        <td>Họ và tên</td>
+                        <td>Điểm danh</td>
                     </tr>
                 </thead>
 
                 <tbody id="dataStudent">
-                    @foreach ($actions as $index => $value)
+                    @foreach ($students as $index => $value)
                         <tr>
-                            <td>{{ ($page*50 + $index+1) }}</td>
-                            <td>{{ $value->name}}</td>
-                            <td>{{ \Carbon\Carbon::parse($value->time)->format('d-m-Y') }}</td>
-                            <td> 
-                                @php
-                                   echo $value->status == 1 ? "Đã điểm danh": "Chưa điểm danh"
-                                @endphp 
-                            </td>
-                            <td> 
-                                @if ($value->type == 0)
-                                    Cả lớp
+                            <td>{{ $value->id_student }}</td>
+                            <td>{{ $value->profile->first_name." ".$value->profile->last_name}}</td>
+                            <td><button class="
+                                @if ($value->status == 0)
+                                    btn btn-danger
                                 @else
-                                    @if ($value->type == 1)
-                                        Bắt buộc
-                                    @else
-                                        Đăng ký
-                                    @endif
-                                @endif 
-                            </td>
-                            <td><a href=""><i class="fas fa-eye" style="color: green"></i></a>  </td>
+                                    btn btn-success
+                                @endif    
+                            " onclick="attendance(this, '{{$value->id_student}}')">
+                            @if ($value->status == 0)
+                                Vắng
+                            @else
+                                Có mặt
+                            @endif
+                            </button></a>  </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-            {{ $actions->links() }}
         </div>
     </div>
 </div>

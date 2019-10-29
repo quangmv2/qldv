@@ -21,7 +21,7 @@
                     <select id="selectClass" class="custom-select" name="" style="display: inline">
                         <option value="0"> Tất cả </option>
                         @foreach ($class as $value)
-                            <option value="{{ $value->id }}"> {{ $value->name }} </option>
+                            <option value="{{ $value->id_class }}"> {{ $value->id_class }} </option>
                         @endforeach
                     </select>
                 </div>
@@ -73,7 +73,7 @@
                         @foreach ($students as $index => $value)
                             <tr>
                                 <td> {{ $value->id_student }} </td>
-                                <td> {{ $value->profile->first_name." ".$value->profile->last_name}} </td>
+                                <td> {{ $value->profile->first_name." ".$value->profile->last_name }} </td>
                                 <td> {{ $value->profile->email }} </td>
                                 <td> {{ \Carbon\Carbon::parse($value->profile->birthday)->format('d-m-Y') }} </td>
                                 <td> {{ $value->profile->address }} </td>

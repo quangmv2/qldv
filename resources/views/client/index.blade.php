@@ -16,13 +16,14 @@
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/sb-admin-2.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <style>
     a{
       text-decoration: none!important;
     }
   </style>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
@@ -87,7 +88,7 @@
         <div class="modal-body">Chọn "Đăng xuất" để thoát khỏi phiên làm việc này</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
-          <a class="btn btn-primary" href="{{ route('getLogin') }}">Đăng xuất</a>
+          <a class="btn btn-primary" href="{{ route('logout') }}">Đăng xuất</a>
         </div>
       </div>
     </div>

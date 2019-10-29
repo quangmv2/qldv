@@ -7,7 +7,7 @@
 
         <div class="col-sm-12" >
             
-            <h1>DANH SÁCH <small>Hoạt động của tôi</small> </h1>
+            <h1>DANH SÁCH <small>Hoạt động</small> </h1>
 
         </div>
 
@@ -57,7 +57,8 @@
                         <td>Thời gian</td>
                         <td>Trạng thái</td>
                         <td>Kiểu</td>
-                        <td>Xem</td>
+                        <td>Sửa</td>
+                        <td>Xóa</td>
                     </tr>
                 </thead>
 
@@ -69,7 +70,7 @@
                             <td>{{ \Carbon\Carbon::parse($value->time)->format('d-m-Y') }}</td>
                             <td> 
                                 @php
-                                   echo $value->status == 1 ? "Đã điểm danh": "Chưa điểm danh"
+                                   echo $value->confirm == 1 ? "Đã điểm danh": "Chưa điểm danh"
                                 @endphp 
                             </td>
                             <td> 
@@ -83,7 +84,8 @@
                                     @endif
                                 @endif 
                             </td>
-                            <td><a href=""><i class="fas fa-eye" style="color: green"></i></a>  </td>
+                            <td><a href=""><i class="fas fa-edit" style="color: red"></i></a>  </td>
+                            <td><a href="{{ route('deleteAction', ['id'=> $value->id_action]) }}"><i class="fas fa-trash" style="color: red"></i></a>  </td>
                         </tr>
                     @endforeach
                 </tbody>

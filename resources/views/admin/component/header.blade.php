@@ -150,7 +150,9 @@
     <!-- Nav Item - User Information -->
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Mai Văn Quang</span>
+        <span class="mr-2 d-none d-lg-inline text-gray-600 small">@if (session('account'))
+            {{ session('account')->name }}
+        @endif</span>
         <img class="img-profile rounded-circle" src="https://lh3.googleusercontent.com/a-/AAuE7mDA628S9B7fKuhM2OKmpOt4ZPb5lkqeD8DpQZgR">
       </a>
       <!-- Dropdown - User Information -->

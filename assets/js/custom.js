@@ -22,6 +22,7 @@ function getStudent(id_class, class_name) {
     $('#status').css('display', 'block');
     $('#preloader').css('display', 'block')
     class_name = "18IT5";
+    console.log(id_class)
     $.ajax({
         type: "get",
         url: "http://localhost/qldv/admin/student/ajaxList",
@@ -30,8 +31,11 @@ function getStudent(id_class, class_name) {
         },
         dataType: "json",
         success: function (response) {
-            if (response.code == 500) alert("Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!")
-            console.log(response.code)
+            if (response.code == 500) {
+                alert("Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!")
+                console.log(response.code)
+                return 0
+            }
             
             data = response.data
             
@@ -67,6 +71,26 @@ function getStudent(id_class, class_name) {
         $('body').delay(100).css({
             'overflow': 'visible'
         });
+    })
+
+}
+
+function attendance(btn, id_student) {  
+    $.ajax({
+        type: "GET",
+        url: window.location.href + "/" + id_student,
+        data: {
+
+        },
+        dataType: "json",
+        success: function (response) {
+            $(btn).removeClass()
+            $(btn).addClass(response.class)
+            $(btn).html(response.status);
+        }
+    })
+    .fail(function() {
+        alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
     })
 
 }

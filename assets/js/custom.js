@@ -92,8 +92,8 @@ function attendance(btn, id_student) {
     .fail(function() {
         alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
     })
-
 }
+
 
 // jQuery(document).ready(function($) {
 //     $('#status').fadeOut(); // will first fade out the loading animation

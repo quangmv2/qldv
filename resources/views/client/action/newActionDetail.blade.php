@@ -7,7 +7,7 @@
 
         <div class="col-sm-12" >
             
-            <h1>DANH SÁCH <small>Hoạt động</small> </h1>
+            <h1>HOẠT ĐỘNG <small>{{ $action->name }}</small> </h1>
 
         </div>
 
@@ -36,17 +36,13 @@
                     </div>
                 @endif
         </div>
-        <style>
-            td{
-                text-align: center
-            }
-        </style>
-        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" id="dataPage">
-            
+        <div class="col-sm-12 col-lg-12">
+            @php
+                echo $action->content;
+            @endphp
         </div>
+        
     </div>
 </div>
-<script>
-    callServer(1)
-</script>
+    
 @endsection

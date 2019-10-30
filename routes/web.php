@@ -11,12 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('client.index');
-});
+
 
 Route::get('login', function() {
-    return view('login');
+    return view('client.login');
 })->name('getLogin');
 
 Route::get('logout', "LoginController@logout")->name('logout');
@@ -25,41 +23,54 @@ Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('login
 
 Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback");
 
-Route::get('sv', function () {
-    return view('client.login');
-});
 
-Route::get('hoat-dong-moi', "ClientController\ActionController@getNewAction")->name('newAction');
+Route::group(['middleware' => 'studentMiddleware'], function () {
 
+    Route::get('/', function () {
+        return view('client.index');
+    });
 
-Route::get('diem-ren-luyen', function () {
-    return view("client.index");
-})->name('myPoint');
+    Route::get('sv', function () {
+        return view('client.login');
+    });
 
-Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
+    Route::get('hoat-dong-moi', "ClientController\ActionController@getNewAction")->name('newActionList');
 
-Route::group(['prefix' => 'diem-danh'], function () {
+    Route::get('hoat-dong-moi/{id_action}', "ClientController\ActionController@getNewActionDetail")->name('newActionDetail');
+
+    Route::get('diem-ren-luyen', function () {
+        return view("client.index");
+    })->name('myPoint');
+
     
-    Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
+    Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
 
-    Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
+    Route::group(['prefix' => 'diem-danh'], function () {
+    
+        Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
+    
+        Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
+    
+        Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
+    
+    });
 
-    Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
+    Route::group(['prefix' => 'hoat-dong'], function () {
+
+        Route::get('danh-sach', "ClientController\ActionController@getList")->name("actionList");
+    
+        Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
+    
+        Route::post('them-moi', "ClientController\ActionController@postAdd");
+    
+        Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
+    
+    
+    });
 
 });
 
-Route::group(['prefix' => 'hoat-dong'], function () {
 
-    Route::get('danh-sach', "ClientController\ActionController@getList")->name("actionList");
-
-    Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
-
-    Route::post('them-moi', "ClientController\ActionController@postAdd");
-
-    Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
-
-
-});
 
 Route::group(['prefix' => 'admin'], function () {
     

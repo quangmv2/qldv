@@ -32,9 +32,9 @@
 </head>
 
 <body id="page-top">
-  <div id="preloader" style="display: none;">
-    <div id="status" style="display: none;">&nbsp;</div>
-  </div>
+    <div id="preloader">
+      <div id="loader"></div>
+    </div>
   <!-- Page Wrapper -->
   <div id="wrapper">
 
@@ -91,6 +91,29 @@
           <a class="btn btn-primary" href="{{ route('logout') }}">Đăng xuất</a>
         </div>
       </div>
+    </div>
+  </div>
+
+  {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modelNotification">Cookies</button> --}}
+
+<!--Modal: modalCookie-->
+  <div class="modal fade top" id="modelNotification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true" data-backdrop="true">
+    <div class="modal-dialog modal-frame modal-top modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Body-->
+        <div class="modal-body">
+          <div class="row d-flex justify-content-center align-items-center">
+
+            <p class="pt-3 pr-2" id="notification" style="color: red">Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+        </div>
+      </div>
+      <!--/.Content-->
     </div>
   </div>
 

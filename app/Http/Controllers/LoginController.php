@@ -36,12 +36,16 @@ class LoginController extends Controller
         $user->id_class = $acc->profile->student->id_class;
 
         $request->session()->put('account', $user);
+        if (!empty($request->session()->get('nextRequest'))){
+            return redirect($request->session()->get('nextRequest'));
+        }
         return redirect($this->redirectTo);
     }
 
     function logout(Request $request)
     {
         $request->session()->forget('account');
-        return view('login');
+        $request->session()->forget('nextRequest');
+        return \redirect()->route('getLogin');
     }
 }

@@ -40,7 +40,7 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item" >
-    <a class="nav-link collapsed" href="{{ route('newAction') }}">
+    <a class="nav-link collapsed" href="{{ route('newActionList') }}">
       <i class="fas fa-fw fa-cog"></i>
       <span>Hoạt động mới</span>
     </a>

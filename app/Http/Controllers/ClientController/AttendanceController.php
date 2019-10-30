@@ -14,7 +14,8 @@ class AttendanceController extends Controller
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->paginate(15);
+        $actions = Action::where("id_class", $id_class)->paginate(20);
+        if ($request->input('type') == 'ajax') return view('client.attendance.ajax.list', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.attendance.list', ["actions" => $actions]);
     }
 
@@ -25,7 +26,7 @@ class AttendanceController extends Controller
         ->with('myErrors', "Hoạt động không tồn tại.");
         $action = $action[0];
         if ($action->confirm == 0){
-            Action::where('id_action', $id_action)->update(['confirm' => 1]);
+            Action::where('id_action', $id_action)->update(['confirm' => 1, 'join' => $action->sum]);
             ActionRelationship::where('id_action', $id_action)->update(['status' => 1]);
         }
         Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
@@ -73,8 +74,14 @@ class AttendanceController extends Controller
         $AR = $AR[0];
 
         $status = $AR->status;
-        if ($status == 0) $status = 1;
-        else $status = 0;
+        if ($status == 0) {
+            $status = 1;
+            $k=1;
+        }
+        else {
+            $status = 0;
+            $k=-1;
+        }
 
 
         $res = [
@@ -91,6 +98,7 @@ class AttendanceController extends Controller
 
         echo json_encode($res);
         ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status]);
+        Action::where('id_action', $id_action)->update(['join' => $action->join + $k]);
         return;
 
     }

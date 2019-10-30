@@ -94,11 +94,51 @@ function attendance(btn, id_student) {
     })
 }
 
+function loadEnd() {
+    $('#loader').fadeOut(); // will first fade out the loading animation
+    $('#preloader').delay(100).fadeOut('slow'); // will fade out the white DIV that covers the website.
+    $('body').delay(100).css({
+        'overflow': 'visible'
+    });
+}
 
-// jQuery(document).ready(function($) {
-//     $('#status').fadeOut(); // will first fade out the loading animation
-//     $('#preloader').delay(100).fadeOut('slow'); // will fade out the white DIV that covers the website.
-//     $('body').delay(100).css({
-//         'overflow': 'visible'
-//     });
-// });
+function loadBegin() {
+    $('#loader').css('display', 'block')
+    $('#preloader').css('display', 'block')
+}
+
+function callServer(page) {
+    loadBegin()
+    if (page == null) page = 1;
+    $.ajax({
+        url: window.location.href,
+        type: 'GET',
+        dataType: 'html',
+        data: {
+            page    : page,
+            type    : 'ajax'
+        },
+        success : function (data) {
+           $('#dataPage').html(data)
+           loadEnd()
+        }
+    })
+    .fail(function() {
+        loadEnd()
+        $('#modelNotification').modal('show');
+    })
+    
+}
+
+jQuery(document).ready(function($) {
+    $(document).on('click', '.pagination a', function(event) {
+        event.preventDefault();
+        var page = $(this).attr('href').split('page=')[1];
+        callServer(page)
+        $('html, body').animate({scrollTop : 0}, 'slow')
+    });
+});
+
+jQuery(document).ready(function($) {
+    loadEnd()
+ });

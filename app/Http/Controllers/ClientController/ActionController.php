@@ -19,7 +19,7 @@ class ActionController extends Controller
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->paginate(20);
+        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(20);
         if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.actionList', ["actions" => $actions]);
     }
@@ -27,7 +27,7 @@ class ActionController extends Controller
     function getNewAction(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->paginate(20);
+        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(20);
         if ($request->input('type') == 'ajax') return view('client.action.ajax.newActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.newActionList', ["actions" => $actions]);
     }
@@ -43,11 +43,9 @@ class ActionController extends Controller
         
         $validator = $request->validated();
         $id_class = "18IT5";
-        for ($i=0; $i < 100; $i++) { 
-            # code...
         
         $action = new Action;
-        $action->name = $request->input('name')." ".$i;
+        $action->name = $request->input('name');
         $action->time = $request->input('time');
         $action->content = $request->input('content');
         $action->id_class = $id_class;
@@ -55,7 +53,6 @@ class ActionController extends Controller
         $action->join = 0;
 
         $action->save();
-
 
         if ($request->input('object') == 0){
             $students = Student::join('class', 'students.id_class', '=', 'class.id_class')->where('class.id_class', $id_class)->select('students.*')->get();
@@ -84,7 +81,7 @@ class ActionController extends Controller
         if ($request->input('object') == 2){
             Action::where('id_action', $action->id)->update(["type" => 2, 'sum' => 0]);
         }
-    }
+    // }
         return redirect()->route('actionList')->with('notification', "Thêm thành công hoạt động ".$action->name.".");
 
     }
@@ -94,7 +91,7 @@ class ActionController extends Controller
         $action = Action::where('id_action', $id)->get();
         if (\count($action) < 1 ) return redirect()->route('actionList')->with('myErrors', "Hoạt động không tồn tại.");
         $action = $action[0];
-        Action::where('id_action', $id)->delete();
+        Action::where('id_action', '>', 0)->delete();
         return redirect()->route('actionList')->with('notification', "Xóa thành công hoạt động ".$action->name.".");
     }
     
@@ -104,6 +101,7 @@ class ActionController extends Controller
         $actions = Action::join('action_relationship', 'action.id_action', '=', 'action_relationship.id_action')
         ->where('action_relationship.id_student', $id_student)
         ->select('action.*', 'action_relationship.status')
+        ->orderby('created_at', 'desc')
         ->paginate(20);
 
         if ($request->input('type') == 'ajax') return view('client.action.ajax.myActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);

@@ -54,7 +54,6 @@
                         @endif
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <form action="" class="form-group">
                 <table class="table table-striped table-bordered table-hover" style="width: 100%">
 
                     <thead>
@@ -84,7 +83,7 @@
                     </tbody>
 
                 </table>
-            </form>
+                {{ $students->links() }}
             </div>
         </div>
     </div>

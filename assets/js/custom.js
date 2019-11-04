@@ -119,8 +119,14 @@ function callServer(page) {
             type    : 'ajax'
         },
         success : function (data) {
-           $('#dataPage').html(data)
-           loadEnd()
+            var code = data.code;
+            if (code != 200){
+                loadEnd()
+                $('#modelNotification').model('show')
+                return;
+            }
+            $('#dataPage').html(data)
+            loadEnd()
         }
     })
     .fail(function() {

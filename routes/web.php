@@ -23,7 +23,6 @@ Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('login
 
 Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback");
 
-
 Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('/', function () {
@@ -39,9 +38,16 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
     Route::get('hoat-dong-moi/{id_action}', "ClientController\ActionController@getNewActionDetail")->name('newActionDetail');
 
     Route::get('diem-ren-luyen', function () {
-        return view("client.index");
+        return view("client.point.myPoint");
     })->name('myPoint');
 
+    Route::group(['prefix' => 'diem-ren-luyen'], function () {
+
+        Route::get('them-moi', "ClientController\PointController@getAdd")->name('addPoint');
+
+        Route::post('them-moi', "ClientController\PointController@postAdd");
+
+    });
     
     Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
 
@@ -65,12 +71,9 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
     
         Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
     
-    
     });
 
 });
-
-
 
 Route::group(['prefix' => 'admin'], function () {
     
@@ -101,6 +104,14 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('add', "AdminController\StudentController@postAdd");
 
         Route::get('ajaxList', "AdminController\StudentController@getListAjax")->name('ajaxStudentList');
+
+    });
+
+    Route::group(['prefix' => 'critera'], function () {
+        
+        Route::get('add', "AdminController\CriteriaController@getAdd")->name('adminAddCriteria');
+
+        Route::post('add', "AdminController\CriteriaController@postAdd");
 
     });
     

@@ -18,7 +18,11 @@ class StudentController extends Controller
     
     function getList()
     {
-        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')->select('students.*')->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
+        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->select('students.*')
+        ->orderby('profiles.last_name', 'asc')
+        ->orderby('profiles.first_name', 'asc')
+        ->paginate(5);
         $class = Classs::all();
         return view('admin.student.list', ['class' => $class, 'students' => $students]);
     }

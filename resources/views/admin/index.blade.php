@@ -31,7 +31,9 @@
 </head>
 
 <body id="page-top">
-  
+  <div id="preloader">
+    <div id="loader"></div>
+  </div>
   <!-- Page Wrapper -->
   <div id="wrapper">
 

@@ -22,6 +22,9 @@ class LoginController extends Controller
     {
         $users = Socialite::driver($provider)->stateless()->user();
         $users = (object) $users->user;
+        
+        // var_dump($users);
+        // return;
         $acc = User::where("email", $users->email)->get();
         if (count($acc) < 1) return \redirect()->route("logout");
         if (!isset($users->hd)) return \redirect()->route("logout");

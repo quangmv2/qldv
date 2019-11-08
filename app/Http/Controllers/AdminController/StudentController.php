@@ -22,7 +22,7 @@ class StudentController extends Controller
         ->select('students.*')
         ->orderby('profiles.last_name', 'asc')
         ->orderby('profiles.first_name', 'asc')
-        ->paginate(5);
+        ->get();
         $class = Classs::all();
         return view('admin.student.list', ['class' => $class, 'students' => $students]);
     }

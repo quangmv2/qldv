@@ -75,7 +75,7 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
 });
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function () {
     
     Route::get('/', function () {
         return view('admin.index');

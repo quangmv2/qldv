@@ -63,6 +63,18 @@
       </div>
     </div>
   </li>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse">
+      <i class="fas fa-fw fa-cog"></i>
+      <span>Điểm học tập</span>
+    </a>
+    <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="">Danh sách giảng viên</a>
+        <a class="collapse-item" href="">Thêm giảng viên</a>
+      </div>
+    </div>
+  </li>
 
 
   <!-- Nav Item - Utilities Collapse Menu -->

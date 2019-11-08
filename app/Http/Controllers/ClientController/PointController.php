@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Classs;
 use App\Student;
 use App\DotXetDiem;
+use App\SchoolYear;
 
 class PointController extends Controller
 {
@@ -17,14 +18,15 @@ class PointController extends Controller
     {
         $id_student = $request->session()->get('account')->id_student;
         $student = Student::where('id_student', $id_student)->get()[0];
-        $class = $student->classs;
-        $begin = Carbon::parse($class->start_study)->format('Y');
-        $end = Carbon::parse($class->end_study)->format('Y');
-        $arr = [];
-        for ($i=$begin; $i < $end; $i++) { 
-            $arr[] = $i."-".($i+1);
-        }
-        return view('client.point.add', ['arr' => $arr]);
+        // $class = $student->classs;
+        // $begin = Carbon::parse($class->start_study)->format('Y');
+        // $end = Carbon::parse($class->end_study)->format('Y');
+        // $arr = [];
+        // for ($i=$begin; $i < $end; $i++) { 
+        //     $arr[] = $i."-".($i+1);
+        // }
+        $year = SchoolYear::all();
+        return view('client.point.add', ['year' => $year]);
     }
 
     function postAdd(Request $request)
@@ -39,7 +41,12 @@ class PointController extends Controller
 
         $dot = new DotXetDiem;
         $dot->ten_dot = $request->input('name');
-        $dot->
+        $dot->nam_hoc = $request->input('year');
+        $dot->hoc_ki = $request->input('semester');
+        $dot->ngay_bat_dau = $request->input('begin');
+        $dot->ngay_ket_thuc = $request->input('end');
+        $dot->save();
+        return back()->with('notification', 'Thêm thành công');
 
     }
 }

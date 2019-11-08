@@ -47,7 +47,7 @@
 
                         <label>Tên đợt</label>
 
-                        <input type="text" name="name" value="" class="form-control" placeholder="Tên hoạt động" required>
+                        <input type="text" name="name" value="" class="form-control" placeholder="Tên đợt" required>
 
                     </div>
 
@@ -56,8 +56,8 @@
                         <label>Năm học</label>
 
                         <select name="year" id="" class="form-control">
-                           @foreach ($arr as $value)
-                               <option value="{{$value}}">{{$value}}</option>
+                           @foreach ($year as $value)
+                               <option value="{{$value->id_year}}">{{$value->id_year}}</option>
                            @endforeach
                         </select>
 

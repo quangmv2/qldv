@@ -23,6 +23,12 @@ Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('login
 
 Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback");
 
+Route::get('excel', "ExcelController@export")->name('export');
+
+Route::post('testFrom', function () {
+    return $_POST['name'];
+})->name('test');
+
 Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('/', function () {
@@ -38,7 +44,7 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
     Route::get('hoat-dong-moi/{id_action}', "ClientController\ActionController@getNewActionDetail")->name('newActionDetail');
 
     Route::get('diem-ren-luyen', function () {
-        return view("client.point.myPoint");
+        return view("client.point.tu_danh_gia");
     })->name('myPoint');
 
     Route::group(['prefix' => 'diem-ren-luyen'], function () {
@@ -46,6 +52,8 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
         Route::get('them-moi', "ClientController\PointController@getAdd")->name('addPoint');
 
         Route::post('them-moi', "ClientController\PointController@postAdd");
+
+        Route::get('danh-sach-dot', "ClientController\PointController@danhSachDot")->name('danh_sach_dot');
 
     });
     

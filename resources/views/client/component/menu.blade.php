@@ -82,7 +82,7 @@
       </a>
       <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" href="{{ route('actionList') }}">Danh sách đợt</a>
+          <a class="collapse-item" href="{{ route('danh_sach_dot') }}">Danh sách đợt</a>
           <a class="collapse-item" href="{{ route('addPoint') }}">Thêm đợt xét rèn luyện</a>
         </div>
       </div>

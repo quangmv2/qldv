@@ -142,3 +142,24 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
     loadEnd()
  });
+
+ $("#idForm").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = form.attr('action');
+    var method = form.attr('method');
+
+    $.ajax({
+        type: method,
+        url: url,
+        data: form.serialize(), // serializes the form's elements.
+        success: function(data)
+        {
+            alert(data); // show response from the php script.
+        }
+    });
+
+
+});

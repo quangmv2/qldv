@@ -49,4 +49,21 @@ class PointController extends Controller
         return back()->with('notification', 'Thêm thành công');
 
     }
+
+    public function danhSachDot(Request $request)
+    {
+        if (empty($request->input('page'))){
+            $page = 1;
+        } else{
+            $page = $request->input('page');
+        }
+
+        $list = DotXetDiem::paginate(20);
+        if ($request->input('type') == 'ajax') {
+            return view('client.point.ajax.danh_sach_dot', ['list' => $list]);
+        } else {
+            return view('client.point.danh_sach_dot');
+        }
+    }
+
 }

@@ -43,7 +43,7 @@ class ActionController extends Controller
         
         $validator = $request->validated();
         $id_class = "18IT5";
-        
+
         $action = new Action;
         $action->name = $request->input('name');
         $action->time = $request->input('time');
@@ -81,7 +81,6 @@ class ActionController extends Controller
         if ($request->input('object') == 2){
             Action::where('id_action', $action->id)->update(["type" => 2, 'sum' => 0]);
         }
-    // }
         return redirect()->route('actionList')->with('notification', "Thêm thành công hoạt động ".$action->name.".");
 
     }
@@ -91,7 +90,7 @@ class ActionController extends Controller
         $action = Action::where('id_action', $id)->get();
         if (\count($action) < 1 ) return redirect()->route('actionList')->with('myErrors', "Hoạt động không tồn tại.");
         $action = $action[0];
-        Action::where('id_action', '>', 0)->delete();
+        Action::where('id_action', $id)->delete();
         return redirect()->route('actionList')->with('notification', "Xóa thành công hoạt động ".$action->name.".");
     }
     

@@ -1,6 +1,7 @@
 <?php
 
 use App\User;
+use App\Point;
 
 function utf8convert($str) {
 
@@ -59,14 +60,14 @@ function createEmailStudent($text, $class)
     $k = explode(' ', $text);
     $name = "";
     $class = strtolower($class);
-    for ($i=0; $i < count($k) - 1; $i++) { 
+    for ($i=0; $i < count($k) - 1; $i++) {
         $name .= $k[$i][0];
     }
     $name.=$k[count($k) - 1];
 
     $user = User::where('email', 'like', $name."%".".".$class."%")->get();
     if (!count($user)>0) return $name.".".$class."@sict.udn.vn";
-    
+
 
     $email1 = $user[count($user) - 1]->email;
 
@@ -78,5 +79,65 @@ function createEmailStudent($text, $class)
     return $name.($number + 1).".".$class."@sict.udn.vn";
 }
 
+function tenKhongDau($name){
+    $name = utf8tourl($name);
+    $arr = explode(' ', $name);
+    $name = "";
+    foreach ($arr as $value){
+        $name.=$value."-";
+    }
+    return substr($name, 0, -1);
+}
+
+function danhGia($diem)
+{
+    if ($diem >= 90) return "Xuất sắc";
+    else if ($diem >= 80) return "Tốt";
+    else if ($diem >= 65) return "Khá";
+    else if ($diem >= 50) return "Trung bình";
+    else if ($diem >= 40) return "Yếu";
+    return "Kém";
+}
+
+function updateTotal($id_point)
+{
+
+    $point = Point::where('id_point', $id_point)->get()->first();
+    $total = $point->p1a
+    + $point->p1a
+    + $point->p1b1
+    + $point->p1b2
+    + $point->p1c
+    + $point->p1d
+    + $point->p1dd
+    + $point->p2a1
+    + $point->p2a2
+    + $point->p2b1
+    + $point->p2b2
+    + $point->p2b3
+    + $point->p3a1
+    + $point->p3a2
+    + $point->p3b1
+    + $point->p3b2
+    + $point->p3b3
+    + $point->p3c
+    + $point->p4a1
+    + $point->p4a2
+    + $point->p4a3
+    + $point->p4b
+    + $point->p4c;
+
+    Point::where('id_point', $id_point)->update(['total'=>$total]);
+}
+
+function convertPointToPoint($point){
+
+    if ($point >= 3.6) return 6;
+    if ($point >= 3.2) return 5;
+    if ($point >= 2.5) return 3;
+    if ($point >= 2) return2;
+    return 0;
+
+}
 
 ?>

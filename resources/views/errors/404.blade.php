@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('client.index')
 @section('content')
     <div class="container-fluid">
 

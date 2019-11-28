@@ -17,6 +17,16 @@ Route::get('login', function() {
     return view('client.login');
 })->name('getLogin');
 
+Route::get('/point/{id}', function ($id) {
+    $rd = rand(0, 4);
+    $result = [
+        "code" => 200,
+        "id_student" => $id,
+        "point" => $rd,
+    ];
+    return json_encode($result);
+});
+
 Route::get('logout', "LoginController@logout")->name('logout');
 
 Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('loginGG');
@@ -43,54 +53,71 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('hoat-dong-moi/{id_action}', "ClientController\ActionController@getNewActionDetail")->name('newActionDetail');
 
-    Route::get('diem-ren-luyen', function () {
-        return view("client.point.tu_danh_gia");
-    })->name('myPoint');
+    Route::group(['prefix' => 'diem-ren-luyen-cua-toi'], function () {
+
+        Route::get('/', "ClientController\MyPointController@getList")->name('myPoint');
+
+        Route::get('/{id_dot}', "ClientController\MyPointController@getDot")->name('getMyDot');
+
+
+    });
 
     Route::group(['prefix' => 'diem-ren-luyen'], function () {
 
-        Route::get('them-moi', "ClientController\PointController@getAdd")->name('addPoint');
+        Route::get('them-moi', "ClientController\DotXetDiemController@getAdd")->name('addPoint');
 
-        Route::post('them-moi', "ClientController\PointController@postAdd");
+        Route::post('them-moi', "ClientController\DotXetDiemController@postAdd");
 
-        Route::get('danh-sach-dot', "ClientController\PointController@danhSachDot")->name('danh_sach_dot');
+        Route::group(['prefix' => 'danh-sach-dot'], function () {
+
+            Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('danh_sach_dot');
+
+            Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
+
+            Route::get('/{id_dot}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
+
+            Route::post('/{id_dot}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
+
+        });
+
+
 
     });
-    
+
     Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
 
     Route::group(['prefix' => 'diem-danh'], function () {
-    
+
         Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
-    
+
         Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
-    
+
         Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
-    
+
     });
 
     Route::group(['prefix' => 'hoat-dong'], function () {
 
         Route::get('danh-sach', "ClientController\ActionController@getList")->name("actionList");
-    
+
         Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
-    
+
         Route::post('them-moi', "ClientController\ActionController@postAdd");
-    
+
         Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
-    
+
     });
 
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function () {
-    
+
     Route::get('/', function () {
         return view('admin.index');
     })->name('adminIndex');
 
     Route::group(['prefix' => 'class'], function () {
-        
+
         Route::get('/', "AdminController\ClassController@getList")->name('adminListClass');
 
         Route::get('add', "AdminController\ClassController@getAdd")->name('adminAddClass');
@@ -104,7 +131,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
     });
 
     Route::group(['prefix' => 'student'], function () {
-        
+
         Route::get('/', "AdminController\StudentController@getList")->name('adminListStudent');
 
         Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
@@ -116,11 +143,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
     });
 
     Route::group(['prefix' => 'critera'], function () {
-        
+
         Route::get('add', "AdminController\CriteriaController@getAdd")->name('adminAddCriteria');
 
         Route::post('add', "AdminController\CriteriaController@postAdd");
 
     });
-    
+
 });
+// Auth::routes();
+
+// Route::get('/home', 'HomeController@index')->name('home');

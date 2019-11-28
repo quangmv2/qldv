@@ -32,7 +32,7 @@ function getStudent(id_class, class_name) {
         dataType: "json",
         success: function (response) {
             if (response.code == 500) {
-                alert("Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!")
+                jQuery('#modelNotification').modal({show: true})
                 console.log(response.code)
                 return 0
             }
@@ -65,7 +65,7 @@ function getStudent(id_class, class_name) {
         }
     })
     .fail(function() {
-        alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
+        jQuery('#modelNotification').modal({show: true})
         $('#status').fadeOut(); 
         $('#preloader').delay(100).fadeOut('slow'); 
         $('body').delay(100).css({
@@ -144,25 +144,90 @@ jQuery(document).ready(function($) {
 
     $("#idForm").submit(function(e) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
+        loadBegin()
+        e.preventDefault(); 
     
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');
-    
         $.ajax({
             type: method,
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
+            url: window.location.href,
+            data: form.serialize(),
+            dataType: 'json',
             success: function(data)
             {
-                alert(data); // show response from the php script.
+                console.log(data)
+                console.log(data.code)
+                data_temp = data
+                if (data.code == 200){
+                    jQuery('#notification').html("Lưu thành công")
+                    loadEnd()
+                    jQuery('#modelNotification').modal({show: true})
+                }
+                
             }
-        });
-    
+        }).fail(function () {  
+            loadEnd()
+            jQuery('#notification').html("Một ngoại lệ đã xảy ra, bảng điểm chưa được lưu lại. Vui lòng thử lại sau!")
+            jQuery('#modelNotification').modal('show');
+        })
     
     });
 
- });
 
- 
+});
+
+var data_temp;
+
+jQuery(document).ready(function ($) {
+    $("input").keyup(function (e) { 
+        if (e.which == 13) {
+            e.preventDefault();
+        }
+
+        tinhDiem()
+        
+    });
+
+    $("input").on('change', function () {
+        tinhDiem()
+    });
+})
+
+function tinhDiem() {
+    total = 0;
+    $("#idForm :input").each(function(){
+        if (!isNaN(this.value)){
+            if (Number(this.value) > Number(this.max) || Number(this.value) < Number(this.min)){
+                $(this).css({borderColor : 'red'});
+            } else{
+                $(this).css({borderColor : ''})
+                total+=Number(this.value)
+            }
+            
+        }
+    });
+    $('#total').html(total)
+    $('#sum').html('Điểm rèn luyện (sau khi thông qua tập thể lớp và giảng viên chủ nhiệm/cố vấn học tập): ' + total)
+    $('#danhgia').html('Xếp loại kết quả rèn luyện (sau khi thông qua tập thể và giảng viên chủ nhiệm/cố vấn học tập): '+ danhGia(total))
+}
+
+function danhGia(diem) {  
+    if (diem >= 90) return "Xuất sắc."
+    if (diem >= 80) return "Tốt."
+    if (diem >= 65) return "Khá."
+    if (diem >= 50) return "Trung bình."
+    if (diem >= 40) return "Yếu."
+    return "Kém."
+}
+
+// window.history.pushState('', 'Title', '/page2.php');
+// $(window).bind('scroll', function () {
+//     if ($(window).scrollTop() > 50) {
+//         console.log(1)
+//         $('#accordionSidebar').addClass('fixed');
+//     } else {
+//         $('#accordionSidebar').removeClass('fixed');
+//     }
+// });

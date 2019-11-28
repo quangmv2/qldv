@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow ">
 
     <div class="text-center d-none d-md-inline">
         <i class="fa fa-bars" id="sidebarToggle" style="cursor: pointer"></i>

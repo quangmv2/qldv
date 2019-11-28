@@ -52,6 +52,12 @@
         @include('client.component.header')
         <!-- End of Topbar -->
 
+        <!-- Notification -->
+
+        @include('client.component.notification')
+
+        <!-- End of Notification -->
+
         <!-- Begin Page Content -->
         @yield('content')
         {{-- @include('admin.content') --}}

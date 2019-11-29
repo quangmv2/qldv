@@ -60,11 +60,11 @@
                     @foreach ($students as $student)
                         <tr>
                             <td> {{ $student->id_student }} </td>
-                            <td> {{ $student->first_name . " " . $student->last_name }} </td>
+                            <td><a href="{{ route('getDanhGia', ['id_dot' => $id_dot, 'id_detail'=> $student->id_point, 'name' => tenKhongDau( $student->first_name . " " . $student->last_name ),'id_student' => $student->id_student]) }}">{{ $student->first_name . " " . $student->last_name }}</a></td>
                             <td> {{ $student->confirm == 0 ? "Chưa đánh giá" : "Đã đánh giá" }} </td>
                             <td> {{ $student->total }} </td>
                             <td> {{ danhGia($student->total) }} </td>
-                            <td><a href="{{ route('getDanhGia', ['id_dot' => $id_dot, 'name' => tenKhongDau( $student->first_name . " " . $student->last_name ),'id_student' => $student->id_student]) }}"><i class="fas fa-notes-medical"></i></a>  </td>
+                            <td><a href="{{ route('getDanhGia', ['id_dot' => $id_dot,'id_detail'=> $student->id_point, 'name' => tenKhongDau( $student->first_name . " " . $student->last_name ),'id_student' => $student->id_student]) }}"><i class="fas fa-notes-medical"></i></a></td>
                             <td><a href=""><i class="fas fa-cloud-download-alt"></i></a>  </td>
                         </tr>
                     @endforeach

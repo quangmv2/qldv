@@ -57,8 +57,9 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
         Route::get('/', "ClientController\MyPointController@getList")->name('myPoint');
 
-        Route::get('/{id_dot}', "ClientController\MyPointController@getDot")->name('getMyDot');
+        Route::get('/{id_dot}', "ClientController\MyPointController@getDanhGia")->name('getMyDot');
 
+        Route::post('/{id_dot}', "ClientController\MyPointController@postDanhGia");
 
     });
 
@@ -72,11 +73,13 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
             Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('danh_sach_dot');
 
+            Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
+
             Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
 
-            Route::get('/{id_dot}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
+            Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
 
-            Route::post('/{id_dot}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
+            Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
 
         });
 

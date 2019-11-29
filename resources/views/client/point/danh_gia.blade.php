@@ -335,8 +335,21 @@
             </form>
             <p style="color: black"><strong id="sum"></strong></p>
             <p style="color: black"><strong id="danhgia"></strong></p>
-            <button class="btn btn-success">Previous</button>
-            <button class="btn btn-success" style="float: right">Next</button>
+            <button class="btn btn-success" type="button" 
+            @if ($index == 0)
+                disabled
+            @else 
+                onclick="location = '{{ route('getDanhGia', ['id_dot' => $students[0]->id_dot, 'id_detail'=> $students[$index - 1]->id_point, 'name' => tenKhongDau( $students[$index - 1]->first_name . ' ' . $students[$index - 1]->last_name ),'id_student' => $students[$index  - 1]->id_student]) }}'"
+            @endif
+            
+            >Previous</button>
+            <button class="btn btn-success" style="float: right"
+            @if ($index == count($students)-1)
+                disabled
+            @else 
+                onclick="location = '{{ route('getDanhGia', ['id_dot' => $students[0]->id_dot, 'id_detail'=> $students[$index + 1]->id_point, 'name' => tenKhongDau( $students[$index + 1]->first_name . ' ' . $students[$index + 1]->last_name ),'id_student' => $students[$index  + 1]->id_student]) }}'"
+            @endif
+            >Next</button>
         </div>
         
     </div>

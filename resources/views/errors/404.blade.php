@@ -1,4 +1,4 @@
-@extends('client.index')
+{{-- @extends('client.index')
 @section('content')
     <div class="container-fluid">
 
@@ -11,4 +11,8 @@
         </div>
 
     </div>
-@endsection
+@endsection --}}
+@php
+    $account = session('account');
+    var_dump($account);
+@endphp

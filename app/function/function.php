@@ -2,6 +2,7 @@
 
 use App\User;
 use App\Point;
+use App\MyPoint;
 
 function utf8convert($str) {
 
@@ -102,9 +103,8 @@ function danhGia($diem)
 function updateTotal($id_point)
 {
 
-    $point = Point::where('id_point', $id_point)->get()->first();
+    $point = Point::find($id_point);
     $total = $point->p1a
-    + $point->p1a
     + $point->p1b1
     + $point->p1b2
     + $point->p1c
@@ -130,12 +130,42 @@ function updateTotal($id_point)
     Point::where('id_point', $id_point)->update(['total'=>$total]);
 }
 
+function updateTotalMyPoint($id_point)
+{
+
+    $point = MyPoint::find($id_point);
+    $total = $point->p1a
+    + $point->p1b1
+    + $point->p1b2
+    + $point->p1c
+    + $point->p1d
+    + $point->p1dd
+    + $point->p2a1
+    + $point->p2a2
+    + $point->p2b1
+    + $point->p2b2
+    + $point->p2b3
+    + $point->p3a1
+    + $point->p3a2
+    + $point->p3b1
+    + $point->p3b2
+    + $point->p3b3
+    + $point->p3c
+    + $point->p4a1
+    + $point->p4a2
+    + $point->p4a3
+    + $point->p4b
+    + $point->p4c;
+
+    MyPoint::where('id_my_point', $id_point)->update(['total'=>$total]);
+}
+
 function convertPointToPoint($point){
 
     if ($point >= 3.6) return 6;
     if ($point >= 3.2) return 5;
     if ($point >= 2.5) return 3;
-    if ($point >= 2) return2;
+    if ($point >= 2) return 2;
     return 0;
 
 }

@@ -178,20 +178,20 @@ jQuery(document).ready(function($) {
 
 });
 
-var data_temp;
+var select = false;
 
 jQuery(document).ready(function ($) {
     $("input").keyup(function (e) { 
         if (e.which == 13) {
             e.preventDefault();
         }
-
         tinhDiem()
-        
+        select = true
     });
 
     $("input").on('change', function () {
         tinhDiem()
+        select = true
     });
 })
 

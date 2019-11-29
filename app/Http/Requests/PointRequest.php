@@ -13,7 +13,7 @@ class PointRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class PointRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "p1a" => "numeric|min:0|max:10",
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+
         ];
     }
 }

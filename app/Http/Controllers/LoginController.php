@@ -22,7 +22,7 @@ class LoginController extends Controller
     {
         $users = Socialite::driver($provider)->stateless()->user();
         $users = (object) $users->user;
-        
+
         // var_dump($users);
         // return;
         $acc = User::where("email", $users->email)->get();
@@ -37,6 +37,7 @@ class LoginController extends Controller
         $user->hd = $users->hd;
         $user->id_student = $acc->profile->student->id_student;
         $user->id_class = $acc->profile->student->id_class;
+        $user->position = $acc->profile->student->id_position;
 
         $request->session()->put('account', $user);
         if (!empty($request->session()->get('nextRequest'))){

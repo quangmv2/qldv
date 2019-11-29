@@ -4,8 +4,9 @@
         <div class="card-body">
             <h5 class="card-title">Xuất sắc: 0. Giỏi: 0. Khá: 0. Trung bình: 0. Yếu: 0. Kém: 0.</h5>
             <div style="float: right;">
+                <a href=""><i class="fa fa-lock" aria-hidden="true" style="color: red"></i></a>
                 <a href=""><i class="fas fa-edit" style="color: red"></i></a>
-                <a href=""><i class="fas fa-trash" style="color: red"></i></a>
+                <a href="{{ route('get_xoa_dot', ['id_dot'=>$item->id_dot_xet]) }}"><i class="fas fa-trash" style="color: red"></i></a>
             </div>
         </div>
     </div>

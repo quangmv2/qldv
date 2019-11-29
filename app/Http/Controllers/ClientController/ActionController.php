@@ -34,13 +34,16 @@ class ActionController extends Controller
 
     function getAdd()
     {
-        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')->select('students.*')->orderby('profiles.last_name', 'asc')->orderby('profiles.first_name', 'asc')->get();
+        $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+            ->select('students.*')
+            ->orderby('profiles.last_name', 'asc')
+            ->orderby('profiles.first_name', 'asc')->get();
         return view('client.action.add', ['students' => $students]);
     }
 
     function postAdd(ActionsRequest $request)
     {
-        
+
         $validator = $request->validated();
         $id_class = "18IT5";
 
@@ -93,7 +96,7 @@ class ActionController extends Controller
         Action::where('id_action', $id)->delete();
         return redirect()->route('actionList')->with('notification', "Xóa thành công hoạt động ".$action->name.".");
     }
-    
+
     function getMyAction(Request $request)
     {
         $id_student = $request->session()->get('account')->id_student;
@@ -106,7 +109,7 @@ class ActionController extends Controller
         if ($request->input('type') == 'ajax') return view('client.action.ajax.myActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.myActionList', ['actions' => $actions]);
     }
-    
+
     function getNewActionDetail(Request $request, $id_action)
     {
         $action = Action::where('id_action', $id_action)->get();

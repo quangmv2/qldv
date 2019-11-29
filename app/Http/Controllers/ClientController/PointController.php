@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ClientController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\PointRequest;
 
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -13,13 +14,12 @@ use App\Student;
 use App\DotXetDiem;
 use App\SchoolYear;
 use App\Point;
-use App\TempPoint;
+use App\MyPoint;
 
 class PointController extends Controller
 {
 
-    function getDanhGia(Request $request, $id_dot, $name, $id_student){
-
+    function getDanhGia(Request $request, $id_dot, $id_detail,  $name, $id_student){
         $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
         if (empty($dot)){
             return redirect()->route('danh_sach_dot')->with('myErrors', "Đợt xét điểm không tồn tại");
@@ -32,6 +32,7 @@ class PointController extends Controller
 
         $client = new Client();
         $res = $client->request('GET', 'http://diemrenluyen.xyz/point/'.$id_student);
+        // $res = $client->request('GET', 'http://localhost:3000/api/point/'.$id_student);
         $content = (object) $res->getBody();
         $json = json_decode($content->getContents(), true);
 
@@ -80,26 +81,75 @@ class PointController extends Controller
         ->where('id_student', $id_student)
         ->get()->first();
 
-        $my_temp_point = TempPoint::where('id_dot', $id_dot)
+        $my_temp_point = MyPoint::where('id_dot', $id_dot)
         ->where('id_student', $id_student)
         ->get()->first();
 
-        if (empty($my_point) || empty($my_temp_point)) return view('errors.404');
+        $points = Point::where('id_dot', $id_dot)
+            ->join('students', 'students.id_student', '=', 'points.id_student')
+            ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+            ->select('*')
+            ->orderby('profiles.last_name', 'asc')
+            ->orderby('profiles.first_name', 'asc')->get();
 
-        return view('client.point.danh_gia', ['my_point' => $my_point, 'my_temp_point' => $my_temp_point]);
+        $vt = 0;
+        foreach ($points as $index => $value) {
+            if ($value->id_student == $id_student){
+                $vt = $index;
+                break;
+            }
+        }
+
+        if (empty($my_point) || empty($my_temp_point) || empty($points)) return abort(404);
+
+        return view('client.point.danh_gia', [
+            'my_point' => $my_point,
+            'my_temp_point' => $my_temp_point,
+            'students' => $points,
+            'index' => $vt,
+        ]);
 
     }
 
-    function postDanhGia(Request $request, $id_dot, $name, $id_student){
+    function postDanhGia(PointRequest $request, $id_dot, $id_detail, $name, $id_student){
 
         $input = $request->all();
 
+        $arr_update = [
+            "p1a" => $input['p1a'],
+            "p1b1" => $input['p1b1'],
+            "p1b2" => $input['p1b2'],
+            "p1c" => $input['p1c'],
+            "p1d" => $input['p1d'],
+            "p2a1" => $input['p2a1'],
+            "p2a2" => $input['p2a2'],
+            "p2b1" => $input['p2b1'],
+            "p2b2" => $input['p2b2'],
+            "p2b3" => $input['p2b3'],
+            "p3a1" => $input['p3a1'],
+            "p3a2" => $input['p3a2'],
+            "p3b1" => $input['p3b1'],
+            "p3b2" => $input['p3b2'],
+            "p3b3" => $input['p3b3'],
+            "p3c" => $input['p3c'],
+            "p4a1" => $input['p4a1'],
+            "p4a2" => $input['p4a2'],
+            "p4a3" => $input['p4a3'],
+            "p4b" => $input['p4b'],
+            "p4c" => $input['p4c'],
+            "confirm" => 1,
+        ];
 
+        Point::where('id_dot', $id_dot)
+            ->where('id_student', $id_student)
+            ->update($arr_update);
+        updateTotal($id_detail);
 
         $res = [
             "code" => 200,
             "message" => "Finish",
             "data" => $input,
+            "id_detail" => $id_detail,
         ];
 
         return $res;

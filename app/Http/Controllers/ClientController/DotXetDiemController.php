@@ -47,14 +47,14 @@ class DotXetDiemController extends Controller
         ->get();
         foreach ($students as $key => $value) {
             $point = new Point;
-            $point->id_dot = $dot->id;
+            $point->id_dot = $dot->id_dot_xet;
             $point->id_student = $value->id_student;
             $point->confirm = 0;
             $point->total = 0;
             $point->save();
 
             $temp_point = new TempPoint;
-            $temp_point->id_dot = $dot->id;
+            $temp_point->id_dot = $dot->id_dot_xet;
             $temp_point->id_student = $value->id_student;
             $temp_point->confirm = 0;
             $temp_point->total = 0;
@@ -96,4 +96,14 @@ class DotXetDiemController extends Controller
 
         return view('client.point.list_sinh_vien_dot',["students" => $students, 'id_dot' => $id_dot]);
     }
+
+    public function delete(Request $request, $id_dot){
+
+        $dot = DotXetDiem::find($id_dot);
+        if (empty($dot)) return back();
+        DotXetDiem::find($id_dot)->delete();
+        return back();
+
+    }
+
 }

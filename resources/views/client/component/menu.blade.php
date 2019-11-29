@@ -63,19 +63,20 @@
       <span>Điểm danh</span>
     </a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse">
-      <i class="fas fa-fw fa-cog"></i>
-      <span>Quản lý hoạt động</span>
-    </a>
-    <div id="collapse1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('actionList') }}">Danh sách hoạt động</a>
-        <a class="collapse-item" href="{{ route('addAction') }}">Thêm hoạt động</a>
+  @if (session('account')->position <= 5)
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse">
+        <i class="fas fa-fw fa-cog"></i>
+        <span>Quản lý hoạt động</span>
+      </a>
+      <div id="collapse1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('actionList') }}">Danh sách hoạt động</a>
+          <a class="collapse-item" href="{{ route('addAction') }}">Thêm hoạt động</a>
+        </div>
       </div>
-    </div>
-  </li>
-  <li class="nav-item">
+    </li>
+    <li class="nav-item">
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse">
         <i class="fas fa-fw fa-cog"></i>
         <span>Quản lý điểm rèn luyện</span>
@@ -87,7 +88,10 @@
         </div>
       </div>
     </li>
-  
+      
+  @endif
+ 
+      
 
 
   <!-- Nav Item - Utilities Collapse Menu -->

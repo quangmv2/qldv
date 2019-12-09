@@ -45,7 +45,7 @@
                             <td> {{ $item->total }} </td>
                             <td> {{ danhGia($item->total) }} </td>
                             <td> <a href="{{ route('getMyDot', ['id_dot'=> $item->id_dot_xet]) }}"><i class="fas fa-notes-medical"></i></a> </td>
-                            <td ><a href=""><i class="fas fa-cloud-download-alt"></i></a>  </td>
+                            <td><a href="{{ route('downloadPointPDF', ['id_student' => session('account')->id_student, 'id_dot' => $item->id_dot_xet]) }}"><i class="fas fa-cloud-download-alt"></i></a>  </td>
                         </tr>
                     @endforeach
                 </tbody>

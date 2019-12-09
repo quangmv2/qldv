@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title'){{$action->name}} @endsection
 @section('content')
 <div class="container-fluid" style="margin-left: 0px;">
 
@@ -37,11 +38,25 @@
                 @endif
         </div>
         <div class="col-sm-12 col-lg-12">
-            @php
-                echo $action->content;
-            @endphp
+            
+            {!! $action->content !!}
+            @if ($action->type == 2)
+                @switch($action->register)
+                    @case(0)
+                        <button class="btn btn-primary" id="registerAction" type="button" >Đăng ký</button>
+                        @break
+                    @default
+                        @if ($action->confirm == 1 && \Carbon\Carbon::parse($action->time)<=\Carbon\Carbon::now())
+                            <button class="btn btn-primary" disabled>Đã đăng ký</button>
+                        @else
+                            <button class="btn btn-primary" id="registerAction" type="button">Hủy đăng ký</button>
+                        @endif
+                        
+                    @break
+                @endswitch
+            @endif
         </div>
-        
+        <p id="_token"> {{ csrf_field() }} </p>
     </div>
 </div>
     

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
 
   <meta charset="utf-8">
@@ -9,7 +8,8 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Dashboard</title>
+  <title>@yield('title')- Hệ thống điểm danh đánh giá điểm rèn luyện trực tuyến</title>
+  
 
   <!-- Custom fonts for this template-->
   <link href="{{ asset('assets/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -59,7 +59,7 @@
         <!-- End of Notification -->
 
         <!-- Begin Page Content -->
-        @yield('content')
+        <div id="data">@yield('content')</div>
         {{-- @include('admin.content') --}}
         <!-- /.container-fluid -->
 
@@ -112,7 +112,7 @@
         <div class="modal-body">
           <div class="row d-flex justify-content-center align-items-center">
 
-            <p class="pt-3 pr-2" id="notification" style="color: red">Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!</p>
+            <p class="pt-3 pr-2" id="notificationModal" style="color: red">Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -126,6 +126,7 @@
   
 
   <!-- Bootstrap core JavaScript-->
+  <script src="{{ asset('assets/js/axios.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 

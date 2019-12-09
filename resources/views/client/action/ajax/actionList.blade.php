@@ -35,7 +35,7 @@
                     @endif 
                 </td>
                 <td><a href=""><i class="fas fa-edit" style="color: red"></i></a>  </td>
-                <td><a href="{{ route('deleteAction', ['id'=> $value->id_action]) }}"><i class="fas fa-trash" style="color: red"></i></a>  </td>
+                <td><a class="deleteajax" href="{{ route('deleteAction', ['id'=> $value->id_action]) }}"><i class="fas fa-trash" style="color: red"></i></a>  </td>
             </tr>
         @endforeach
     </tbody>

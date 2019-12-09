@@ -11,7 +11,9 @@
 |
 */
 
-
+Route::get('test', function () {
+    createAccountLogin('mvquang.18it5@sict.udn.vn');
+});
 
 Route::get('login', function() {
     return view('client.login');
@@ -53,6 +55,11 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('hoat-dong-moi/{id_action}', "ClientController\ActionController@getNewActionDetail")->name('newActionDetail');
 
+    Route::post('hoat-dong-moi/{id_action}', "ClientController\ActionController@postRegisterAction");
+
+    Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
+
+
     Route::group(['prefix' => 'diem-ren-luyen-cua-toi'], function () {
 
         Route::get('/', "ClientController\MyPointController@getList")->name('myPoint');
@@ -77,6 +84,8 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
             Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
 
+            Route::get('/download/pdf/{id_student}_{id_dot}', "ClientController\PointController@downloadPointPDF")->name('downloadPointPDF');
+
             Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
 
             Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
@@ -87,13 +96,13 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
     });
 
-    Route::get('hoat-dong', "ClientController\ActionController@getMyAction")->name('myAction');
-
     Route::group(['prefix' => 'diem-danh'], function () {
 
         Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
 
         Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
+
+        Route::post('note/{id_action}/{id_student}', "ClientController\AttendanceController@postAttendanceNote")->name('note_attendance');
 
         Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
 

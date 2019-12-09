@@ -65,17 +65,16 @@ function getStudent(id_class, class_name) {
         }
     })
     .fail(function() {
-        jQuery('#modelNotification').modal({show: true})
-        $('#status').fadeOut(); 
-        $('#preloader').delay(100).fadeOut('slow'); 
-        $('body').delay(100).css({
-            'overflow': 'visible'
-        });
+        ajaxSuccess()
     })
 
 }
 
 function attendance(btn, id_student) {  
+
+    //điểm danh hoạt động
+    var text = $(btn).text()
+    $(btn).html('<span class="spinner-border spinner-border-sm"></span>')
     $.ajax({
         type: "GET",
         url: window.location.href + "/" + id_student,
@@ -91,10 +90,12 @@ function attendance(btn, id_student) {
     })
     .fail(function() {
         alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
+        $(btn).html(text)
     })
 }
 
 function loadEnd() {
+    //tắt hiệu ứng preloader
     $('#loader').fadeOut(); // will first fade out the loading animation
     $('#preloader').delay(100).fadeOut('slow'); // will fade out the white DIV that covers the website.
     $('body').delay(100).css({
@@ -103,13 +104,16 @@ function loadEnd() {
 }
 
 function loadBegin() {
+    //bật hiệu ứng preloader
     $('#loader').css('display', 'block')
     $('#preloader').css('display', 'block')
 }
 
 function callServer(page) {
+    //Get dữ liệu phân trang ajax cho mọi phân trang
     loadBegin()
     if (page == null) page = 1;
+    console.log(window.location.href)
     $.ajax({
         url: window.location.href,
         type: 'GET',
@@ -123,25 +127,187 @@ function callServer(page) {
             loadEnd()
         }
     })
-    .fail(function() {
-        loadEnd()
-        $('#modelNotification').modal('show');
+    .fail(() => {
+        ajaxSuccess()
     })
     
 }
 
+// var dataState = {
+//     urls : [
+
+//     ],
+
+//     titles : [
+
+//     ],
+//     documents : [
+
+//     ]
+// }
+
+
 jQuery(document).ready(function($) {
+    //bắt sự kiện nhấn phân trang
     $(document).on('click', '.pagination a', function(event) {
         event.preventDefault();
         var page = $(this).attr('href').split('page=')[1];
         callServer(page)
         $('html, body').animate({scrollTop : 0}, 'slow')
     });
+
+    
+    
+    // $(document).on('click', '.hrefLink a', async function(event) {
+    //     event.preventDefault();
+    //     const url = $(this).attr('href');
+    //     if (url == '#') return;
+    //     var dom;
+    //     documents = dataState.documents;
+    //     await $.ajax({
+    //         method: "GET",
+    //         url : url,
+    //         data : {
+    //             type: 'ajax',
+    //             page : 1,
+                
+    //         },
+    //         dataType: "html",
+    //         success : (response) => { 
+    //             $('#dataPage').html(response)
+    //             documents.push(response)
+    //         }
+    //     })
+
+    //     dataState.documents = documents;
+        
+    //     urls = dataState.urls
+    //     if (urls[urls.length - 1] == url) {
+    //         return;
+    //     }
+
+    //     console.log(url)
+    //     console.log($(this).text().trim())
+    //     titles = dataState.titles;
+    //     titles.push($(this).text().trim())
+    //     dataState.titles = titles
+    //     document.title = $(this).text().trim()
+    //     urls = dataState.urls
+    //     urls.push(url)
+    //     dataState.urls = urls
+
+    //     history.pushState(dataState, $(this).text().trim(), url)
+    // });
+
 });
 
-jQuery(document).ready(function($) {
-    loadEnd()
 
+
+$(document).ready(function ($) {
+    //submit các form có id myForm ajax
+    $('#myForm').submit(function(e){ 
+        loadBegin();
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        if (url == '') url = window.location.href;
+        var method = form.attr('method');
+        var data = form.serialize();
+
+        axios({
+            method : method,
+            url : url,
+            data : data
+        })
+        .then((response) => {
+            console.log(response)
+            alertErr(response.data.success, response.data.code)
+            loadEnd()
+            if (!(response.data.callback === undefined)){
+                $('html, body').animate({scrollTop: 0}, 'slow')
+                window.location = response.data.callback
+            }
+        })
+        .catch((err) => {
+            loadEnd()
+            if (err.response === undefined ) {
+                ajaxSuccess()
+                return
+            }
+            console.log(err)
+            alertErr(err.response.data.errors, 500)
+        })
+        $('html, body').animate({scrollTop: 0}, 'slow')
+
+    });
+
+    //đăng ký hoạt động
+    $('#registerAction').on('click', async () => {
+        var text = $('#registerAction').text();
+        $('#registerAction').html('<span class="spinner-border spinner-border-sm"></span>');
+        await axios({
+            method : 'POST',
+            url : window.location.href,
+            data : {
+                
+            }
+        })
+        .then((response)=>{
+            console.log(response)
+            data = response.data
+            if (data.status == 0){
+                ajaxSuccess(data.err)
+                return
+            }
+            $('#registerAction').html(data.message)
+        })
+        .catch((err)=>{
+            ajaxSuccess()
+            $('#registerAction').html(text)
+        })
+        
+
+    });
+
+
+});
+function alertErr(data, code) {
+    //hiển thị các lỗi validte từ server khi submit form
+    if (code == 200) {
+        var result = '<div class="alert alert-success">'
+    } else {
+        var result = '<div class="alert alert-danger">'
+    }
+
+    console.log(data)
+
+    $.each(data, (index, value) => {
+        result +=( value + '<br>')
+        console.log(value)
+    })
+
+    result+= '</div>'
+    console.log(result)
+    $('#notification').html(result);
+
+}
+
+function ajaxSuccess(err) {
+    //hiển thị thông báo trả về từ server (modal)
+    if (err === undefined || err == null || err.length <= 0) 
+        err =  "Một ngoại lệ đã xảy ra, yêu cầu bị chấm dứt. Vui lòng thử lại sau!"
+    
+    loadEnd()
+    $('#notificationModal').html(err)
+    $('#modelNotification').modal('show');
+}
+
+
+
+jQuery(document).ready(function($) {
+
+    loadEnd()
+    //submit form chi tiết điểm rèn luyện
     $("#idForm").submit(function(e) {
 
         loadBegin()
@@ -150,27 +316,36 @@ jQuery(document).ready(function($) {
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');
-        $.ajax({
-            type: method,
-            url: window.location.href,
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(data)
-            {
-                console.log(data)
-                console.log(data.code)
-                data_temp = data
-                if (data.code == 200){
-                    jQuery('#notification').html("Lưu thành công")
-                    loadEnd()
-                    jQuery('#modelNotification').modal({show: true})
-                }
+        var data = form.serialize();
+        // $.ajax({
+        //     type: method,
+        //     url: window.location.href,
+        //     data: form.serialize(),
+        //     dataType: 'json',
+        //     success: function(data)
+        //     {
                 
+                
+        //     }
+        // }).fail(() => {  
+        // })
+
+        axios({
+            method : method,
+            url : window.location.href,
+            data : data
+        })
+        .then((response) => {
+            console.log(response)
+            console.log(response.data.code)
+            data_temp = response
+            if (response.data.code == 200){
+                ajaxSuccess("Lưu thành công")
             }
-        }).fail(function () {  
-            loadEnd()
-            jQuery('#notification').html("Một ngoại lệ đã xảy ra, bảng điểm chưa được lưu lại. Vui lòng thử lại sau!")
-            jQuery('#modelNotification').modal('show');
+        })
+        .catch((err) => {
+            console.log(err.response)
+            ajaxSuccess("Một ngoại lệ đã xảy ra, bảng điểm chưa được lưu lại. Vui lòng thử lại sau!");
         })
     
     });
@@ -181,6 +356,7 @@ jQuery(document).ready(function($) {
 var select = false;
 
 jQuery(document).ready(function ($) {
+    //bắt sự kiện nhập điểm vào chi tiết điểm rèn luyện
     $("input").keyup(function (e) { 
         if (e.which == 13) {
             e.preventDefault();
@@ -188,7 +364,7 @@ jQuery(document).ready(function ($) {
         tinhDiem()
         select = true
     });
-
+    //bắt sự kiện thay đổi chi tiết điểm rèn luyện
     $("input").on('change', function () {
         tinhDiem()
         select = true
@@ -196,6 +372,7 @@ jQuery(document).ready(function ($) {
 })
 
 function tinhDiem() {
+    //duyệt các input trong form kiểm tra validate dữ liệu
     total = 0;
     $("#idForm :input").each(function(){
         if (!isNaN(this.value)){
@@ -214,6 +391,7 @@ function tinhDiem() {
 }
 
 function danhGia(diem) {  
+    //convert điểm => xếp loại
     if (diem >= 90) return "Xuất sắc."
     if (diem >= 80) return "Tốt."
     if (diem >= 65) return "Khá."
@@ -221,6 +399,49 @@ function danhGia(diem) {
     if (diem >= 40) return "Yếu."
     return "Kém."
 }
+
+async function submitNote(id) {  
+
+    //submit ghi chú lên server
+
+    var btn = $('#btn'+id)
+
+    btn.html('<span class="spinner-border spinner-border-sm"></span>')
+
+    var form = $('#form'+id);
+    var method = form.attr('method')
+    var url = form.attr('action')
+    var data = form.serialize();
+    var notifi = $('#notificationNote'+id)
+
+    console.log(data)
+
+    await axios({
+        method : method,
+        url : url,
+        data : data
+    })
+    .then((response)=>{
+        console.log(response)
+        if (response.data.status == 1) {
+            notifi.css('color', '#858796');
+        } else{
+            notifi.css('color', 'red');
+        }
+        notifi.html(response.data.message)
+        $('#noteTD'+id).html(response.data.note)
+    })
+    .catch((err)=>{
+        console.log(err.response)
+        notifi.css('color', 'red')
+        notifi.html('Xảy ra ngoại lệ. Lưu không thành công!')
+    })
+
+    btn.html('Ghi chú')
+
+}
+
+// if($('#dataPage').text() == '') $('#dataPage').html('Không có dữ liệu')
 
 // window.history.pushState('', 'Title', '/page2.php');
 // $(window).bind('scroll', function () {

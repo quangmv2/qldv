@@ -8,6 +8,7 @@ use App\Http\Requests\PointRequest;
 
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use PDF;
 
 use App\Classs;
 use App\Student;
@@ -153,6 +154,42 @@ class PointController extends Controller
         ];
 
         return $res;
+
+    }
+
+    public function downloadPointPDF(Request $request, $id_student, $id_dot)
+    {
+        // PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        $my_point = Point::where('id_dot', $id_dot)
+        ->where('id_student', $id_student)
+        ->get()->first();
+
+        $my_temp_point = MyPoint::where('id_dot', $id_dot)
+        ->where('id_student', $id_student)
+        ->get()->first();
+
+        $student = Student::where('id_student', $id_student)
+        ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->get()->first();
+
+        $dot = DotXetDiem::find($id_dot);
+
+        // return view('client.point.download.danh_gia',
+        // [
+        //     'my_point' => $my_point,
+        //     'my_temp_point' => $my_temp_point,
+        //     'student' => $student,
+        //     'dot' => $dot,
+        // ]);
+
+        $pdf = PDF::loadView('client.point.download.danh_gia',
+        [
+            'my_point' => $my_point,
+            'my_temp_point' => $my_temp_point,
+            'student' => $student,
+            'dot' => $dot,
+        ])->setPaper('a4');
+        return $pdf->stream("Phiếu đánh giá kết quả rèn luyện sinh viên ".$student->first_name." ".$student->last_name." - Học kỳ: ".hocKy($dot->hoc_ki)." - Năm học: ". $dot->nam_hoc.'.pdf');
 
     }
 

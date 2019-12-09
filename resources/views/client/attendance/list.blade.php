@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title')Điểm danh @endsection
 @section('content')
 <div class="container-fluid" style="margin-left: 0px;">
 

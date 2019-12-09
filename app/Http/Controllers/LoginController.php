@@ -25,9 +25,16 @@ class LoginController extends Controller
 
         // var_dump($users);
         // return;
+        if (!isset($users->hd) || $users->hd != 'sict.udn.vn') return \redirect()->route("logout");
+        $acc = User::where("email", $users->email)->get();
+        // $k = 0;
+        // if (count($acc) < 1) {
+        //     $k = createAccountLogin($users);
+        //     return;
+        // }
+        // if (k==0) return \redirect()->route('logout');
         $acc = User::where("email", $users->email)->get();
         if (count($acc) < 1) return \redirect()->route("logout");
-        if (!isset($users->hd)) return \redirect()->route("logout");
         $acc = $acc[0];
 
         $user = new User;

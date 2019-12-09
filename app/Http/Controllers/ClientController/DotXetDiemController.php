@@ -5,6 +5,8 @@ namespace App\Http\Controllers\ClientController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Validator;
+
 use App\Classs;
 use App\Student;
 use App\DotXetDiem;
@@ -19,18 +21,33 @@ class DotXetDiemController extends Controller
         $id_student = $request->session()->get('account')->id_student;
         $student = Student::where('id_student', $id_student)->get()[0];
         $year = SchoolYear::all();
+//        echo route('danh_sach_dot');
+//        return;
         return view('client.point.add', ['year' => $year]);
     }
 
     function postAdd(Request $request)
     {
+
+
         $this->validate($request,
         [
-
+            'name' => 'required',
+            'begin' => 'required'
         ],
         [
-
+            'name.required' => 'Chưa có tên',
+            'begin.required' => 'Chưa nhập ngày'
         ]);
+
+        $res = [
+            "code" => 200,
+            "message" => "OK",
+            "callback" => route('danh_sach_dot'),
+            "success" => [
+              "1" => "Thêm vào thành công"
+            ],
+        ];
 
         $dot = new DotXetDiem;
         $dot->ten_dot = $request->input('name');
@@ -60,10 +77,10 @@ class DotXetDiemController extends Controller
             $temp_point->total = 0;
             $temp_point->save();
         }
-        echo $students->tojson();
-        return;
 
-        return back()->with('notification', 'Thêm thành công');
+        return $res;
+
+
     }
 
     public function danhSachDot(Request $request)
@@ -75,6 +92,14 @@ class DotXetDiemController extends Controller
         }
 
         $list = DotXetDiem::where('id_class', $request->session()->get('account')->id_class)->paginate(20);
+        foreach ($list as $index  => $value){
+            $list[$index]['xuat_sac'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 90)->count('total');
+            $list[$index]['gioi'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
+            $list[$index]['kha'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 65)->where('total','<', 80)->count('total');
+            $list[$index]['trung_binh'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 50)->where('total','<', 65)->count('total');
+            $list[$index]['yeu'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 35)->where('total','<', 50)->count('total');
+            $list[$index]['kem'] = Point::where('id_dot', $value->id_dot_xet)->where('total','<', 35)->count('total');
+        }
         if ($request->input('type') == 'ajax') {
             return view('client.point.ajax.danh_sach_dot', ['list' => $list]);
         } else {

@@ -39,19 +39,19 @@
 
 
   <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item" >
+  <li class="nav-item hrefLink">
     <a class="nav-link collapsed" href="{{ route('newActionList') }}">
       <i class="fas fa-fw fa-cog"></i>
       <span>Hoạt động mới</span>
     </a>
   </li>
-  <li class="nav-item" >
+  <li class="nav-item hrefLink">
     <a class="nav-link collapsed" href="{{ route('myAction') }}">
       <i class="fas fa-fw fa-cog"></i>
       <span>Hoạt động của tôi</span>
     </a>
   </li>
-  <li class="nav-item" >
+  <li class="nav-item hrefLink">
     <a class="nav-link collapsed" href="{{ route('myPoint') }}">
       <i class="fas fa-fw fa-cog"></i>
       <span>Điểm rèn luyện của tôi</span>

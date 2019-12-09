@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title')Thêm mới đợt xét điểm rèn luyện @endsection
 @section('content')
 
 <div class="container-fluid" style="margin-left: 0px;">
@@ -20,7 +21,7 @@
     <div class="row">
         <div class="col-sm-12">
             
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="" method="POST" enctype="multipart/form-data" id="myForm">
 
                     {{ csrf_field() }}
 
@@ -28,7 +29,7 @@
 
                         <label>Tên đợt</label>
 
-                        <input type="text" name="name" value="" class="form-control" placeholder="Tên đợt" required>
+                        <input type="text" name="name" value="" class="form-control" placeholder="Tên đợt">
 
                     </div>
 
@@ -59,7 +60,7 @@
 
                         <label>Ngày bắt đầu tính hoạt động</label>
 
-                        <input type="date" name="begin" value="" class="form-control" required>
+                        <input type="date" name="begin" value="" class="form-control" >
 
                     </div>
 
@@ -67,7 +68,7 @@
 
                         <label>Ngày kết thúc tính hoạt động</label>
 
-                        <input type="date" name="end" value="" class="form-control" required>
+                        <input type="date" name="end" value="" class="form-control">
 
                     </div>
                     

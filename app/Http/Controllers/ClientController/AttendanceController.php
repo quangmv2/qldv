@@ -31,7 +31,7 @@ class AttendanceController extends Controller
         }
         Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
         $students = Student::join('action_relationship', 'students.id_student', '=', 'action_relationship.id_student')
-        ->where('action_relationship.id_action', $id_action)->select('students.*', 'action_relationship.status')->get();
+        ->where('action_relationship.id_action', $id_action)->select('students.*', 'action_relationship.status', 'action_relationship.note')->get();
         return view('client.attendance.attendance', ['students' => $students, 'action' => $action]);
     }
 
@@ -100,6 +100,31 @@ class AttendanceController extends Controller
         ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status]);
         Action::where('id_action', $id_action)->update(['join' => $action->join + $k]);
         return;
+
+    }
+
+    public function postAttendanceNote(Request $request, $id_action, $id_student)
+    {
+        $AR = ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get();
+        if (\count($AR) < 1){
+            $res = [
+                "status" => 0,
+                "message" => "Không tìm thấy sinh viên hoặc hoạt động nào.",
+            ];
+            return $res;
+        }
+
+        $AR =$AR->first();
+
+        $note = $request->input('note');
+        ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['note' => $note]);
+
+        $res = [
+            "status" => 1,
+            "message" => "Lưu thành công.",
+            "note" => $note,
+        ];
+        return $res;
 
     }
 

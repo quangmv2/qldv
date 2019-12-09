@@ -170,4 +170,53 @@ function convertPointToPoint($point){
 
 }
 
+function hocKy($hocky)
+{
+    if ($hocky == 1) {
+        return 'I';
+    }
+    return "II";
+}
+
+use App\Classs;
+use App\Profile;
+use App\Student;
+
+function createAccountLogin($users)
+{
+    $email = $users->email;
+    $arr = explode('@', $email);
+    $arrClass = explode('.', $arr[0]);
+    if (empty($arrClass[1])) return 0;
+    $arrClass['user'] = $users;
+    echo json_encode($arrClass);
+    $class = mb_strtoupper($arrClass[1]);
+
+    $cl = Classs::where('id_class', $class)->get();
+    if (count($cl) < 1){
+        return 0;
+    }
+    $user = new User;
+    $user->email = $email;        
+    $user->password =  password_hash(1, PASSWORD_BCRYPT);
+    $user->type = 0;
+    $user->save();
+
+    $profile = new Profile;
+    $profile->first_name = $users->family_name;
+    $profile->last_name = $users->given_name;
+    $profile->email = $email;
+    $profile->save();
+
+    $student = new Student;
+    $student->id_profile = $profile->id;
+    $student->id_student = strtoupper($request->input('id_student'));
+    $student->id_class = $request->input('class');
+    $student->id_position = $request->input('position');
+    $student->save();
+
+    return 1;
+
+}
+
 ?>

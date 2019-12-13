@@ -48,6 +48,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('adminListStudent') }}">Danh sách sinh viên</a>
         <a class="collapse-item" href="{{ route('adminAddStudent') }}">Thêm sinh viên</a>
+        <a class="collapse-item" href="{{ route('add-excel') }}">Thêm sinh viên bằng file</a>
       </div>
     </div>
   </li>

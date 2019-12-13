@@ -12,7 +12,7 @@ use App\Student;
 use App\DotXetDiem;
 use App\SchoolYear;
 use App\Point;
-use App\TempPoint;
+use App\MyPoint;
 
 class DotXetDiemController extends Controller
 {
@@ -31,12 +31,10 @@ class DotXetDiemController extends Controller
 
 
         $this->validate($request,
-        [
-            'name' => 'required',
+        [ 
             'begin' => 'required'
         ],
         [
-            'name.required' => 'Chưa có tên',
             'begin.required' => 'Chưa nhập ngày'
         ]);
 
@@ -70,7 +68,7 @@ class DotXetDiemController extends Controller
             $point->total = 0;
             $point->save();
 
-            $temp_point = new TempPoint;
+            $temp_point = new MyPoint;
             $temp_point->id_dot = $dot->id_dot_xet;
             $temp_point->id_student = $value->id_student;
             $temp_point->confirm = 0;

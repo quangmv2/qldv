@@ -27,14 +27,6 @@
 
                     <div class="form-group">
 
-                        <label>Tên đợt</label>
-
-                        <input type="text" name="name" value="" class="form-control" placeholder="Tên đợt">
-
-                    </div>
-
-                    <div class="form-group">
-
                         <label>Năm học</label>
 
                         <select name="year" id="" class="form-control">

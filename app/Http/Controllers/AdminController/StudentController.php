@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
+use App\Imports\UsersImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Classs;
 use App\Student;
 use App\Position;
@@ -20,6 +23,7 @@ class StudentController extends Controller
     {
         $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
         ->select('students.*')
+        ->orderby('students.id_class')
         ->orderby('profiles.last_name', 'asc')
         ->orderby('profiles.first_name', 'asc')
         ->get();
@@ -116,6 +120,49 @@ class StudentController extends Controller
 
         return redirect()->route('adminListStudent')->with('notification', "Thêm thành công sinh viên ".$profile->name.".");
 
+    }
+
+    public function getAddExcel(Request $request)
+    {
+        $class = Classs::all();
+        return view('admin.student.addExcel', ['class' => $class,]);
+    }
+
+    public function postAddExcel(Request $request)
+    {
+        $class = Classs::where('id_class', $request->input('class'))->get();
+        if (!count($class) > 0) return back()->with('myError', "Lớp học không tồn tại");
+        $class = $class->first();
+        $arr = Excel::toArray(new UsersImport, $request->file('file'))[0];
+        
+        
+        foreach ($arr as $key => $value) {
+            $student = Student::where('id_student', $value[1])->get();
+            if (count($student) > 0) continue;
+            $email = createEmailStudent($value[2]." ".$value[3], $class->id_class);
+            $user = new User;
+            $user->email = $email;        
+            $user->password =  password_hash(1, PASSWORD_BCRYPT);
+            $user->type = 0;
+            $user->save();
+
+            $profile = new Profile;
+            $profile->first_name = $value[2];
+            $profile->last_name = $value[3];
+            $profile->email = $email;
+            $profile->save();
+            
+            $student = new Student;
+            $student->id_profile = $profile->id;
+            $student->id_student = $value[1];
+            $student->id_class = $class->id_class;
+            $student->id_position = 1;
+            $student->save();
+        }
+
+        return redirect()->route('adminListStudent')->with('notification', "Thêm thành công danh sách sinh viên.");
+
+        
     }
 
 }

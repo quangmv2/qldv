@@ -234,7 +234,7 @@ $(document).ready(function ($) {
                 ajaxSuccess()
                 return
             }
-            console.log(err)
+            console.log(err.response)
             alertErr(err.response.data.errors, 500)
         })
         $('html, body').animate({scrollTop: 0}, 'slow')

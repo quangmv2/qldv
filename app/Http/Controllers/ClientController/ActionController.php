@@ -28,7 +28,8 @@ class ActionController extends Controller
     {
         $id_class = $request->session()->get('account')->id_class;
         $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(1);
-        if ($request->input('type') == 'ajax') return view('client.action.ajax.newActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
+        if ($request->input('type') == 'ajax') 
+            return view('client.action.ajax.newActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.newActionList', ["actions" => $actions]);
     }
 

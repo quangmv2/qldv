@@ -36,7 +36,7 @@ class PointController extends Controller
         // $res = $client->request('GET', 'http://localhost:3000/api/point/'.$id_student);
         $content = (object) $res->getBody();
         $json = json_decode($content->getContents(), true);
-
+        
         $point_study = $json['point'];
 
         $my_point = Point::where('id_dot', $id_dot)
@@ -102,7 +102,6 @@ class PointController extends Controller
         }
 
         if (empty($my_point) || empty($my_temp_point) || empty($points)) return abort(404);
-
         return view('client.point.danh_gia', [
             'my_point' => $my_point,
             'my_temp_point' => $my_temp_point,

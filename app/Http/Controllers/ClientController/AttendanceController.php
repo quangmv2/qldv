@@ -31,7 +31,14 @@ class AttendanceController extends Controller
         }
         Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
         $students = Student::join('action_relationship', 'students.id_student', '=', 'action_relationship.id_student')
-        ->where('action_relationship.id_action', $id_action)->select('students.*', 'action_relationship.status', 'action_relationship.note')->get();
+        ->where('action_relationship.id_action', $id_action)
+        ->select('students.*', 'action_relationship.status', 'action_relationship.note', 'students.id_profile')
+        ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        // ->orderby('profiles.last_name', 'asc')
+        // ->orderby('profiles.first_name', 'asc')
+        ->orderby('students.id_student', 'asc')
+        ->select('students.*', 'action_relationship.status', 'action_relationship.note')
+        ->get();
         return view('client.attendance.attendance', ['students' => $students, 'action' => $action]);
     }
 

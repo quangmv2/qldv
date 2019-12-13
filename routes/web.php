@@ -121,8 +121,8 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
     });
 
 });
-
-Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function () {
+// , 'middleware' => 'adminMiddleware'
+Route::group(['prefix' => 'admin'], function () {
 
     Route::get('/', function () {
         return view('admin.index');
@@ -149,6 +149,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
         Route::get('add', "AdminController\StudentController@getAdd")->name('adminAddStudent');
 
         Route::post('add', "AdminController\StudentController@postAdd");
+
+        Route::get('add-excel', "AdminController\StudentController@getAddExcel")->name('add-excel');
+        
+        Route::post('add-excel', "AdminController\StudentController@postAddExcel");
 
         Route::get('ajaxList', "AdminController\StudentController@getListAjax")->name('ajaxStudentList');
 

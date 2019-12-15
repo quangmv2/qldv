@@ -11,14 +11,16 @@ class PointMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $context;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($context)
     {
-        //
+        $this->context = $context;
     }
 
     /**
@@ -28,6 +30,6 @@ class PointMail extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->subject($this->context->subject)->view('client.mail.point');
     }
 }

@@ -46,26 +46,45 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        // if ($exception instanceof CustomException) {
-        //     return response()->view('errors.custom');
-        // }
+        if ($exception instanceof CustomException) {
+            return response()->view('errors.custom');
+            switch ($exception->getStatusCode()) {
+                // not found
+                case '404':
+                        return $this->renderHttpException($exception); 
+                    break;
+                case '422': return $this->renderHttpException($exception); 
+                        break;
+                // internal server error
+                case '500':
+                    return response()->view('errors.custom');   
+                    break;
+                default:
+                    return response()->view('errors.custom');
+                    break;
+            }
+        }
         return parent::render($request, $exception);
         // return response()->view('errors.custom');
         // if($this->isHttpException($exception))
         // {
         //   //  dd('2');
+        //   echo $exception->getStatusCode();
+        //   die();
         //     switch ($exception->getStatusCode()) {
         //         // not found
         //         case '404':
         //              return $this->renderHttpException($exception); 
-        //         break;
+        //             break;
+        //         case '422': return $this->renderHttpException($exception); 
+        //                 break;
         //         // internal server error
         //         case '500':
-        //         return $this->renderHttpException($exception);   
-        //         break;
+        //             return response()->view('errors.custom');   
+        //             break;
         //         default:
-        //             return $this->renderHttpException($exception);
-        //         break;
+        //             return response()->view('errors.custom');
+        //             break;
         //     }
         // } else
         // {

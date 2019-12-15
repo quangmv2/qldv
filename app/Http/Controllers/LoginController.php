@@ -8,6 +8,7 @@ use Auth;
 use Socialite;
 use App\User;
 
+
 class LoginController extends Controller
 {
 
@@ -36,7 +37,7 @@ class LoginController extends Controller
         $acc = User::where("email", $users->email)->get();
         if (count($acc) < 1) return \redirect()->route("logout");
         $acc = $acc[0];
-
+        Auth::login($acc, false);
         $user = new User;
         $user->email = $users->email;
         $user->name  = $users->name;
@@ -57,6 +58,7 @@ class LoginController extends Controller
     {
         $request->session()->forget('account');
         $request->session()->forget('nextRequest');
+        Auth::logout();
         return \redirect()->route('getLogin');
     }
 }

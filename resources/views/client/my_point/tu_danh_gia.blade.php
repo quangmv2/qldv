@@ -1,4 +1,10 @@
 @extends('client.index')
+@section('script')
+<script src="{{ asset('assets/js/danhgia.js') }}"></script>
+<script type="text/javascript">
+    tinhDiem()
+</script>
+@endsection
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -340,8 +346,4 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    tinhDiem()
-</script>
 @endsection

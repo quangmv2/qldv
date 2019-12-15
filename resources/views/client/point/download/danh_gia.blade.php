@@ -103,7 +103,9 @@
                                 <th style="width: 75%;"><p
                                     style="display: flex; justify-content: center; align-items: center; text-align: center"    
                                 >Nội dung đánh giá</p></th>
-                                <th>Khung điểm</th>
+                                <th><p
+                                    style="justify-content: center; align-items: center; text-align: center"    
+                                >Khung điểm</p></th>
                                 <th>Điểm do sinh viên tự đánh giá</th>
                                 <th>Điểm do tập thể lớp đánh giá</th>
                             </tr>

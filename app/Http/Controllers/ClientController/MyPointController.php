@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ClientController;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 use App\Http\Requests\PointRequest;
 
@@ -16,7 +16,7 @@ use App\SchoolYear;
 use App\Point;
 use App\MyPoint;
 
-class MyPointController extends Controller
+class MyPointController extends ClientController
 {
     public function getList(Request $request)
     {

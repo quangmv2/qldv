@@ -70,30 +70,6 @@ function getStudent(id_class, class_name) {
 
 }
 
-function attendance(btn, id_student) {  
-
-    //điểm danh hoạt động
-    var text = $(btn).text()
-    $(btn).html('<span class="spinner-border spinner-border-sm"></span>')
-    $.ajax({
-        type: "GET",
-        url: window.location.href + "/" + id_student,
-        data: {
-
-        },
-        dataType: "json",
-        success: function (response) {
-            $(btn).removeClass()
-            $(btn).addClass(response.class)
-            $(btn).html(response.status);
-        }
-    })
-    .fail(function() {
-        alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
-        $(btn).html(text)
-    })
-}
-
 function loadEnd() {
     //tắt hiệu ứng preloader
     $('#loader').fadeOut(); // will first fade out the loading animation
@@ -353,43 +329,6 @@ jQuery(document).ready(function($) {
 
 });
 
-var select = false;
-
-jQuery(document).ready(function ($) {
-    //bắt sự kiện nhập điểm vào chi tiết điểm rèn luyện
-    $("input").keyup(function (e) { 
-        if (e.which == 13) {
-            e.preventDefault();
-        }
-        tinhDiem()
-        select = true
-    });
-    //bắt sự kiện thay đổi chi tiết điểm rèn luyện
-    $("input").on('change', function () {
-        tinhDiem()
-        select = true
-    });
-})
-
-function tinhDiem() {
-    //duyệt các input trong form kiểm tra validate dữ liệu
-    total = 0;
-    $("#idForm :input").each(function(){
-        if (!isNaN(this.value)){
-            if (Number(this.value) > Number(this.max) || Number(this.value) < Number(this.min)){
-                $(this).css({borderColor : 'red'});
-            } else{
-                $(this).css({borderColor : ''})
-                total+=Number(this.value)
-            }
-            
-        }
-    });
-    $('#total').html(total)
-    $('#sum').html('Điểm rèn luyện (sau khi thông qua tập thể lớp và giảng viên chủ nhiệm/cố vấn học tập): ' + total)
-    $('#danhgia').html('Xếp loại kết quả rèn luyện (sau khi thông qua tập thể và giảng viên chủ nhiệm/cố vấn học tập): '+ danhGia(total))
-}
-
 function danhGia(diem) {  
     //convert điểm => xếp loại
     if (diem >= 90) return "Xuất sắc."
@@ -398,47 +337,6 @@ function danhGia(diem) {
     if (diem >= 50) return "Trung bình."
     if (diem >= 40) return "Yếu."
     return "Kém."
-}
-
-async function submitNote(id) {  
-
-    //submit ghi chú lên server
-
-    var btn = $('#btn'+id)
-
-    btn.html('<span class="spinner-border spinner-border-sm"></span>')
-
-    var form = $('#form'+id);
-    var method = form.attr('method')
-    var url = form.attr('action')
-    var data = form.serialize();
-    var notifi = $('#notificationNote'+id)
-
-    console.log(data)
-
-    await axios({
-        method : method,
-        url : url,
-        data : data
-    })
-    .then((response)=>{
-        console.log(response)
-        if (response.data.status == 1) {
-            notifi.css('color', '#858796');
-        } else{
-            notifi.css('color', 'red');
-        }
-        notifi.html(response.data.message)
-        $('#noteTD'+id).html(response.data.note)
-    })
-    .catch((err)=>{
-        console.log(err.response)
-        notifi.css('color', 'red')
-        notifi.html('Xảy ra ngoại lệ. Lưu không thành công!')
-    })
-
-    btn.html('Ghi chú')
-
 }
 
 // if($('#dataPage').text() == '') $('#dataPage').html('Không có dữ liệu')
@@ -452,3 +350,27 @@ async function submitNote(id) {
 //         $('#accordionSidebar').removeClass('fixed');
 //     }
 // });
+jQuery(document).ready(function ($) {
+    $('#form_profile').submit(function (e) { 
+        e.preventDefault();
+        $('#form_profile :button').html('<span class="spinner-border spinner-border-sm"></span>')
+        var url = $(this).attr('action')
+        var method = $(this).attr('method')
+        var data = $(this).serialize();
+        axios({
+          method : method,
+          url : url,
+          data : data
+        })
+        .then((response) => {
+          console.log(response)
+          alert(response.data.message)
+          $('#form_profile :button').html('Cập nhật')
+        })
+        .catch((err) => {
+          console.log(err.response)
+          alert('Cập nhật thất bại')
+          $('#form_profile :button').html('Cập nhật')
+        })
+    });  
+});

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\ClientController;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 
 use Validator;
+use Carbon\Carbon;
+use PDF;
 
 use App\Classs;
 use App\Student;
@@ -14,7 +16,7 @@ use App\SchoolYear;
 use App\Point;
 use App\MyPoint;
 
-class DotXetDiemController extends Controller
+class DotXetDiemController extends ClientController
 {
     function getAdd(Request $request)
     {
@@ -47,8 +49,31 @@ class DotXetDiemController extends Controller
             ],
         ];
 
+        $dxt = DotXetDiem::where('nam_hoc', $request->input('year'))
+        ->where('hoc_ki', $request->input('semester'))->get();
+        if (\count($dxt) > 0){
+            return [
+                "code" => 500,
+                "message" => "OK",
+                "success" => [
+                  "1" => "Đã tồn tại đợt xét điểm."
+                ],
+            ];
+        }
+
+        $begin = Carbon::parse($request->input('begin'));
+        $end = Carbon::parse($request->input('end'));
+        if ($begin >= $end){
+            return [
+                "code" => 500,
+                "message" => "OK",
+                "success" => [
+                  "1" => "Khoảng thời gian không hợp lệ."
+                ],
+            ];
+        }
+
         $dot = new DotXetDiem;
-        $dot->ten_dot = $request->input('name');
         $dot->nam_hoc = $request->input('year');
         $dot->hoc_ki = $request->input('semester');
         $dot->ngay_bat_dau = $request->input('begin');
@@ -89,7 +114,7 @@ class DotXetDiemController extends Controller
             $page = $request->input('page');
         }
 
-        $list = DotXetDiem::where('id_class', $request->session()->get('account')->id_class)->paginate(20);
+        $list = DotXetDiem::where('id_class', $request->session()->get('account')->id_class)->orderby('nam_hoc')->orderby('hoc_ki')->paginate(20);
         foreach ($list as $index  => $value){
             $list[$index]['xuat_sac'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 90)->count('total');
             $list[$index]['gioi'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
@@ -111,7 +136,7 @@ class DotXetDiemController extends Controller
         $students = Point::where('id_dot', $id_dot)
         ->join('students', 'students.id_student', '=', 'points.id_student')
         ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
-        ->orderby('last_name')
+        ->orderby('students.id_student')
         ->select('*')
         ->get();
 
@@ -127,6 +152,47 @@ class DotXetDiemController extends Controller
         DotXetDiem::find($id_dot)->delete();
         return back();
 
+    }
+
+    public function downloadDotPDF(Request $request, $id_dot)
+    {
+        $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
+        $students = Point::where('id_dot', $id_dot)
+        ->join('students', 'students.id_student', '=', 'points.id_student')
+        ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->orderby('students.id_student')
+        ->select('students.*', 'points.total', 'points.note', 'profiles.first_name', 'profiles.last_name')
+        ->get();
+        // return $students;
+        $list['xuat_sac'] = Point::where('id_dot', $id_dot)->where('total', '>=', 90)->count('total');
+        $list['gioi'] = Point::where('id_dot', $id_dot)->where('total', '>=', 80)->where('total','<', 90)->count('total');
+        $list['kha'] = Point::where('id_dot', $id_dot)->where('total', '>=', 65)->where('total','<', 80)->count('total');
+        $list['trung_binh'] = Point::where('id_dot', $id_dot)->where('total', '>=', 50)->where('total','<', 65)->count('total');
+        $list['yeu'] = Point::where('id_dot', $id_dot)->where('total', '>=', 35)->where('total','<', 50)->count('total');
+        $list['kem'] = Point::where('id_dot', $id_dot)->where('confirm', 1)->where('total','<', 35)->count('total');
+        $count = Point::where('id_dot', $id_dot)->where('confirm', 1)->count('total');
+        // return view('client.point.download.thong_ke', 
+        // [
+        //     'dot' => $dot,
+        //     'students' => $students,
+        //     'count' => $count,
+        //     'result' => $list,
+        // ]);
+        $pdf = PDF::loadView('client.point.download.thong_ke', 
+        [
+            'dot' => $dot,
+            'students' => $students,
+            'count' => $count,
+            'result' => $list,
+        ])->setPaper('a4');
+        return $pdf->download($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
+    }
+
+    public function getNote(Request $request, $id_dot, $id_student)
+    {
+        $note = $request->input('note');
+        Point::where('id_dot', $id_dot)->where('id_student', $id_student)->update(['note' => $note]);
+        return $note;
     }
 
 }

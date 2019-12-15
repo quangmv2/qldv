@@ -20,4 +20,9 @@ class Student extends Model
         return $this->hasOne('App\Classs', 'id_class', 'id_class');
     }
 
+    public function position()
+    {
+        return $this->belongsTo('App\Position', 'id_position', 'id_position');
+    }
+
 }

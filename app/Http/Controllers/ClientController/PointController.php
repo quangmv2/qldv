@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ClientController;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 use App\Http\Requests\PointRequest;
 
@@ -17,7 +17,7 @@ use App\SchoolYear;
 use App\Point;
 use App\MyPoint;
 
-class PointController extends Controller
+class PointController extends ClientController
 {
 
     function getDanhGia(Request $request, $id_dot, $id_detail,  $name, $id_student){
@@ -90,8 +90,7 @@ class PointController extends Controller
             ->join('students', 'students.id_student', '=', 'points.id_student')
             ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
             ->select('*')
-            ->orderby('profiles.last_name', 'asc')
-            ->orderby('profiles.first_name', 'asc')->get();
+            ->orderby('students.id_student')->get();
 
         $vt = 0;
         foreach ($points as $index => $value) {
@@ -100,6 +99,8 @@ class PointController extends Controller
                 break;
             }
         }
+
+        // return $points;
 
         if (empty($my_point) || empty($my_temp_point) || empty($points)) return abort(404);
         return view('client.point.danh_gia', [

@@ -79,21 +79,7 @@
 
 
   <!-- Nav Item - Utilities Collapse Menu -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-      <i class="fas fa-fw fa-wrench"></i>
-      <span>Điểm rèn luyện</span>
-    </a>
-    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Điểm rèn luyện</h6>
-        <a class="collapse-item" href="{{ route('adminAddCriteria') }}">Thêm tiêu chí</a>
-        <a class="collapse-item" href="utilities-border.html">Tiêu chí</a>
-        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-        <a class="collapse-item" href="utilities-other.html">Other</a>
-      </div>
-    </div>
-  </li>
+
 
   <!-- Divider -->
   <hr class="sidebar-divider">

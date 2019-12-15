@@ -1,4 +1,16 @@
 @extends('client.index')
+@section('script')
+<script>
+    $(document).ready( () => {
+        $('form').submit((e)=>{
+            e.preventDefault();
+            // const form = $(this)
+            // console.log(form.attr('id'))
+        })
+    });
+</script>
+<script src="{{ asset('assets/js/diemdanh.js') }}"></script>
+@endsection
 @section('content')
 <div class="container-fluid" style="margin-left: 0px;">
 
@@ -54,7 +66,7 @@
                     <tr>
                         <td>MÃ SV</td>
                         <td>Họ và tên</td>
-                        <td colspan="2">Điểm danh</td>
+                        <td colspan="3">Điểm danh</td>
                         <td>Ghi chú</td>
                     </tr>
                 </thead>
@@ -64,7 +76,7 @@
                         <tr>
                             <td>{{ $value->id_student }}</td>
                             <td>{{ $value->profile->first_name." ".$value->profile->last_name}}</td>
-                            <td><button class="
+                            <td style="width: 12%"><button id="{{$value->id_student}}" class="
                                 @if ($value->status == 0)
                                     btn btn-danger
                                 @else
@@ -77,11 +89,12 @@
                                 Có mặt
                             @endif
                             </button></a></td>
-                            <td><a class="btn btn-info btn-sm" style="cursor: pointer" data-toggle="modal" data-target="#popup{{$index}}" data-original-title="Ghi chú"> <i class="fas fa-pencil-alt text-white"></i></a></td>
+                            <td style="width: 12%"><a class="btn btn-info btn-sm" style="cursor: pointer" data-toggle="modal" data-target="#popup{{$index}}" data-original-title="Ghi chú"> <i class="fas fa-pencil-alt text-white"></i></a></td>
                             {{-- <td><a href="#" role="button" data-toggle="popup{{$value->id}}" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-sticky-note" style="color: red">
                                 </a>
                             </td> --}}
+                            <td style="width: 12%"><input type="number" class="form-control" min="0" max="10" id="input{{$value->id_student}}" value="{{$value->point==null ? 0 : $value->point}}" onchange="updatePoint(this, '{{$value->id_student}}')"></td>
                             <td id="noteTD{{$index}}">{{$value->note}}</td>
                                 
                         </tr>
@@ -121,13 +134,4 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready( () => {
-        $('form').submit((e)=>{
-            e.preventDefault();
-            // const form = $(this)
-            // console.log(form.attr('id'))
-        })
-    });
-</script>
 @endsection

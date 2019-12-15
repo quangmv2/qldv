@@ -28,6 +28,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  <script src="{{ asset('assets/js/axios.min.js') }}"></script>
+  @yield('script')
   
 </head>
 
@@ -123,10 +125,72 @@
     </div>
   </div>
 
-  
+  <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+          <h5 class="modal-title" id="exampleModalLabel">Thông tin cá nhân</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{ route('edit_profile') }}" id="form_profile" method="POST">
+          <div class="modal-body">
+            {{ csrf_field() }}
+            <div class="form-group">
+              <label for="email1">Họ và tên</label>
+              <input type="text" id="name_profile" class="form-control" aria-describedby="emailHelp" disabled>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="email_profile" class="form-control" disabled>
+            </div>
+            <div class="form-group">
+              <label for="">Lớp - Chức vụ</label>
+              <input type="text" id="class_profile" class="form-control"  disabled>
+            </div>
+            <div class="form-group">
+              <label for="">Ngày sinh</label>
+              <input type="date" id="birthday_profile" class="form-control" disabled>
+            </div>
+            <div class="form-group">
+              <label for="">Số điện thoại</label>
+              <input type="text" class="form-control" id="phone_number_profile" name="phone_number" autofocus title="Là số có 10 chữ số bắt đầu bằng số 0" pattern="(0)[0-9]{9}">
+            </div>
+            <div class="form-group">
+              <label for="">Địa chỉ</label>
+              <input type="text" class="form-control" id="address_profile" name="address">
+            </div>
+          </div>
+          <div class="modal-footer border-top-0 d-flex justify-content-center">
+            <button type="submit" class="btn btn-success">Cập nhật</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
 
+    axios({
+      method : "GET",
+      url: '{{ route('get_profile') }}',
+      data : {}
+    })
+    .then((response)=>{
+      console.log(response)
+      $('#name_profile').val(response.data.name)
+      $('#email_profile').val(response.data.email)
+      $('#class_profile').val(response.data.class)
+      $('#birthday_profile').val(response.data.birthday)
+      $('#phone_number_profile').val(response.data.phone_number)
+      $('#address_profile').val(response.data.address)
+    })
+    .catch(()=>{
+
+    })
+
+  </script>
   <!-- Bootstrap core JavaScript-->
-  <script src="{{ asset('assets/js/axios.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 

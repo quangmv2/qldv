@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ClientController;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 use App\Http\Requests\ActionsRequest;
 use Validator;
@@ -14,12 +14,12 @@ use App\Classs;
 use App\ActionRelationship;
 
 
-class ActionController extends Controller
+class ActionController extends ClientController
 {
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(20);
+        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(10);
         if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.actionList', ["actions" => $actions]);
     }
@@ -27,7 +27,7 @@ class ActionController extends Controller
     function getNewAction(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(1);
+        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(10);
         if ($request->input('type') == 'ajax') 
             return view('client.action.ajax.newActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.newActionList', ["actions" => $actions]);
@@ -44,9 +44,6 @@ class ActionController extends Controller
 
     function postAdd(Request $request)
     {
-
-
-
         // $validator = $request->validated();
         $this->validate($request,
         [
@@ -85,6 +82,7 @@ class ActionController extends Controller
                 $AR->id_student = $value->id_student;
                 $AR->id_action = $action->id;
                 $AR->status = 0;
+                $AR->point = 0;
                 $AR->save();
             }
             Action::where('id_action', $action->id)->update(["type" => 0, 'sum' => count($students)]);
@@ -94,7 +92,7 @@ class ActionController extends Controller
             $arr = $request->input('id_student');
             foreach ($arr as $key => $value) {
                 $AR = new ActionRelationship;
-                $AR->id_student = $value->id_student;
+                $AR->id_student = $value;
                 $AR->id_action = $action->id;
                 $AR->status = 0;
                 $AR->save();

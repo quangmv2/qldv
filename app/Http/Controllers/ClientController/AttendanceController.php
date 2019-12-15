@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\ClientController;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 
 use App\Action;
 use App\ActionRelationship;
 use App\Student;
 
-class AttendanceController extends Controller
+class AttendanceController extends ClientController
 {
     function getList(Request $request)
     {
@@ -27,7 +27,7 @@ class AttendanceController extends Controller
         $action = $action[0];
         if ($action->confirm == 0){
             Action::where('id_action', $id_action)->update(['confirm' => 1, 'join' => $action->sum]);
-            ActionRelationship::where('id_action', $id_action)->update(['status' => 1]);
+            ActionRelationship::where('id_action', $id_action)->update(['status' => 1, 'point' => 10]);
         }
         Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
         $students = Student::join('action_relationship', 'students.id_student', '=', 'action_relationship.id_student')
@@ -37,7 +37,7 @@ class AttendanceController extends Controller
         // ->orderby('profiles.last_name', 'asc')
         // ->orderby('profiles.first_name', 'asc')
         ->orderby('students.id_student', 'asc')
-        ->select('students.*', 'action_relationship.status', 'action_relationship.note')
+        ->select('students.*', 'action_relationship.status', 'action_relationship.note', 'action_relationship.point')
         ->get();
         return view('client.attendance.attendance', ['students' => $students, 'action' => $action]);
     }
@@ -79,14 +79,16 @@ class AttendanceController extends Controller
         }
 
         $AR = $AR[0];
-
+        $point = 0;
         $status = $AR->status;
         if ($status == 0) {
             $status = 1;
+            $point = 10;
             $k=1;
         }
         else {
             $status = 0;
+            $point = 0;
             $k=-1;
         }
 
@@ -98,13 +100,15 @@ class AttendanceController extends Controller
         if ($status == 0){
             $res["status"] = "Vắng";
             $res["class"] = "btn btn-danger";
+            $res['point'] = 0;
         } else {
             $res["status"] = "Có mặt";
             $res["class"] = "btn btn-success";
+            $res['point'] = 10;
         }
 
         echo json_encode($res);
-        ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status]);
+        ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status, 'point' => $point]);
         Action::where('id_action', $id_action)->update(['join' => $action->join + $k]);
         return;
 
@@ -133,6 +137,34 @@ class AttendanceController extends Controller
         ];
         return $res;
 
+    }
+
+    public function getPoint(Request $request, $id_action, $id_student)
+    {
+        $AR = ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get();
+        if (\count($AR) < 1){
+            $res = [
+                "status" => 0,
+                "message" => "Không tìm thấy sinh viên hoặc hoạt động nào.",
+            ];
+            return $res;
+        }
+
+        $AR =$AR->first();
+        if ($request->input('type') == "update") {
+            if ($AR->status == 0 && $AR->point > 0)
+            ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['point' => 0]); 
+            return ['point' => ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get()->first()->point];
+        }
+        $point = $request->input('point');
+        ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['point' => $point]);
+
+        $res = [
+            "status" => 1,
+            "message" => "Lưu thành công.",
+            "point" => $point,
+        ];
+        return $res;
     }
 
 }

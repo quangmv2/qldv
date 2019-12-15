@@ -18,8 +18,8 @@
     </div>
     <div class="col-sm-8" style="padding: 0">
         <p class="m-auto">Xin chào,</p>
-        <h5 style="color: white">@if (session('account'))
-          {{ session('account')->name }}
+        <h5 style="color: white">@if (Auth::check())
+          {{ Auth::user()->profile->first_name." ".Auth::user()->profile->last_name }}
       @endif</h5>
     </div>
   </div>
@@ -29,7 +29,7 @@
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item active">
-    <a class="nav-link" href="">
+    <a class="nav-link" href="http://sict.udn.vn/">
       <i class="fas fa-fw fa-home"></i>
       <span>Trang chủ</span></a>
   </li>
@@ -64,7 +64,7 @@
       <span>Điểm danh</span>
     </a>
   </li>
-  @if (session('account')->position <= 5)
+  @if (Auth::check() && Auth::user()->profile->student->id_position != 6)
     <li class="nav-item">
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse">
         <i class="fas fa-fw fa-cog"></i>

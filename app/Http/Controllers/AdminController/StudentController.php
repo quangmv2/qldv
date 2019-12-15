@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 use App\Classs;
 use App\Student;
@@ -135,7 +136,6 @@ class StudentController extends Controller
         $class = $class->first();
         $arr = Excel::toArray(new UsersImport, $request->file('file'))[0];
         
-        
         foreach ($arr as $key => $value) {
             $student = Student::where('id_student', $value[1])->get();
             if (count($student) > 0) continue;
@@ -145,10 +145,14 @@ class StudentController extends Controller
             $user->password =  password_hash(1, PASSWORD_BCRYPT);
             $user->type = 0;
             $user->save();
-
+            $birthdays = \explode('-', $value[4]);
+            if (count($birthdays) == 1) $birthdays = \explode('/', $value[4]);
+            if (count($birthdays) == 1) $birthdays = \explode('\\', $value[4]);
+            $birthday = $birthdays[2]."-".$birthdays[1]."-".$birthdays[0];
             $profile = new Profile;
             $profile->first_name = $value[2];
             $profile->last_name = $value[3];
+            $profile->birthday = $birthday;
             $profile->email = $email;
             $profile->save();
             

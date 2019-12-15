@@ -1,8 +1,15 @@
 @extends('client.index')
+@section('script')
+<script src="{{ asset('assets/js/danhgia.js') }}"></script>
+<script type="text/javascript">
+    tinhDiem()
+</script>
+@endsection
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-lg-12 col-md-12">
+            <h1 style="text-align: center">{{ $students[$index]->first_name." ".$students[$index]->last_name }}</h1>
             <form action="{{ route('test') }}" method="POST" id="idForm">
                 <table class="table table-bordered">
                     <thead>
@@ -326,7 +333,13 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td></td>
+                            <td style="text-align: center"><button type="button" class="btn btn-danger"
+                                @if ($index == count($students)-1)
+                                disabled
+                            @else 
+                                onclick="location = '{{ route('getDanhGia', ['id_dot' => $students[0]->id_dot, 'id_detail'=> $students[$index + 1]->id_point, 'name' => tenKhongDau( $students[$index + 1]->first_name . ' ' . $students[$index + 1]->last_name ),'id_student' => $students[$index  + 1]->id_student]) }}?type=dismis'"
+                            @endif   
+                            >Bỏ qua</button></td>
                             <td style="text-align: center"><button type="submit" class="btn btn-success">Submit</button></td>
                         </tr>
                     </tbody>
@@ -354,8 +367,4 @@
         
     </div>
 </div>
-
-<script type="text/javascript">
-    tinhDiem()
-</script>
 @endsection

@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('test', function () {
-    createAccountLogin('mvquang.18it5@sict.udn.vn');
-});
-
 Route::get('login', function() {
     return view('client.login');
 })->name('getLogin');
@@ -37,10 +33,6 @@ Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback")
 
 Route::get('excel', "ExcelController@export")->name('export');
 
-Route::post('testFrom', function () {
-    return $_POST['name'];
-})->name('test');
-
 Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('/', function () {
@@ -50,6 +42,9 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
     Route::get('sv', function () {
         return view('client.login');
     });
+
+    Route::post('profile',"ClientController\ProfileController@index")->name('edit_profile');
+    Route::get('profile',"ClientController\ProfileController@getProfile")->name('get_profile');
 
     Route::get('hoat-dong-moi', "ClientController\ActionController@getNewAction")->name('newActionList');
 
@@ -82,6 +77,10 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
             Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
 
+            Route::get('download/{id_dot}', "ClientController\DotXetDiemController@downloadDotPDF")->name('downDot');
+
+            Route::get('note/{id_dot}/{id_student}', "ClientController\DotXetDiemController@getNote")->name('getDotNote');
+
             Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
 
             Route::get('/download/pdf/{id_student}_{id_dot}', "ClientController\PointController@downloadPointPDF")->name('downloadPointPDF');
@@ -103,6 +102,8 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
         Route::get('{id}', "ClientController\AttendanceController@getAttendance")->name('attendance');
 
         Route::post('note/{id_action}/{id_student}', "ClientController\AttendanceController@postAttendanceNote")->name('note_attendance');
+
+        Route::get('{id_action}/point/{id_student}', "ClientController\AttendanceController@getPoint");
 
         Route::get('{id_action}/{id_student}', "ClientController\AttendanceController@postApiAttendance");
 
@@ -155,14 +156,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('add-excel', "AdminController\StudentController@postAddExcel");
 
         Route::get('ajaxList', "AdminController\StudentController@getListAjax")->name('ajaxStudentList');
-
-    });
-
-    Route::group(['prefix' => 'critera'], function () {
-
-        Route::get('add', "AdminController\CriteriaController@getAdd")->name('adminAddCriteria');
-
-        Route::post('add', "AdminController\CriteriaController@postAdd");
 
     });
 

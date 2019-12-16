@@ -10,10 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('login', function() {
-    return view('client.login');
-})->name('getLogin');
+Auth::routes([
+    'register' => false,
+    'reset' => false, 
+    'verify' => false, 
+  ]);
 
 Route::get('/point/{id}', function ($id) {
     $rd = rand(0, 4);
@@ -27,9 +28,9 @@ Route::get('/point/{id}', function ($id) {
 
 Route::get('logout', "LoginController@logout")->name('logout');
 
-Route::get('auth/{provider}', "LoginController@redirectToProvider")->name('loginGG');
+Route::get('auth/{provider}', "Auth\LoginController@redirectToProvider")->name('loginGG');
 
-Route::get('auth/{provider}/callback', "LoginController@handleProviderCallback");
+Route::get('auth/{provider}/callback', "Auth\LoginController@handleProviderCallback");
 
 Route::get('excel', "ExcelController@export")->name('export');
 
@@ -73,29 +74,30 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
         Route::group(['prefix' => 'danh-sach-dot'], function () {
 
-            Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('danh_sach_dot');
+            Route::group(['middleware' => ['positionMiddleware']], function () {
+                Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('danh_sach_dot');
 
-            Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
+                Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
 
-            Route::get('download/{id_dot}', "ClientController\DotXetDiemController@downloadDotPDF")->name('downDot');
+                Route::get('note/{id_dot}/{id_student}', "ClientController\DotXetDiemController@getNote")->name('getDotNote');
 
-            Route::get('note/{id_dot}/{id_student}', "ClientController\DotXetDiemController@getNote")->name('getDotNote');
+                Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
 
-            Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
+                Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
 
+                Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
+
+                Route::get('download/{id_dot}', "ClientController\DotXetDiemController@downloadDotPDF")->name('downDot');
+
+            });
             Route::get('/download/pdf/{id_student}_{id_dot}', "ClientController\PointController@downloadPointPDF")->name('downloadPointPDF');
-
-            Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
-
-            Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
-
         });
 
 
 
     });
 
-    Route::group(['prefix' => 'diem-danh'], function () {
+    Route::group(['prefix' => 'diem-danh', 'middleware' => 'positionMiddleware'], function () {
 
         Route::get('/', "ClientController\AttendanceController@getList")->name('attendanceList');
 
@@ -109,7 +111,7 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
     });
 
-    Route::group(['prefix' => 'hoat-dong'], function () {
+    Route::group(['prefix' => 'hoat-dong', 'middleware' => 'positionMiddleware'], function () {
 
         Route::get('danh-sach', "ClientController\ActionController@getList")->name("actionList");
 
@@ -160,6 +162,12 @@ Route::group(['prefix' => 'admin'], function () {
     });
 
 });
-// Auth::routes();
 
-// Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('home', function () {
+    return redirect()->route('newActionList');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

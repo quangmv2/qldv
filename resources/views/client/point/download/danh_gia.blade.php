@@ -96,7 +96,7 @@
         <div class="row">
 
             <div class="col-sm-12 col-lg-12 col-md-12">
-                <form action="{{ route('test') }}" method="POST" id="idForm">
+                <form action="" method="POST" id="idForm">
                     <table class="table table-bordered">
                         <thead>
                             <tr>

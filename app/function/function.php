@@ -219,4 +219,12 @@ function createAccountLogin($users)
 
 }
 
+use Illuminate\Support\Facades\Auth;
+
+function isAuth()
+{
+    if (Auth::check() && Auth::user()->profile->student->id_position <= 5) return 1;
+    return 0;
+}
+
 ?>

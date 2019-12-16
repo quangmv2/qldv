@@ -21,6 +21,38 @@ class PointController extends ClientController
 {
 
     function getDanhGia(Request $request, $id_dot, $id_detail,  $name, $id_student){
+        if ($request->input('type') == 'dismis') {
+            $arr_update = [
+                "p1a" => 0,
+                "p1b1" => 0,
+                "p1b2" => 0,
+                "p1c" => 0,
+                "p1d" => 0,
+                "p1dd" => 0,
+                "p2a1" => 0,
+                "p2a2" => 0,
+                "p2b1" => 0,
+                "p2b2" => 0,
+                "p2b3" => 0,
+                "p3a1" => 0,
+                "p3a2" => 0,
+                "p3b1" => 0,
+                "p3b2" => 0,
+                "p3b3" => 0,
+                "p3c" => 0,
+                "p4a1" => 0,
+                "p4a2" => 0,
+                "p4a3" => 0,
+                "p4b" => 0,
+                "p4c" => 0,
+                "confirm" => 0,
+                "total" => 0,
+                "note" => "Nghỉ học",
+            ];
+            $id = $request->input('id');
+            Point::where('id_point', $id)->update($arr_update);
+            return \redirect()->route('getDanhGia', ['id_dot' => $id_dot, 'id_detail'=> $id_detail, 'name' => $name, 'id_student' => $id_student]);
+        }
         $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
         if (empty($dot)){
             return redirect()->route('danh_sach_dot')->with('myErrors', "Đợt xét điểm không tồn tại");

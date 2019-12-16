@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 /*
  * CKFinder Configuration File
  *
@@ -25,9 +26,12 @@ $config = array();
 /*============================ Enable PHP Connector HERE ==============================*/
 // https://ckeditor.com/docs/ckfinder/ckfinder3-php/configuration.html#configuration_options_authentication
 
-$config['authentication'] = function () {
+// use Illuminate\Support\Facades\Auth;
 
-    return false;
+$config['authentication'] = function ()
+{
+    // if (Auth::check() && Auth::user()->profile->student->id_position <= 5) return true;
+    return true;
 };
 
 /*============================ License Key ============================================*/

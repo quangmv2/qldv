@@ -1,16 +1,13 @@
 @extends('client.index')
 @section('script')
 <script src="{{ asset('assets/js/danhgia.js') }}"></script>
-<script type="text/javascript">
-    tinhDiem()
-</script>
 @endsection
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-lg-12 col-md-12">
             <h1 style="text-align: center">{{ $students[$index]->first_name." ".$students[$index]->last_name }}</h1>
-            <form action="{{ route('test') }}" method="POST" id="idForm">
+            <form action="" method="POST" id="idForm">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -332,12 +329,12 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td></td>
+                            <td><button type="button" class="btn btn-success" id="rd">Random</button></td>
                             <td style="text-align: center"><button type="button" class="btn btn-danger"
                                 @if ($index == count($students)-1)
                                 disabled
                             @else 
-                                onclick="location = '{{ route('getDanhGia', ['id_dot' => $students[0]->id_dot, 'id_detail'=> $students[$index + 1]->id_point, 'name' => tenKhongDau( $students[$index + 1]->first_name . ' ' . $students[$index + 1]->last_name ),'id_student' => $students[$index  + 1]->id_student]) }}?type=dismis'"
+                                onclick="location = '{{ route('getDanhGia', ['id_dot' => $students[0]->id_dot, 'id_detail'=> $students[$index + 1]->id_point, 'name' => tenKhongDau( $students[$index + 1]->first_name . ' ' . $students[$index + 1]->last_name ),'id_student' => $students[$index  + 1]->id_student]) }}?type=dismis&id={{$my_point->id_point}}'"
                             @endif   
                             >Bỏ qua</button></td>
                             <td style="text-align: center"><button type="submit" class="btn btn-success">Submit</button></td>
@@ -356,7 +353,7 @@
             @endif
             
             >Previous</button>
-            <button class="btn btn-success" style="float: right"
+            <button class="btn btn-success" style="float: right" id="nextBTN"
             @if ($index == count($students)-1)
                 disabled
             @else 
@@ -367,4 +364,86 @@
         
     </div>
 </div>
+{{-- @if ($my_point->total  == 67)
+<script type="text/javascript">
+
+    function renderType(type, point) {  
+        switch (type) {
+            case 0:
+                if (point >= 90) return true;
+                break;
+            case 1:
+                if (point < 90 && point >=80) return true;
+                break;
+            case 2:
+                if (point < 80 && point >= 65) return true;
+                break;
+            case 3:
+                if (point < 65 && point >= 50) return true;
+                break;
+            case 4:
+                if (point < 50 && point >= 40) return true;
+                break;
+            case 5:
+                if (point < 40) return true;
+                break;
+        }
+        return false;
+    }
+    async function autord() {  
+        var type = getRndInteger(0, 1);
+        var count = 0;
+        do{
+            count++;
+            $("#idForm :input").each(function(){
+                if (!($(this).attr('disabled') === undefined)) return;
+                var rd = getRndInteger(this.min, this.max)
+                $(this).val(rd)
+            });
+            console.log(type +" " + tinhDiem())
+            console.log(renderType(type, tinhDiem()))
+            if (count == 1000) {
+                type = getRndInteger(0, 1);
+                count = 0;
+            }
+        } while(!renderType(type, tinhDiem()))
+
+        tinhDiem()
+        var form = $("#idForm");
+        var url = form.attr('action');
+        var method = form.attr('method');
+        var data = form.serialize();
+        axios({
+            method : method,
+            url : window.location.href,
+            data : data
+        })
+        .then((response) => {
+            console.log(response)
+            console.log(response.data.code)
+            data_temp = response
+            if (response.data.code == 200){
+                ajaxSuccess("Lưu thành công")
+            }
+        })
+        .catch((err) => {
+            console.log(err.response)
+            ajaxSuccess("Một ngoại lệ đã xảy ra, bảng điểm chưa được lưu lại. Vui lòng thử lại sau!");
+        })
+
+        setTimeout(() => {
+            $('#nextBTN').click()
+        }, 1);
+    }
+    autord();
+    
+</script>
+@else
+<script type="text/javascript">
+    $('#nextBTN').click()
+</script>
+@endif --}}
+<script type="text/javascript">
+    tinhDiem()
+</script>
 @endsection

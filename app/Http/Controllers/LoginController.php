@@ -58,7 +58,8 @@ class LoginController extends Controller
     {
         $request->session()->forget('account');
         $request->session()->forget('nextRequest');
+        $request->session()->forget('use_ck');
         Auth::logout();
-        return \redirect()->route('getLogin');
+        return  \redirect()->guest('login');
     }
 }

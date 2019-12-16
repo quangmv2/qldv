@@ -33,4 +33,5 @@ function tinhDiem() {
     $('#total').html(total)
     $('#sum').html('Điểm rèn luyện (sau khi thông qua tập thể lớp và giảng viên chủ nhiệm/cố vấn học tập): ' + total)
     $('#danhgia').html('Xếp loại kết quả rèn luyện (sau khi thông qua tập thể và giảng viên chủ nhiệm/cố vấn học tập): '+ danhGia(total))
+    return Number(total);
 }

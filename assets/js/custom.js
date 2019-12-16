@@ -374,3 +374,8 @@ jQuery(document).ready(function ($) {
         })
     });  
 });
+function getRndInteger(min, max) {
+    var k = max - min + 1;
+
+    return Math.floor(Math.random() * k) + min/10;
+}

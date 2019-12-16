@@ -16,18 +16,6 @@ jQuery(document).ready(function ($) {
     });
 })
 
-function formatP() {  
-    $("#idForm :input").each(function(){
-        console.log(isNaN(this.value) + " " + this.max)
-        this.required = true
-        if (isNaN(this.value)) {
-            $(this).val('')
-            $(this).val(Number(0))
-        }
-    })
-    
-}
-
 function tinhDiem() {
     //duyệt các input trong form kiểm tra validate dữ liệu
     total = 0;

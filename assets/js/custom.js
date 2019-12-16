@@ -89,7 +89,7 @@ function callServer(page) {
     //Get dữ liệu phân trang ajax cho mọi phân trang
     loadBegin()
     if (page == null) page = 1;
-    console.log(window.location.href)
+    // console.log(window.location.href)
     $.ajax({
         url: window.location.href,
         type: 'GET',
@@ -379,4 +379,15 @@ function getRndInteger(min, max) {
     var k = max - min + 1;
 
     return Math.floor(Math.random() * k) + min/10;
+}
+function formatP() {  
+    $("#idForm :input").each(function(){
+        console.log(isNaN(this.value) + " " + this.max)
+        this.required = true
+        if (isNaN(this.value)) {
+            $(this).val('')
+            $(this).val(Number(0))
+        }
+    })
+    
 }

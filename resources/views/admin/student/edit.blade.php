@@ -85,7 +85,7 @@
 
                             <label>Số điện thoại</label>
 
-                            <input type="text" name="phone_number" value="{{$student->profile->phone_number}}" class="form-control" placeholder="Số điện thoại" required>
+                            <input type="text" name="phone_number" value="{{$student->profile->phone_number}}" class="form-control" placeholder="Số điện thoại" >
 
                         </div>
 
@@ -93,7 +93,7 @@
 
                             <label>Địa chỉ</label>
 
-                            <input type="text" name="address" value="{{$student->profile->address}}" class="form-control" placeholder="Địa chỉ" required>
+                            <input type="text" name="address" value="{{$student->profile->address}}" class="form-control" placeholder="Địa chỉ" >
 
                         </div>
 

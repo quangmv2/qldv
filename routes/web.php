@@ -37,11 +37,7 @@ Route::get('excel', "ExcelController@export")->name('export');
 Route::group(['middleware' => 'studentMiddleware'], function () {
 
     Route::get('/', function () {
-        return view('client.index');
-    });
-
-    Route::get('sv', function () {
-        return view('client.login');
+        return redirect()->route('newActionList');
     });
 
     Route::post('profile',"ClientController\ProfileController@index")->name('edit_profile');

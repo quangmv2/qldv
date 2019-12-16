@@ -62,7 +62,7 @@
                             <td>Họ tên sinh viên</td>
                             <td>Email</td>
                             <td>Ngày sinh</td>
-                            <td>Địa chỉ</td>
+                            <td>Chức vụ</td>
                             <td>Lớp</td>
                             <td>Xóa</td>
                         </tr>
@@ -75,7 +75,7 @@
                                 <td> {{ $value->profile->first_name." ".$value->profile->last_name }} </td>
                                 <td> {{ $value->profile->email }} </td>
                                 <td> {{ \Carbon\Carbon::parse($value->profile->birthday)->format('d-m-Y') }} </td>
-                                <td> {{ $value->profile->address }} </td>
+                                <td> {{ $value->position->name }} </td>
                                 <td> {{ $value->classs->id_class }} </td>
                                 <td> <a href="{{ route('editStudent', ['id_student' => $value->id_student]) }}">Edit</a> </td>
                             </tr>

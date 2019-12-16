@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon-32x32.png') }}">
   <title>Bảng thống kê kết quả rèn luyện {{ $dot->id_class }} - Học kỳ: {{ hocKy($dot->hoc_ki) }} - Năm học: {{ $dot->nam_hoc }} </title>
 
   <!-- Custom fonts for this template-->

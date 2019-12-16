@@ -174,14 +174,14 @@
                                 </td>
                                 <td style="text-align: center">06</td>
                                 <td style="text-align: center">{{ $my_temp_point->p1dd }}</td>
-                                <td></td>
+                                <td style="text-align: center" style="text-align: center" style="text-align: center" style="text-align: center">{{ $my_point->p1dd }}</td>
                             </tr>
                             <tr>
                                 <td>
                                         -	Điểm TBCHK từ 3,6 đến 4,0
                                 </td>
                                 <td style="text-align: center">06</td>
-                                <td></td>
+                                <td style="text-align: center" style="text-align: center" style="text-align: center">{{ $my_temp_point->p1dd>=3.6 ? 6 : '' }}</td>
                                 <td style="text-align: center">{{ $my_point->p1dd>=3.6 ? 6 : '' }}</td>
                             </tr>
                             <tr>
@@ -189,7 +189,7 @@
                                         -	Điểm TBCHK từ 3,2 đến 3,59 
                                 </td>
                                 <td style="text-align: center">05</td>
-                                <td></td>
+                                <td style="text-align: center" style="text-align: center">{{ $my_temp_point->p1dd>=3.2 && $my_temp_point->p1dd <= 3.59 ? 5 : '' }}</td>
                                 <td style="text-align: center">{{ $my_point->p1dd>=3.2 && $my_point->p1dd <= 3.59 ? 5 : '' }}</td>
                             </tr>
                             <tr>
@@ -197,7 +197,7 @@
                                         -	Điểm TBCHK 2,5 đến 3,19  
                                 </td>
                                 <td style="text-align: center">03</td>
-                                <td></td>
+                                <td style="text-align: center">{{ $my_temp_point->p1dd>=2.5 && $my_temp_point->p1dd <= 3.19 ? 3 : '' }}</td>
                                 <td style="text-align: center">{{ $my_point->p1dd>=2.5 && $my_point->p1dd <= 3.19 ? 3 : '' }}</td>
                             </tr>
                             <tr>
@@ -205,7 +205,7 @@
                                         -	Điểm TBCHK 2,0 đến 2,49  
                                 </td>
                                 <td style="text-align: center">02</td>
-                                <td></td>
+                                <td style="text-align: center">{{ $my_temp_point->p1dd>=2 && $my_temp_point->p1dd <= 2.49 ? 2 : '' }}</td>
                                 <td style="text-align: center">{{ $my_point->p1dd>=2 && $my_point->p1dd <= 2.49 ? 2 : '' }}</td>
                             </tr>
                             <tr>
@@ -213,7 +213,7 @@
                                         -	Điểm TBCHK dưới 2,0
                                 </td>
                                 <td style="text-align: center">0</td>
-                                <td></td>
+                                <td style="text-align: center">{{ $my_temp_point->p1dd<2 ? 0 : '' }}</td>
                                 <td style="text-align: center">{{ $my_point->p1dd<2 ? 0 : '' }}</td>
                             </tr>
                             <tr>

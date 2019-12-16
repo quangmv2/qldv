@@ -20,6 +20,45 @@ class DotXetDiemController extends ClientController
 {
     function getAdd(Request $request)
     {
+
+
+        // $point = MyPoint::all();
+        // foreach ($point as $key => $item) {
+        //     $value = Point::where('id_student', $item->id_student)->where('id_dot', $item->id_dot)->get()->first();
+        //     $arr_update = [
+        //         "p1a" => $value->p1a,
+        //         "p1b1" => $value->p1b1,
+        //         "p1b2" => $value->p1b2,
+        //         "p1c" => $value->p1c,
+        //         "p1d" => $value->p1d,
+        //         "p1dd" => $value->p1dd,
+        //         "p2a1" => $value->p2a1,
+        //         "p2a2" => $value->p2a2,
+        //         "p2b1" => $value->p2b1,
+        //         "p2b2" => $value->p2b2,
+        //         "p2b3" => $value->p2b3,
+        //         "p3a1" => $value->p3a1,
+        //         "p3a2" => $value->p3a2,
+        //         "p3b1" => $value->p3b1,
+        //         "p3b2" => $value->p3b2,
+        //         "p3b3" => $value->p3b3,
+        //         "p3c" => $value->p3c,
+        //         "p4a1" => $value->p4a1,
+        //         "p4a2" => $value->p4a2,
+        //         "p4a3" => $value->p4a3,
+        //         "p4b" => $value->p4b,
+        //         "p4c" => $value->p4c,
+        //         "confirm" => $value->confirm,
+        //         "total" => $value->total,
+        //     ];
+
+        //     MyPoint::where('id_student', $item->id_student)->where('id_dot', $item->id_dot)->update($arr_update);
+
+        // }
+        // return [
+        //     "stt" => "success",
+        // ];
+
         $id_student = $request->session()->get('account')->id_student;
         $student = Student::where('id_student', $id_student)->get()[0];
         $year = SchoolYear::all();
@@ -121,7 +160,7 @@ class DotXetDiemController extends ClientController
             $list[$index]['kha'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 65)->where('total','<', 80)->count('total');
             $list[$index]['trung_binh'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 50)->where('total','<', 65)->count('total');
             $list[$index]['yeu'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 35)->where('total','<', 50)->count('total');
-            $list[$index]['kem'] = Point::where('id_dot', $value->id_dot_xet)->where('total','<', 35)->count('total');
+            $list[$index]['kem'] = Point::where('id_dot', $value->id_dot_xet)->where('confirm', 1)->where('total','<', 35)->count('total');
         }
         if ($request->input('type') == 'ajax') {
             return view('client.point.ajax.danh_sach_dot', ['list' => $list]);
@@ -139,10 +178,11 @@ class DotXetDiemController extends ClientController
         ->orderby('students.id_student')
         ->select('*')
         ->get();
+        $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
 
         // return $students->tojson();
 
-        return view('client.point.list_sinh_vien_dot',["students" => $students, 'id_dot' => $id_dot]);
+        return view('client.point.list_sinh_vien_dot',["students" => $students, 'id_dot' => $id_dot, 'dot' => $dot]);
     }
 
     public function delete(Request $request, $id_dot){
@@ -185,7 +225,7 @@ class DotXetDiemController extends ClientController
             'count' => $count,
             'result' => $list,
         ])->setPaper('a4');
-        return $pdf->download($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
+        return $pdf->stream($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
     }
 
     public function getNote(Request $request, $id_dot, $id_student)

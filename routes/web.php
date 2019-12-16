@@ -125,7 +125,7 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
 });
 // , 'middleware' => 'adminMiddleware'
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function () {
 
     Route::get('/', function () {
         return view('admin.index');
@@ -159,6 +159,10 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('ajaxList', "AdminController\StudentController@getListAjax")->name('ajaxStudentList');
 
+        Route::get('edit/{id_student}', "AdminController\StudentController@getEdit")->name('editStudent');
+
+        Route::post('edit/{id_student}', "AdminController\StudentController@postEdit");
+
     });
 
 });
@@ -167,7 +171,3 @@ Route::group(['prefix' => 'admin'], function () {
 Route::get('home', function () {
     return redirect()->route('newActionList');
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

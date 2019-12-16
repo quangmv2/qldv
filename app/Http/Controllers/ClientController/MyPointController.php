@@ -94,7 +94,7 @@ class MyPointController extends ClientController
         ->where('id_student', $id_student)
         ->get()->first();
 
-        return view('client.my_point.tu_danh_gia', ['my_point' => $my_point, 'my_temp_point' => $my_temp_point]);
+        return view('client.my_point.tu_danh_gia', ['my_point' => $my_point, 'my_temp_point' => $my_temp_point, 'dot' => $dot]);
     }
 
     function postDanhGia(PointRequest $request, $id_dot){

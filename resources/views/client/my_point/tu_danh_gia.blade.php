@@ -1,15 +1,14 @@
 @extends('client.index')
+@section('title')Học kì {{$dot->hoc_ki}} Năm học {{$dot->nam_hoc}} @endsection
 @section('script')
 <script src="{{ asset('assets/js/danhgia.js') }}"></script>
-<script type="text/javascript">
-    tinhDiem()
-</script>
 @endsection
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 col-lg-12 col-md-12">
-            <form action="{{ route('test') }}" method="POST" id="idForm">
+            <h1 style="text-align: center">Học kì {{$dot->hoc_ki}} Năm học {{$dot->nam_hoc}}</h1>
+            <form action="" method="POST" id="idForm">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -91,7 +90,7 @@
                             </td>
                             <td style="text-align: center">06</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=3.6 ? 6 : '' }}" disabled></td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_point->p1dd>=3.6 ? 6 : '' }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -99,7 +98,7 @@
                             </td>
                             <td style="text-align: center">05</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=3.2 && $my_point->p1dd <= 3.59 ? 5 : '' }}" disabled></td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_point->p1dd>=3.2 && $my_point->p1dd <= 3.59 ? 5 : '' }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -107,7 +106,7 @@
                             </td>
                             <td style="text-align: center">03</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=2.5 && $my_point->p1dd <= 3.19 ? 3 : '' }}" disabled></td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_point->p1dd>=2.5 && $my_point->p1dd <= 3.19 ? 3 : '' }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -115,7 +114,7 @@
                             </td>
                             <td style="text-align: center">02</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=2 && $my_point->p1dd <= 2.49 ? 2 : '' }}" disabled></td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_point->p1dd>=2 && $my_point->p1dd <= 2.49 ? 2 : '' }}</td>
                         </tr>
                         <tr>
                             <td>
@@ -123,7 +122,7 @@
                             </td>
                             <td style="text-align: center">0</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd<2 ? 0 : '' }}" disabled></td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_point->p1dd<2 ? 0 : '' }}</td>
                         </tr>
                         <tr>
                             <th>
@@ -146,7 +145,7 @@
                                     -	Có ý thức chấp hành các quy định của pháp luật đối với công dân, các văn bản chỉ đạo của Bộ, ngành, của cơ quan quản lý thực hiện trong Nhà trường (Vi phạm 01 lần bị trừ 02 điểm, từ lần vi phạm thứ hai trở đi bị trừ hết số điểm còn lại của tiêu chí).
                             </td>
                             <td style="text-align: center">06</td>
-                            <td><input type="number" class="form-control" min="0" max="6" name="p2a1" value=" {{ $my_temp_point->p2a1 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="6" name="p2a1" value="{{ $my_temp_point->p2a1 }}"></td>
                             <td style="text-align: center">{{ $my_point->p2a1 != 0 && $my_point->p2a1 == null ? 'Chưa đánh giá' : $my_point->p2a1 }}</td>
                         </tr>
                         <tr>
@@ -154,7 +153,7 @@
                                     -	Có ý thức tham gia đầy đủ, đạt yêu cầu các cuộc vận động, sinh hoạt chính trị theo chủ trương, của cấp trên, ĐHĐN và Nhà trường (Không tham gia 01 lần hoặc vi phạm quy định của các cuộc vận động bị trừ 01 điểm, từ lần vi phạm thứ hai trở đi bị trừ hết số điểm còn lại của tiêu chí).
                             </td>
                             <td style="text-align: center">04</td>
-                            <td><input type="number" class="form-control" min="0" max="4" name="p2a2" value=" {{ $my_temp_point->p2a2 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="4" name="p2a2" value="{{ $my_temp_point->p2a2 }}"></td>
                             <td style="text-align: center">{{$my_point->p2a2 != 0 && $my_point->p2a2 == null ? 'Chưa đánh giá' : $my_point->p2a2}}</td>
                         </tr>
                         <tr>
@@ -170,7 +169,7 @@
                                     -	Có ý thức chấp hành nội quy, quy chế và các quy định của Nhà trường (Vi phạm 01 lần bị trừ 02 điểm, từ lần vi phạm thứ ba trở đi bị trừ hết số điểm còn lại của tiêu chí.)
                             </td>
                             <td style="text-align: center">05</td>
-                            <td><input type="number" class="form-control" min="0" max="5" name="p2b1" value=" {{ $my_temp_point->p2b1 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="5" name="p2b1" value="{{ $my_temp_point->p2b1 }}"></td>
                             <td style="text-align: center">{{$my_point->p2b1 != 0 && $my_point->p2b1 == null ? 'Chưa đánh giá' : $my_point->p2b1 }}</td>
                         </tr>
                         <tr>
@@ -178,7 +177,7 @@
                                     -	Có ý thức chấp hành quy định về đóng học phí (Đóng học phí trễ hạn (không có phép) bị trừ 03 điểm, học phí trễ hạn (có phép) bị trừ 01 điểm; không đóng học phí bị trừ hết số điểm được cộng của tiêu chí).
                             </td>
                             <td style="text-align: center">05</td>
-                            <td><input type="number" class="form-control" min="0" max="5" name="p2b2" value=" {{ $my_temp_point->p2b2 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="5" name="p2b2" value="{{ $my_temp_point->p2b2 }}"></td>
                             <td style="text-align: center">{{$my_point->p2b2 != 0 && $my_point->p2b2 == null ? 'Chưa đánh giá' : $my_point->p2b2 }}</td>
                         </tr>
                         <tr>
@@ -186,7 +185,7 @@
                                     -	Có tham gia bảo hiểm y tế (bắt buộc) theo Luật bảo hiểm y tế  (Không tham gia bảo hiểm y tế (bắt buộc) bị trừ 05 điểm).
                             </td>
                             <td style="text-align: center">05</td>
-                            <td><input type="number" class="form-control" min="0" max="5" name="p2b3" value=" {{ $my_temp_point->p2b3 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="5" name="p2b3" value="{{ $my_temp_point->p2b3 }}"></td>
                             <td style="text-align: center">{{$my_point->p2b3 != 0 && $my_point->p2b3 == null ? 'Chưa đánh giá' : $my_point->p2b3 }}</td>
                         </tr>
                         <tr>
@@ -211,7 +210,7 @@
                                     (Vắng 01 lần (không có phép) bị trừ 02 điểm; Tham gia nhưng kết quả không đạt thì phải học lại và bị trừ 04 điểm; Không tham gia thì phải học lại và bị trừ 10 điểm)
                             </td>
                             <td style="text-align: center">10</td>
-                            <td><input type="number" class="form-control" min="0" max="10" name="p3a1" value=" {{ $my_temp_point->p3a1 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="10" name="p3a1" value="{{ $my_temp_point->p3a1 }}"></td>
                             <td style="text-align: center">{{$my_point->p3a1 != 0 && $my_point->p3a1 == null ? 'Chưa đánh giá' : $my_point->p3a1 }}</td>
                         </tr>
                         <tr>
@@ -220,7 +219,7 @@
                                     (Vắng 01 lần (không có phép) bị trừ 02 điểm)
                             </td>
                             <td style="text-align: center">05</td>
-                            <td><input type="number" class="form-control" min="0" max="5" name="p3a2" value=" {{ $my_temp_point->p3a2 }} "></td>
+                            <td><input type="number" class="form-control" min="0" max="5" name="p3a2" value="{{ $my_temp_point->p3a2 }}"></td>
                             <td style="text-align: center">{{$my_point->p3a2 != 0 && $my_point->p3a2 == null ? 'Chưa đánh giá' : $my_point->p3a2 }}</td>
                         </tr>
                         <tr>
@@ -346,4 +345,7 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    tinhDiem()
+</script>
 @endsection

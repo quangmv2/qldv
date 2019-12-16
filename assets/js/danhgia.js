@@ -16,6 +16,18 @@ jQuery(document).ready(function ($) {
     });
 })
 
+function formatP() {  
+    $("#idForm :input").each(function(){
+        console.log(isNaN(this.value) + " " + this.max)
+        this.required = true
+        if (isNaN(this.value)) {
+            $(this).val('')
+            $(this).val(Number(0))
+        }
+    })
+    
+}
+
 function tinhDiem() {
     //duyệt các input trong form kiểm tra validate dữ liệu
     total = 0;
@@ -26,9 +38,10 @@ function tinhDiem() {
             } else{
                 $(this).css({borderColor : ''})
                 total+=Number(this.value)
-            }
-            
+            }  
         }
+        this.title = "Điểm không bé hơn " + this.min + " và không lớn hơn " + this.max
+        console.log("Điểm không bé hơn " + this.min + " và không lớn hơn " + this.max)
     });
     $('#total').html(total)
     $('#sum').html('Điểm rèn luyện (sau khi thông qua tập thể lớp và giảng viên chủ nhiệm/cố vấn học tập): ' + total)

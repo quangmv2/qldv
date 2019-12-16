@@ -283,6 +283,7 @@ function ajaxSuccess(err) {
 jQuery(document).ready(function($) {
 
     loadEnd()
+    formatP()
     //submit form chi tiết điểm rèn luyện
     $("#idForm").submit(function(e) {
 

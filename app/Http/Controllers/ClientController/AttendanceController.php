@@ -14,7 +14,7 @@ class AttendanceController extends ClientController
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->paginate(20);
+        $actions = Action::where("id_class", $id_class)->orderby('time', 'desc')->paginate(20);
         if ($request->input('type') == 'ajax') return view('client.attendance.ajax.list', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.attendance.list', ["actions" => $actions]);
     }

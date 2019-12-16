@@ -160,13 +160,27 @@ class StudentController extends Controller
             $student->id_profile = $profile->id;
             $student->id_student = $value[1];
             $student->id_class = $class->id_class;
-            $student->id_position = 1;
+            $student->id_position = 6;
             $student->save();
         }
 
         return redirect()->route('adminListStudent')->with('notification', "Thêm thành công danh sách sinh viên.");
 
-        
+    }
+
+    function getEdit(Request $request, $id_student)
+    {
+        $class = Classs::all();
+        $positions = Position::all();
+        $student = Student::where('id_student', $id_student)->get()->first();
+        return view('admin.student.edit', ['class' => $class, 'positions' => $positions, 'student' => $student]);
+    }
+
+    public function postEdit(Request $request, $id_student)
+    {
+        $position = $request->input('position');
+        Student::where('id_student', $id_student)->update(['id_position' => $position]);
+        return \redirect()->back()->with('notification', "Cập nhật thành công sinh viên.");
     }
 
 }

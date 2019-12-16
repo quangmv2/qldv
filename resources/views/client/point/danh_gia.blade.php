@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title'){{ $students[$index]->first_name." ".$students[$index]->last_name }} @endsection
 @section('script')
 <script src="{{ asset('assets/js/danhgia.js') }}"></script>
 @endsection
@@ -31,7 +32,7 @@
                             <th style="text-align: center">
                                 10
                             </th>
-                            <td>{{ $my_temp_point->p1a == null ? 'Chưa đánh giá' : $my_temp_point->p1a }}</td>
+                            <td style="text-align: center">{{ renderKQ($my_temp_point->p1a) }}</td>
                             <td><input type="number" class="form-control" min="0" max="10" id="1a" name="p1a" value="{{ $my_point->p1a }}"></td>
                         </tr>
                         <tr>
@@ -47,7 +48,7 @@
                                     -	Có đăng ký và hoàn thành đề tài nghiên cứu khoa học đúng tiến độ
                             </td>
                             <td style="text-align: center">03</td>
-                            <td>{{$my_temp_point->p1b1 == null ? 'Chưa đánh giá' : $my_temp_point->p1b1 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p1b1) }}</td>
                             <td><input type="number" class="form-control" min="0" max="3" id="1b1" name="p1b1" value="{{ $my_point->p1b1 }}"></td>
                         </tr>
                         <tr>
@@ -55,7 +56,7 @@
                                     -	Có ý thức và tham gia các câu lạc bộ học thuật, các hoạt động học thuật, hoạt động ngoại khoá.
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p1b2 == null ? 'Chưa đánh giá' : $my_temp_point->p1b2 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p1b2)}}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="1b2" name="p1b2" value="{{ $my_point->p1b2 }}"></td>
                         </tr>
                         <tr>
@@ -64,7 +65,7 @@
                                     (Vi phạm 01 lần bị trừ 01 điểm, từ lần vi phạm thứ hai trở đi bị trừ hết số điểm còn lại của tiêu chí)
                             </td>
                             <td style="text-align: center">04</td>
-                            <td>{{$my_temp_point->p1c == null ? 'Chưa đánh giá' : $my_temp_point->p1c }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p1c)}}</td>
                             <td><input type="number" class="form-control" min="0" max="4" id="1c" name="p1c" value="{{ $my_point->p1c }}"></td>
                         </tr>
                         <tr>
@@ -72,7 +73,7 @@
                                     d) Tinh thần vượt khó, phấn đấu vươn lên trong học tập (Được tập thể lớp công nhận có tinh thần vượt khó, phấn đấu vươn lên trong học tập).
                             </td>
                             <td style="text-align: center">02</td>
-                            <td>{{$my_temp_point->p1d == null ? 'Chưa đánh giá' : $my_temp_point->p1d }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p1d)}}</td>
                             <td><input type="number" class="form-control" min="0" max="2" id="1d" name="p1d" value="{{ $my_point->p1d }}"></td>
                         </tr>
                         <tr>
@@ -80,15 +81,15 @@
                                     đ) Kết quả học tập.
                             </td>
                             <td style="text-align: center">06</td>
-                            <td>{{$my_temp_point->p1dd == null ? 'Chưa đánh giá' : $my_temp_point->p1dd }}</td>
-                            <td></td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p1dd) }}</td>
+                            <td style="text-align: center">{{renderKQ($my_point->p1dd)}}</td>
                         </tr>
                         <tr>
                             <td>
                                     -	Điểm TBCHK từ 3,6 đến 4,0
                             </td>
                             <td style="text-align: center">06</td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_temp_point->p1dd>=3.6 ? 6 : '' }}</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=3.6 ? 6 : '' }}" disabled></td>
                         </tr>
                         <tr>
@@ -96,7 +97,7 @@
                                     -	Điểm TBCHK từ 3,2 đến 3,59 
                             </td>
                             <td style="text-align: center">05</td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_temp_point->p1dd>=3.2 && $my_temp_point->p1dd <= 3.59 ? 5 : '' }}</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=3.2 && $my_point->p1dd <= 3.59 ? 5 : '' }}" disabled></td>
                         </tr>
                         <tr>
@@ -104,7 +105,7 @@
                                     -	Điểm TBCHK 2,5 đến 3,19  
                             </td>
                             <td style="text-align: center">03</td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_temp_point->p1dd>=2.5 && $my_temp_point->p1dd <= 3.19 ? 3 : '' }}</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=2.5 && $my_point->p1dd <= 3.19 ? 3 : '' }}" disabled></td>
                         </tr>
                         <tr>
@@ -112,7 +113,7 @@
                                     -	Điểm TBCHK 2,0 đến 2,49  
                             </td>
                             <td style="text-align: center">02</td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_temp_point->p1dd>=2 && $my_temp_point->p1dd <= 2.49 ? 2 : '' }}</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd>=2 && $my_point->p1dd <= 2.49 ? 2 : '' }}" disabled></td>
                         </tr>
                         <tr>
@@ -120,7 +121,7 @@
                                     -	Điểm TBCHK dưới 2,0
                             </td>
                             <td style="text-align: center">0</td>
-                            <td></td>
+                            <td style="text-align: center">{{ $my_temp_point->p1dd<2 ? 0 : '' }}</td>
                             <td><input type="number" class="form-control" min="0" max="6" value="{{ $my_point->p1dd<2 ? 0 : '' }}" disabled></td>
                         </tr>
                         <tr>
@@ -144,7 +145,7 @@
                                     -	Có ý thức chấp hành các quy định của pháp luật đối với công dân, các văn bản chỉ đạo của Bộ, ngành, của cơ quan quản lý thực hiện trong Nhà trường (Vi phạm 01 lần bị trừ 02 điểm, từ lần vi phạm thứ hai trở đi bị trừ hết số điểm còn lại của tiêu chí).
                             </td>
                             <td style="text-align: center">06</td>
-                            <td>{{$my_temp_point->p2a1 == null ? 'Chưa đánh giá' : $my_temp_point->p2a1 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p2a1)}}</td>
                             <td><input type="number" class="form-control" min="0" max="6" id="2a1" name="p2a1" value="{{ $my_point->p2a1 }}"></td>
                         </tr>
                         <tr>
@@ -152,7 +153,7 @@
                                     -	Có ý thức tham gia đầy đủ, đạt yêu cầu các cuộc vận động, sinh hoạt chính trị theo chủ trương, của cấp trên, ĐHĐN và Nhà trường (Không tham gia 01 lần hoặc vi phạm quy định của các cuộc vận động bị trừ 01 điểm, từ lần vi phạm thứ hai trở đi bị trừ hết số điểm còn lại của tiêu chí).
                             </td>
                             <td style="text-align: center">04</td>
-                            <td>{{$my_temp_point->p2a2 == null ? 'Chưa đánh giá' : $my_temp_point->p2a2}}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p2a2)}}</td>
                             <td><input type="number" class="form-control" min="0" max="4" id="2a2" name="p2a2" value="{{ $my_point->p2a2 }}"></td>
                         </tr>
                         <tr>
@@ -168,7 +169,7 @@
                                     -	Có ý thức chấp hành nội quy, quy chế và các quy định của Nhà trường (Vi phạm 01 lần bị trừ 02 điểm, từ lần vi phạm thứ ba trở đi bị trừ hết số điểm còn lại của tiêu chí.)
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p2b1 == null ? 'Chưa đánh giá' : $my_temp_point->p2b1 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p2b1)}}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="2b1" name="p2b1" value="{{ $my_point->p2b1 }}"></td>
                         </tr>
                         <tr>
@@ -176,7 +177,7 @@
                                     -	Có ý thức chấp hành quy định về đóng học phí (Đóng học phí trễ hạn (không có phép) bị trừ 03 điểm, học phí trễ hạn (có phép) bị trừ 01 điểm; không đóng học phí bị trừ hết số điểm được cộng của tiêu chí).
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p2b2 == null ? 'Chưa đánh giá' : $my_temp_point->p2b2 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p2b2)}}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="2b2" name="p2b2" value="{{ $my_point->p2b2 }}"></td>
                         </tr>
                         <tr>
@@ -184,7 +185,7 @@
                                     -	Có tham gia bảo hiểm y tế (bắt buộc) theo Luật bảo hiểm y tế  (Không tham gia bảo hiểm y tế (bắt buộc) bị trừ 05 điểm).
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p2b3 == null ? 'Chưa đánh giá' : $my_temp_point->p2b3 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p2b3)}}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="2b3" name="p2b3" value="{{ $my_point->p2b3 }}"></td>
                         </tr>
                         <tr>
@@ -209,7 +210,7 @@
                                     (Vắng 01 lần (không có phép) bị trừ 02 điểm; Tham gia nhưng kết quả không đạt thì phải học lại và bị trừ 04 điểm; Không tham gia thì phải học lại và bị trừ 10 điểm)
                             </td>
                             <td style="text-align: center">10</td>
-                            <td>{{$my_temp_point->p3a1 == null ? 'Chưa đánh giá' : $my_temp_point->p3a1 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p3a1)}}</td>
                             <td><input type="number" class="form-control" min="0" max="10" id="3a1" name="p3a1" value="{{ $my_point->p3a1 }}"></td>
                         </tr>
                         <tr>
@@ -218,7 +219,7 @@
                                     (Vắng 01 lần (không có phép) bị trừ 02 điểm)
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p3a2 == null ? 'Chưa đánh giá' : $my_temp_point->p3a2 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p3a2)}}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="3a2" name="p3a2" value="{{ $my_point->p3a2 }}"></td>
                         </tr>
                         <tr>
@@ -234,7 +235,7 @@
                                     -	Có ý thức tham gia các hoạt động công ích, tình nguyện, công tác xã hội trong nhà trường.
                             </td>
                             <td style="text-align: center">04</td>
-                            <td>{{$my_temp_point->p3b1 == null ? 'Chưa đánh giá' : $my_temp_point->p3b1 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p3b1) }}</td>
                             <td><input type="number" class="form-control" min="0" max="4" id="3b1" name="p3b1" value="{{ $my_point->p3b1 }}"></td>
                         </tr>
                         <tr>
@@ -242,7 +243,7 @@
                                     -	Có thành tích được ghi nhận, biểu dương, khen thưởng khi tham gia các hoạt động công ích, tình nguyện, công tác xã hội trong Nhà trường.
                             </td>
                             <td style="text-align: center">01</td>
-                            <td>{{$my_temp_point->p3b2 == null ? 'Chưa đánh giá' : $my_temp_point->p3b2 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p3b2) }}</td>
                             <td><input type="number" class="form-control" min="0" max="1" id="3b2" name="p3b2" value="{{ $my_point->p3b2 }}"></td>
                         </tr>
                         <tr>
@@ -250,7 +251,7 @@
                                     -	Có tinh thần chia sẻ, giúp đỡ người gặp khó khăn, hoạn nạn.
                             </td>
                             <td style="text-align: center">01</td>
-                            <td>{{$my_temp_point->p3b3 == null ? 'Chưa đánh giá' : $my_temp_point->p3b3 }}</td>
+                            <td style="text-align: center">{{ renderKQ($my_temp_point->p3b3) }}</td>
                             <td><input type="number" class="form-control" min="0" max="1" id="3b3" name="p3b3" value="{{ $my_point->p3b3 }}"></td>
                         </tr>
                         <tr>
@@ -258,7 +259,7 @@
                                     c) Tham gia tuyên truyền, phòng chống tội phạm và các tệ nạn xã hội.
                             </td>
                             <td style="text-align: center">04</td>
-                            <td>{{$my_temp_point->p3c == null ? 'Chưa đánh giá' : $my_temp_point->p3c }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p3c) }}</td>
                             <td><input type="number" class="form-control" min="0" max="4" id="3c" name="p3c" value="{{ $my_point->p3c }}"></td>
                         </tr>
                         <tr>
@@ -282,7 +283,7 @@
                                     -	Uỷ viên Ban chấp hành (BCH) Đoàn Thanh niên, Hội sinh viên Đại học Đà Nẵng và Bí thư Liên chi đoàn, Uỷ viên BCH Liên chi, Bí thư chi đoàn, Lớp trưởng, Ban đại diện sinh viên nội trú
                             </td>
                             <td style="text-align: center">05</td>
-                            <td>{{$my_temp_point->p4a1 == null ? 'Chưa đánh giá' : $my_temp_point->p4a1 }}</td>
+                            <td style="text-align: center">{{ renderKQ($my_temp_point->p4a1) }}</td>
                             <td><input type="number" class="form-control" min="0" max="5" id="4a1" name="p4a1" value="{{ $my_point->p4a1 }}"></td>
                         </tr>
                         <tr>
@@ -290,7 +291,7 @@
                                     -	Lớp phó, Uỷ viên chi đoàn, Trưởng, phó các câu lạc bộ/Hội/ Nhóm hoạt động tốt được tập thể công nhận.
                             </td>
                             <td style="text-align: center">03</td>
-                            <td>{{$my_temp_point->p4a2 == null ? 'Chưa đánh giá' : $my_temp_point->p4a2 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p4a2)}}</td>
                             <td><input type="number" class="form-control" min="0" max="3" id="4a2" name="p4a2" value="{{ $my_point->p4a2 }}"></td>
                         </tr>
                         <tr>
@@ -298,7 +299,7 @@
                                     -	Tổ trưởng, và sinh viên có đóng góp cho phong trào lớp, khoa, trường được tập thể công nhận. 
                             </td>
                             <td style="text-align: center">02</td>
-                            <td>{{$my_temp_point->p4a3 == null ? 'Chưa đánh giá' : $my_temp_point->p4a3 }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p4a3)}}</td>
                             <td><input type="number" class="form-control" min="0" max="2" id="4a3" name="p4a3" value="{{ $my_point->p4a3 }}"></td>
                         </tr>
                         <tr>
@@ -306,7 +307,7 @@
                                     b) Hỗ trợ và tham gia tích cực vào các hoạt động chung của lớp, khoa và Nhà trường (Vắng từ 02 buổi trừ  trở lên trừ hết số điểm được cộng). 
                             </td>
                             <td style="text-align: center">08</td>
-                            <td>{{$my_temp_point->p4b == null ? 'Chưa đánh giá' : $my_temp_point->p4b }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p4b)}}</td>
                             <td><input type="number" class="form-control" min="0" max="8" id="4b" name="p4b" value="{{ $my_point->p4b }}"></td>
                         </tr>
                         <tr>
@@ -314,7 +315,7 @@
                                     c) Có thành tích trong nghiên cứu khoa học, tham gia các cuộc thi, sáng kiến cải tiến kỹ thuật được Nhà trường hoặc các cơ quan có thẩm quyền khen thưởng (bằng khen, giấy khen...).
                             </td>
                             <td style="text-align: center">02</td>
-                            <td>{{$my_temp_point->p4c == null ? 'Chưa đánh giá' : $my_temp_point->p4c }}</td>
+                            <td style="text-align: center">{{renderKQ($my_temp_point->p4c)}}</td>
                             <td><input type="number" class="form-control" min="0" max="2" id="4c" name="p4c" value="{{ $my_point->p4c }}"></td>
                         </tr>
                         <tr>
@@ -324,7 +325,7 @@
                             <td style="text-align: center">
                                 <strong>100</strong>
                             </td>
-                            <td>{{$my_temp_point->p4c == null ? 'Chưa đánh giá' : $my_temp_point->total }}</td>
+                            <td style="text-align: center">{{$my_temp_point->p4c == null ? 'Chưa đánh giá' : $my_temp_point->total }}</td>
                             <td style="text-align: center"><p id="total"></p></td>
                         </tr>
                         <tr>
@@ -364,7 +365,7 @@
         
     </div>
 </div>
-{{-- @if ($my_point->total  == 67)
+{{-- @if ($my_point->total  == 65)
 <script type="text/javascript">
 
     function renderType(type, point) {  

@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title'){{ $action->name }} @endsection
 @section('script')
 <script>
     $(document).ready( () => {
@@ -29,25 +30,6 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12">
-                @if (count($errors)>0)
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $element)
-                            {{ $element }} <br>
-                        @endforeach
-                    </div>
-                @endif
-                @if (session('myErrors'))
-                    <div class="alert alert-danger">
-                        {{ session('myErrors') }}
-                    </div>
-                @endif
-                @if (session('notification'))
-                    <div class="alert alert-success">
-                        {{ session('notification') }}
-                    </div>
-                @endif
-        </div>
         @php
             $page = 0;
             if (isset($_GET['page'])) {

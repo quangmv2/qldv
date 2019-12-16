@@ -6,6 +6,10 @@ use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 use App\Http\Requests\ActionsRequest;
 use Validator;
+use Auth;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ActionMail;
 
 use Carbon\Carbon;
 use App\Student;
@@ -19,7 +23,7 @@ class ActionController extends ClientController
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(10);
+        $actions = Action::where("id_class", $id_class)->orderby('time', 'desc')->paginate(10);
         if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.actionList', ["actions" => $actions]);
     }
@@ -74,6 +78,14 @@ class ActionController extends ClientController
         $action->join = 0;
 
         $action->save();
+        // $context = (object) [
+        //     'name' => $request->input('name'),
+        //     'time' => $request->input('time'),
+        //     'fullname' => "Mai Văn Quang",
+        //     'subject' => "Thông báo hoạt động mới",
+        //     'link' => route('newActionDetail', ['id_action'=> $action->id]),
+        // ];
+        // Mail::to('mvquang.18it5@sict.udn.vn')->queue(new ActionMail($context));
 
         if ($request->input('object') == 0){
             $students = Student::join('class', 'students.id_class', '=', 'class.id_class')->where('class.id_class', $id_class)->select('students.*')->get();

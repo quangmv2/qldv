@@ -133,10 +133,10 @@
             </div>
             <div class="col-sm-10">
                 <p style="font-size: 15px">Trong đó:</p>
-                <div class="col-sm-2">
+                <div class="col-sm-1">
 
                 </div>
-                <div class="col-sm-10">
+                <div class="col-sm-11">
                     <table class="myTable" style=" width: 100%; 
                     margin: auto;
                     margin-bottom: 20px;">

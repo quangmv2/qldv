@@ -1,4 +1,5 @@
 @extends('client.index')
+@section('title')Học kì {{$dot->hoc_ki}} Năm học {{$dot->nam_hoc}} @endsection
 @section('content')
 <div class="container-fluid" style="margin-left: 0px;">
 

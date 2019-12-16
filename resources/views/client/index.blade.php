@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon-32x32.png') }}">
 
   <title>@yield('title')- Hệ thống điểm danh đánh giá điểm rèn luyện trực tuyến</title>
   

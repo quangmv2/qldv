@@ -77,7 +77,7 @@
                                 <td> {{ \Carbon\Carbon::parse($value->profile->birthday)->format('d-m-Y') }} </td>
                                 <td> {{ $value->profile->address }} </td>
                                 <td> {{ $value->classs->id_class }} </td>
-                                <td> Xóa </td>
+                                <td> <a href="{{ route('editStudent', ['id_student' => $value->id_student]) }}">Edit</a> </td>
                             </tr>
                         @endforeach
                     </tbody>

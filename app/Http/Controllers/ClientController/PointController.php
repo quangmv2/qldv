@@ -16,6 +16,7 @@ use App\DotXetDiem;
 use App\SchoolYear;
 use App\Point;
 use App\MyPoint;
+use App\ActionRelationship;
 
 class PointController extends ClientController
 {
@@ -75,6 +76,26 @@ class PointController extends ClientController
         ->where('id_student', $id_student)
         ->get()->first();
 
+        $AR = ActionRelationship::where('id_student', $id_student)
+        ->join('action', 'action.id_action', '=', 'action_relationship.id_action')
+        ->where('time', '>=', $dot->ngay_bat_dau)
+        ->where('time', '<=', $dot->ngay_ket_thuc)
+        ->select('action_relationship.*')
+        ->get();
+        $att = 0;
+        foreach ($AR as $key => $value) {
+            if ($value->confirm == 1) $att++;
+        }
+        $p4b = 0;
+        switch ($att) {
+            case '0':
+                $p4b = 8;
+                break;
+            case '1':
+                $p4b = 4;
+                break;
+        }
+
         if ($my_point->confirm == 0){
 
             $arr_update = [
@@ -98,7 +119,7 @@ class PointController extends ClientController
                 "p4a1" => 0,
                 "p4a2" => 0,
                 "p4a3" => 0,
-                "p4b" => 0,
+                "p4b" => $p4b,
                 "p4c" => 0,
                 "confirm" => 1,
             ];
@@ -106,7 +127,12 @@ class PointController extends ClientController
             ->where('id_student', $id_student)
             ->update($arr_update);
             updateTotal($my_point->id_point);
-
+            MyPoint::where('id_dot', $id_dot)
+            ->where('id_student', $id_student)
+            ->update(['p1dd' => convertPointToPoint($point_study)]);
+            updateTotalMyPoint(MyPoint::where('id_dot', $id_dot)
+            ->where('id_student', $id_student)
+            ->get()->first()->id_my_point);
         }
 
 
@@ -221,7 +247,7 @@ class PointController extends ClientController
             'student' => $student,
             'dot' => $dot,
         ])->setPaper('a4');
-        return $pdf->stream("Phiếu đánh giá kết quả rèn luyện sinh viên ".$student->first_name." ".$student->last_name." - Học kỳ: ".hocKy($dot->hoc_ki)." - Năm học: ". $dot->nam_hoc.'.pdf');
+        return $pdf->download("Phiếu đánh giá kết quả rèn luyện sinh viên ".$student->first_name." ".$student->last_name." - Học kỳ: ".hocKy($dot->hoc_ki)." - Năm học: ". $dot->nam_hoc.'.pdf');
 
     }
 

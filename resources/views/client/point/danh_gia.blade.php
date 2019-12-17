@@ -330,7 +330,7 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td><button type="button" class="btn btn-success" id="rd">Random</button></td>
+                            <td></td>
                             <td style="text-align: center"><button type="button" class="btn btn-danger"
                                 @if ($index == count($students)-1)
                                 disabled

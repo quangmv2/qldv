@@ -10,21 +10,30 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use App\DiemDemo;
+
+Route::get('/point/{id}', function ($id) {
+    $diem = DiemDemo::where('id_student', $id)->get();
+    if (count($diem) < 1 ) 
+    return [
+                "code" => 200,
+                "id_student" => $id,
+                "point" => 0,
+            ];
+    $diem = $diem->first();
+    $result = [
+        "code" => 200,
+        "id_student" => $id,
+        "point" => $diem->point,
+    ];
+    return json_encode($result);
+});
+
 Auth::routes([
     'register' => false,
     'reset' => false, 
     'verify' => false, 
-  ]);
-
-Route::get('/point/{id}', function ($id) {
-    $rd = rand(0, 4);
-    $result = [
-        "code" => 200,
-        "id_student" => $id,
-        "point" => $rd,
-    ];
-    return json_encode($result);
-});
+]);
 
 Route::get('logout', "LoginController@logout")->name('logout');
 

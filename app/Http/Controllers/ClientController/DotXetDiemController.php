@@ -225,7 +225,7 @@ class DotXetDiemController extends ClientController
             'count' => $count,
             'result' => $list,
         ])->setPaper('a4');
-        return $pdf->stream($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
+        return $pdf->download($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
     }
 
     public function getNote(Request $request, $id_dot, $id_student)

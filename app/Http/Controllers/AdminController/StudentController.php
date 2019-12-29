@@ -134,11 +134,10 @@ class StudentController extends Controller
         if (!count($class) > 0) return back()->with('myError', "Lớp học không tồn tại");
         $class = $class->first();
         $arr = Excel::toArray(new UsersImport, $request->file('file'))[0];
-        
         foreach ($arr as $key => $value) {
             $student = Student::where('id_student', $value[1])->get();
             if (count($student) > 0) continue;
-            $email = createEmailStudent($value[2]." ".$value[3], $class->id_class);
+            $email = createEmailStudent(trim($value[2])." ".$value[3], $class->id_class);
             $user = new User;
             $user->email = $email;        
             $user->password =  password_hash(1, PASSWORD_BCRYPT);

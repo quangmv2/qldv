@@ -7,7 +7,7 @@
 
             <div class="col-sm-12" >
                 
-                <h1>THÊM MỚI <small>Tiêu chí</small> </h1>
+                <h1>THÊM MỚI <small>Thể loại</small> </h1>
 
             </div>
 
@@ -44,32 +44,12 @@
 
                         <div class="form-group">
 
-                            <label>Tiêu đề</label>
+                            <label>Tên thể loại</label>
 
-                            <input type="text" name="title" value="" class="form-control" placeholder="Tiêu đề" required>
-
-                        </div>
-
-                        <div class="form-group">
-        
-                            <label>Danh mục</label>
-        
-                            <select name="id_criteria_relationship" id="" class="form-control">
-                                <option value="0">Danh mục gốc</option>
-                                @foreach ($criterias as $value)
-                                    <option value="{{$value->id_criteria}}">{{$value->title}}</option>
-                                @endforeach
-                            </select>
-        
-                        </div>
-
-                        <div class="form-group">
-
-                            <label>Điểm</label>
-
-                            <input type="text" name="point" value="" class="form-control" placeholder="Điểm" required>
+                            <input type="text" name="name" value="" class="form-control" placeholder="Tên thể loại" required>
 
                         </div>
+
                         <input type="submit" name="submit" class="btn btn-primary" value="THÊM MỚI">
 
                     </form>

@@ -8,6 +8,7 @@ use App\Http\Requests\ActionsRequest;
 use Validator;
 use Auth;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ActionMail;
 
@@ -15,7 +16,9 @@ use Carbon\Carbon;
 use App\Student;
 use App\Action;
 use App\Classs;
-use App\ActionRelationship;
+use App\Attendance;
+use App\Category;
+use App\ActionRelationshipClass;
 
 
 class ActionController extends ClientController
@@ -23,15 +26,16 @@ class ActionController extends ClientController
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('time', 'desc')->paginate(10);
-        if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
+        $actions = ActionRelationshipClass::where('id_class', $id_class)
+        ->paginate(10);
+        if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page')]);
         return view('client.action.actionList', ["actions" => $actions]);
     }
 
     function getNewAction(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('created_at', 'desc')->paginate(10);
+        $actions = ActionRelationshipClass::where('id_class', $id_class)->paginate(10);
         if ($request->input('type') == 'ajax') 
             return view('client.action.ajax.newActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.newActionList', ["actions" => $actions]);
@@ -43,7 +47,8 @@ class ActionController extends ClientController
             ->select('students.*')
             ->orderby('profiles.last_name', 'asc')
             ->orderby('profiles.first_name', 'asc')->get();
-        return view('client.action.add', ['students' => $students]);
+        $categorys = Category::all();
+        return view('client.action.add', ['students' => $students, 'categorys' => $categorys]);
     }
 
     function postAdd(Request $request)
@@ -54,12 +59,14 @@ class ActionController extends ClientController
             'name' => 'required',
             'time' => 'required|date',
             'content' => 'required',
+            'category' => 'required',
             'object' => 'required|numeric|min:0|max:2',
         ],
         [
             'name.required' => "Chưa nhập tên hoạt động.",
             'time.required' => "Chưa chọn thời gian.",
             'time.date' => "Chọn sai kiểu dữ liệu ngày giờ.",
+            'category.required' => "Don't chossice category",
             'content.required' => "Chưa nhập nội dung.",
             'object.required' => "Chưa chọn đối tượng tham gia.",
             'object.numeric' => "Chọn sai đối tượng.",
@@ -73,11 +80,14 @@ class ActionController extends ClientController
         $action->name = $request->input('name');
         $action->time = $request->input('time');
         $action->content = $request->input('content');
-        $action->id_class = $id_class;
         $action->confirm = 0;
-        $action->join = 0;
+        $action->id_category = $request->input('category');
 
         $action->save();
+        $ar = new ActionRelationshipClass;
+        $ar->id_action = $action->id;
+        $ar->id_class = $id_class;
+        $ar->save();
         // $context = (object) [
         //     'name' => $request->input('name'),
         //     'time' => $request->input('time'),
@@ -90,7 +100,7 @@ class ActionController extends ClientController
         if ($request->input('object') == 0){
             $students = Student::join('class', 'students.id_class', '=', 'class.id_class')->where('class.id_class', $id_class)->select('students.*')->get();
             foreach ($students as $key => $value) {
-                $AR = new ActionRelationship;
+                $AR = new Attendance;
                 $AR->id_student = $value->id_student;
                 $AR->id_action = $action->id;
                 $AR->status = 0;
@@ -103,7 +113,7 @@ class ActionController extends ClientController
         if ($request->input('object') == 1){
             $arr = $request->input('id_student');
             foreach ($arr as $key => $value) {
-                $AR = new ActionRelationship;
+                $AR = new Attendance;
                 $AR->id_student = $value;
                 $AR->id_action = $action->id;
                 $AR->status = 0;
@@ -142,14 +152,27 @@ class ActionController extends ClientController
     function getMyAction(Request $request)
     {
         $id_student = $request->session()->get('account')->id_student;
-        $actions = Action::join('action_relationship', 'action.id_action', '=', 'action_relationship.id_action')
-        ->where('action_relationship.id_student', $id_student)
-        ->select('action.*', 'action_relationship.status')
+        $actions = Action::join('attendance', 'action.id_action', '=', 'attendance.id_action')
+        ->where('attendance.id_student', $id_student)
+        ->select('action.*', 'attendance.status')
         ->orderby('created_at', 'desc')
         ->paginate(20);
-
-        if ($request->input('type') == 'ajax') return view('client.action.ajax.myActionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
-        return view('client.action.myActionList', ['actions' => $actions]);
+        $categories = Category::all();
+        if ($request->input('type') == 'ajax') 
+        return view('client.action.ajax.myActionList', 
+        [
+            "actions" => $actions, 
+            'page' => $request->input('page'),
+            
+        ]);
+       
+        return view('client.action.myActionList', 
+        [
+            'actions' => $actions,
+            'categories' => $categories,
+            'dataChart' => $this->dataChartStudent($id_student),
+            'dataChartWithCategorys' => $this->dataChartStudentWithCategorys($id_student),
+        ]);
     }
 
     function getNewActionDetail(Request $request, $id_action)
@@ -160,7 +183,7 @@ class ActionController extends ClientController
         $action = $action->first();
         if ($action->type == 2) {
             $id_student = $request->session()->get('account')->id_student;
-            $ar = ActionRelationship::where('id_action', $action->id_action)
+            $ar = Attendance::where('id_action', $action->id_action)
             ->where('id_student', $id_student)
             ->get();
             $action['register'] = 0;
@@ -193,11 +216,11 @@ class ActionController extends ClientController
             return $res;
         }
         $id_student = $request->session()->get('account')->id_student;
-        $ar = ActionRelationship::where('id_action', $action->id_action)
+        $ar = Attendance::where('id_action', $action->id_action)
             ->where('id_student', $id_student)
             ->get();
         if (count($ar) < 1){
-            $AR = new ActionRelationship;
+            $AR = new Attendance;
             $AR->id_student = $id_student;
             $AR->id_action = $action->id_action;
             $AR->status = 0;
@@ -206,9 +229,77 @@ class ActionController extends ClientController
             return $res;
         }
 
-        ActionRelationship::where('id_action_relationship', $ar->first()->id_action_relationship)->delete();
+        Attendance::where('id_attendance', $ar->first()->id_attendance)->delete();
         $res['message'] = "Đăng ký";
         return $res;
     }
 
+    public function getMyActionChart(Request $request)
+    {
+        $id_student = $request->session()->get('account')->id_student;
+        $id_category = $request->input('category');
+        $m = Attendance::where('id_student', $id_student)
+        ->join('action', 'action.id_action', '=', 'attendance.id_action')
+        ->where('action.id_category', $id_category)
+        ->select('attendance.*')
+        ->count();
+        $n = Attendance::where('id_student', $id_student)
+        ->join('action', 'action.id_action', '=', 'attendance.id_action')
+        ->where('action.id_category', $id_category)
+        ->select('attendance.*')
+        ->where('attendance.status', 1)
+        ->count();
+
+        $data_detail['name'] = "Tham gia";
+        $data_detail['y'] =  ($n == 0 )? 0  :($n/$m)*100;
+        $data[] = $data_detail;
+        $n = Attendance::where('id_student', $id_student)
+        ->join('action', 'action.id_action', '=', 'attendance.id_action')
+        ->where('action.id_category', $id_category)
+        ->select('attendance.*')
+        ->where('attendance.status', 0)
+        ->count();
+        $data_detail['name'] = "Không tham gia";
+        $data_detail['y'] =  ($n == 0 )? 0  :($n/$m)*100;
+        $data[] = $data_detail;
+        return $data;
+    }
+
+    public function dataChartStudentWithCategorys($id_student)
+    {
+        $data = array();
+        $categories = Category::all();
+        $tmp[] = array();
+        $sum = Attendance::where('id_student', $id_student)->where('status', 1)->count();
+        foreach ($categories as $key => $category) {
+            $data_detail['name'] = $category->name;
+            $attendance = Attendance::where('id_student', $id_student)
+                          ->join('action', 'action.id_action', '=', 'attendance.id_action')
+                          ->where('action.id_category', $category->id_category)
+                          ->select('attendance.*')
+                          ->where('attendance.status', 1)->count();
+            $data_detail['y'] = $attendance;
+            $data[] = $data_detail;
+        }
+        return json_encode($data);
+    }
+
+    public function dataChartStudent($id_student)
+    {
+        $attendances = Attendance::where('id_student', $id_student);
+        $m = count($attendances->get());
+        $n = count($attendances->where('status', 1)->get());
+
+        $data_detail['name'] = "Tham gia";
+        $data_detail['y'] =  ($n == 0 )? 0  :($n/$m)*100;
+        $data[] = $data_detail;
+        $attendances = Attendance::where('id_student', $id_student);
+        $n = count($attendances->where('status', 0)->get());
+        $data_detail['name'] = "Không tham gia";
+        $data_detail['y'] =  ($n == 0 )? 0  :($n/$m)*100;
+        $data[] = $data_detail;
+        return json_encode($data);
+
+    }
+    
 }

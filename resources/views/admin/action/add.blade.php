@@ -1,7 +1,5 @@
-@extends('client.index')
-@section('title')Thêm mới hoạt động @endsection
+@extends('admin.index')
 @section('content')
-
 <div class="container-fluid" style="margin-left: 0px;">
 
     <div class="row">
@@ -16,7 +14,6 @@
     </div>
 
 </div>
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
@@ -37,7 +34,7 @@
 
                         <label>Thể  loại</label>
 
-                        <select name="category" class="form-control" id="">
+                        <select name="category" class="form-control"> 
                             @foreach ($categorys as $category)
                                 <option value="{{ $category->id_category }}">{{ $category->name }}</option>
                             @endforeach
@@ -76,35 +73,22 @@
 
 	            		</script>
                     </div>
-
-                    <div class="form-group">
-
-                        <label style="display:block;">Thành viên tham gia</label>
-                        <select name="object" id="option" class="form-control">
-                            <option value="0">Cả lớp</option>
-                            <option value="1">Thành viên</option>
-                            <option value="2">Đăng ký</option>
-                        </select>
-			        
-                    </div>
-                    <div id="chooseStudent" style="display: none">
+                    <div id="chooseStudent">
                         <table class="table table-striped table-bordered table-hover">
 
                             <thead>
                                 <tr>
-                                    <th style="text-align: center">Mã SV</th>
-                                    <th style="text-align: center">Họ và tên</th>
+                                    <th style="text-align: center">Lớp</th>
                                     <th style="text-align: center">Tham gia</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 
-                                @foreach ($students as $index => $value)
+                                @foreach ($class as $index => $value)
                                     <tr>
-                                        <td align="center"> {{ $value->id_student }} </td>
-                                        <td align="center"> {{$value->profile->first_name." ".$value->profile->last_name}} </td>
-                                        <td align="center"> <input type="checkbox" id="test{{ $value->id_student }}" name="id_student[]" class="form-check-input checkbox-large" value="{{ $value->id_student }}"><label for="test{{ $value->id_student }}"></label> </td>
+                                        <td align="center"> {{ $value->id_class }} </td>
+                                        <td align="center"> <input type="checkbox" id="test{{ $value->id_class }}" name="id_class[]" class="form-check-input checkbox-large" value="{{ $value->id_class}}"><label for="test{{ $value->id_class }}"></label> </td>
                                     </tr>
                                 @endforeach
 

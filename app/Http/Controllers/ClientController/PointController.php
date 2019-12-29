@@ -16,7 +16,7 @@ use App\DotXetDiem;
 use App\SchoolYear;
 use App\Point;
 use App\MyPoint;
-use App\ActionRelationship;
+use App\Attendance;
 
 class PointController extends ClientController
 {
@@ -76,11 +76,11 @@ class PointController extends ClientController
         ->where('id_student', $id_student)
         ->get()->first();
 
-        $AR = ActionRelationship::where('id_student', $id_student)
-        ->join('action', 'action.id_action', '=', 'action_relationship.id_action')
+        $AR = Attendance::where('id_student', $id_student)
+        ->join('action', 'action.id_action', '=', 'attendance.id_action')
         ->where('time', '>=', $dot->ngay_bat_dau)
         ->where('time', '<=', $dot->ngay_ket_thuc)
-        ->select('action_relationship.*')
+        ->select('attendance.*')
         ->get();
         $att = 0;
         foreach ($AR as $key => $value) {

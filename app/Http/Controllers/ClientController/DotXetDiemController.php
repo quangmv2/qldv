@@ -18,133 +18,6 @@ use App\MyPoint;
 
 class DotXetDiemController extends ClientController
 {
-    function getAdd(Request $request)
-    {
-
-
-        // $point = MyPoint::all();
-        // foreach ($point as $key => $item) {
-        //     $value = Point::where('id_student', $item->id_student)->where('id_dot', $item->id_dot)->get()->first();
-        //     $arr_update = [
-        //         "p1a" => $value->p1a,
-        //         "p1b1" => $value->p1b1,
-        //         "p1b2" => $value->p1b2,
-        //         "p1c" => $value->p1c,
-        //         "p1d" => $value->p1d,
-        //         "p1dd" => $value->p1dd,
-        //         "p2a1" => $value->p2a1,
-        //         "p2a2" => $value->p2a2,
-        //         "p2b1" => $value->p2b1,
-        //         "p2b2" => $value->p2b2,
-        //         "p2b3" => $value->p2b3,
-        //         "p3a1" => $value->p3a1,
-        //         "p3a2" => $value->p3a2,
-        //         "p3b1" => $value->p3b1,
-        //         "p3b2" => $value->p3b2,
-        //         "p3b3" => $value->p3b3,
-        //         "p3c" => $value->p3c,
-        //         "p4a1" => $value->p4a1,
-        //         "p4a2" => $value->p4a2,
-        //         "p4a3" => $value->p4a3,
-        //         "p4b" => $value->p4b,
-        //         "p4c" => $value->p4c,
-        //         "confirm" => $value->confirm,
-        //         "total" => $value->total,
-        //     ];
-
-        //     MyPoint::where('id_student', $item->id_student)->where('id_dot', $item->id_dot)->update($arr_update);
-
-        // }
-        // return [
-        //     "stt" => "success",
-        // ];
-
-        $id_student = $request->session()->get('account')->id_student;
-        $student = Student::where('id_student', $id_student)->get()[0];
-        $year = SchoolYear::all();
-//        echo route('danh_sach_dot');
-//        return;
-        return view('client.point.add', ['year' => $year]);
-    }
-
-    function postAdd(Request $request)
-    {
-
-
-        $this->validate($request,
-        [ 
-            'begin' => 'required'
-        ],
-        [
-            'begin.required' => 'Chưa nhập ngày'
-        ]);
-
-        $res = [
-            "code" => 200,
-            "message" => "OK",
-            "callback" => route('danh_sach_dot'),
-            "success" => [
-              "1" => "Thêm vào thành công"
-            ],
-        ];
-
-        $dxt = DotXetDiem::where('nam_hoc', $request->input('year'))
-        ->where('hoc_ki', $request->input('semester'))->get();
-        if (\count($dxt) > 0){
-            return [
-                "code" => 500,
-                "message" => "OK",
-                "success" => [
-                  "1" => "Đã tồn tại đợt xét điểm."
-                ],
-            ];
-        }
-
-        $begin = Carbon::parse($request->input('begin'));
-        $end = Carbon::parse($request->input('end'));
-        if ($begin >= $end){
-            return [
-                "code" => 500,
-                "message" => "OK",
-                "success" => [
-                  "1" => "Khoảng thời gian không hợp lệ."
-                ],
-            ];
-        }
-
-        $dot = new DotXetDiem;
-        $dot->nam_hoc = $request->input('year');
-        $dot->hoc_ki = $request->input('semester');
-        $dot->ngay_bat_dau = $request->input('begin');
-        $dot->ngay_ket_thuc = $request->input('end');
-        $dot->id_class = $request->session()->get('account')->id_class;
-        $dot->save();
-
-        $students = Student::join('class', 'class.id_class', '=', 'students.id_class')
-        ->where('class.id_class', $request->session()->get('account')->id_class)
-        ->select('students.*')
-        ->get();
-        foreach ($students as $key => $value) {
-            $point = new Point;
-            $point->id_dot = $dot->id_dot_xet;
-            $point->id_student = $value->id_student;
-            $point->confirm = 0;
-            $point->total = 0;
-            $point->save();
-
-            $temp_point = new MyPoint;
-            $temp_point->id_dot = $dot->id_dot_xet;
-            $temp_point->id_student = $value->id_student;
-            $temp_point->confirm = 0;
-            $temp_point->total = 0;
-            $temp_point->save();
-        }
-
-        return $res;
-
-
-    }
-
     public function danhSachDot(Request $request)
     {
         if (empty($request->input('page'))){
@@ -153,7 +26,10 @@ class DotXetDiemController extends ClientController
             $page = $request->input('page');
         }
 
-        $list = DotXetDiem::where('id_class', $request->session()->get('account')->id_class)->orderby('nam_hoc')->orderby('hoc_ki')->paginate(20);
+        $class = $request->session()->get('account')->id_class;
+
+        $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $class)->orderby('nam_hoc')->select('dot_xet_diem.*')->orderby('hoc_ki')->get();
         foreach ($list as $index  => $value){
             $list[$index]['xuat_sac'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 90)->count('total');
             $list[$index]['gioi'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
@@ -165,12 +41,98 @@ class DotXetDiemController extends ClientController
         if ($request->input('type') == 'ajax') {
             return view('client.point.ajax.danh_sach_dot', ['list' => $list]);
         } else {
-            return view('client.point.danh_sach_dot');
+            return view('client.point.danh_sach_dot', ['list' => $list]);
         }
+    }
+
+    public function danhSachDotChart(Request $request)
+    {
+        $nam_hoc = $request->input('nam_hoc');
+        $hoc_ki = $request->input('hoc_ki');
+        $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $request->session()->get('account')->id_class)
+        ->where('nam_hoc', $nam_hoc)
+        ->where('hoc_ki', $hoc_ki)
+        ->get()->first();
+        $count = Point::where('id_dot', $list->id_dot_xet)->count('total');
+        $list['xuat_sac'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 90)->count('total');
+        $list['gioi'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
+        $list['kha'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 65)->where('total','<', 80)->count('total');
+        $list['trung_binh'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 50)->where('total','<', 65)->count('total');
+        $list['yeu'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 35)->where('total','<', 50)->count('total');
+        $list['kem'] = Point::where('id_dot', $list->id_dot_xet)->where('confirm', 1)->where('total','<', 35)->count('total');
+
+        $data = [];
+        $data_detail['name'] = "Xuất sắc";
+        $data_detail['y'] = $list['xuat_sac'] == 0 ? 0 : ($list['xuat_sac']/$count)*100;
+        $data[] = $data_detail;
+
+        $data_detail['name'] = "Giỏi";
+        $data_detail['y'] = $list['gioi'] == 0 ? 0 : ($list['gioi']/$count)*100;
+        $data[] = $data_detail;
+
+        $data_detail['name'] = "Khá";
+        $data_detail['y'] = $list['kha'] == 0 ? 0 : ($list['kha']/$count)*100;
+        $data[] = $data_detail;
+
+        $data_detail['name'] = "Trung bình";
+        $data_detail['y'] = $list['trung_binh'] == 0 ? 0 : ($list['trung_binh']/$count)*100;
+        $data[] = $data_detail;
+
+        $data_detail['name'] = "Yếu";
+        $data_detail['y'] = $list['yeu'] == 0 ? 0 : ($list['yeu']/$count)*100;
+        $data[] = $data_detail;
+
+        $data_detail['name'] = "Kém";
+        $data_detail['y'] = $list['kem'] == 0 ? 0 : ($list['kem']/$count)*100;
+        $data[] = $data_detail;
+
+        return json_encode($data);
+
+    }
+
+    public function danhSachDotChartPhoDiem(Request $request)
+    {
+        $nam_hoc = $request->input('nam_hoc');
+        $hoc_ki = $request->input('hoc_ki');
+        $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $request->session()->get('account')->id_class)
+        ->where('nam_hoc', $nam_hoc)
+        ->where('hoc_ki', $hoc_ki)
+        ->get()->first();
+        $points = Point::where('id_dot', $list->id_dot_xet)->where('confirm', 1)->select('total')->get();
+        $data = [];
+        for ($i=0; $i <= 100; $i++) { 
+            $k=0;
+            $data_detail = [];
+            foreach ($points as $key => $point) {
+                if ($i == $point->total) $k++;
+            }
+            if ($k==0) continue;
+            $data_detail[] = "".$i;
+            $data_detail[] = $k;
+            $data[] = $data_detail;
+        }
+
+        return json_encode([
+            'data' => $data,
+            'id_dot' => $list->id_dot_xet,
+        ]);
+
     }
 
     public function getDot(Request $request, $id_dot)
     {
+
+        if ($id_dot == -1) {
+            $dot = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+            ->where('id_class', $request->session()->get('account')->id_class)
+            ->where('nam_hoc', $request->input('nam_hoc'))
+            ->where('hoc_ki', $request->input('hoc_ki'))
+            ->get()->first();
+            if (empty($dot)) return abort('404');
+            return redirect()->route('getDot', ['id_dot'=>$dot->id_dot_xet]);
+        }
 
         $students = Point::where('id_dot', $id_dot)
         ->join('students', 'students.id_student', '=', 'points.id_student')
@@ -192,6 +154,39 @@ class DotXetDiemController extends ClientController
         DotXetDiem::find($id_dot)->delete();
         return back();
 
+    }
+
+    public function changeStatus(Request $request, $id_dot)
+    {
+
+        $point = Point::where('id_dot', $id_dot)
+        ->where('id_student', $request->input('id_student'))
+        ->get()->first();
+        if (empty($point)) {
+            return [
+                'ok' => 0,
+            ];
+        }
+        $k = $point->status;
+        if ($k==1){
+            Point::where('id_dot', $id_dot)
+            ->where('id_student', $request->input('id_student'))->update(['status'=>0, 'note'=>'Nghỉ học']);
+            return [
+                'ok' => 1,
+                'message' => 'Nghỉ học',
+                'note' => 'Nghỉ học',
+                'class' => 'btn btn-danger',
+            ];
+        }
+        Point::where('id_dot', $id_dot)
+            ->where('id_student', $request->input('id_student'))->update(['status'=>1, 'note'=>'']);
+            return [
+                'ok' => 1,
+                'message' => 'Đang học',
+                'note' => '',
+                'class' => 'btn btn-success',
+            ];
+        return $request->all();
     }
 
     public function downloadDotPDF(Request $request, $id_dot)

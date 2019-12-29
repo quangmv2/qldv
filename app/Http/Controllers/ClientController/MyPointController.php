@@ -20,11 +20,44 @@ class MyPointController extends ClientController
 {
     public function getList(Request $request)
     {
-        $list = DotXetDiem::where('id_class', $request->session()->get('account')->id_class)
+        $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $request->session()->get('account')->id_class)
         ->join('points', 'points.id_dot', '=' , 'dot_xet_diem.id_dot_xet')
         ->where('id_student', $request->session()->get('account')->id_student)
         ->get();
-        return view('client.my_point.danh_sach_dot', ['list' => $list]);
+        $tmp = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $request->session()->get('account')->id_class)
+        ->join('points', 'points.id_dot', '=' , 'dot_xet_diem.id_dot_xet')
+        ->where('id_student', $request->session()->get('account')->id_student)
+        ->groupBy('nam_hoc')
+        ->orderBy('nam_hoc')
+        ->select('nam_hoc')
+        ->get();
+        $dataChart = [];
+        foreach ($tmp as $key => $value) {
+            $data_detail['nam_hoc'] = $value->nam_hoc;
+            $k = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+            ->where('id_class', $request->session()->get('account')->id_class)
+            ->where('nam_hoc', $value->nam_hoc)
+            ->join('points', 'points.id_dot', '=' , 'dot_xet_diem.id_dot_xet')
+            ->where('id_student', $request->session()->get('account')->id_student)
+            ->where('dot_xet_diem.hoc_ki', 1)
+            ->select('points.total')
+            ->get();
+            $data_detail['ki_1'] = (count($k) > 0) ? $k->first()->total : -1; 
+            $k = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+            ->where('id_class', $request->session()->get('account')->id_class)
+            ->where('nam_hoc', $value->nam_hoc)
+            ->join('points', 'points.id_dot', '=' , 'dot_xet_diem.id_dot_xet')
+            ->where('id_student', $request->session()->get('account')->id_student)
+            ->where('dot_xet_diem.hoc_ki', 2)
+            ->select('points.total')
+            ->get();
+            $data_detail['ki_2'] = (count($k) > 0) ? $k->first()->total : -1;     
+            $dataChart[] = $data_detail;   
+        }
+        
+        return view('client.my_point.danh_sach_dot', ['list' => $list, 'dataChart' => $dataChart]);
     }
 
     public function getDanhGia(PointRequest $request, $id_dot)

@@ -57,7 +57,8 @@ function utf8tourl($text) {
 
 function createEmailStudent($text, $class)
 {
-    $text = utf8tourl($text);
+    $text = (string) utf8tourl($text);
+    $text = trim($text);
     $k = explode(' ', $text);
     $name = "";
     $class = strtolower($class);

@@ -16,18 +16,18 @@
         @foreach ($actions as $index => $value)
             <tr>
                 <td>{{ (($page-1)*20 + $index+1) }}</td>
-                <td>{{ $value->name}}</td>
-                <td>{{ \Carbon\Carbon::parse($value->time)->format('d-m-Y') }}</td>
+                <td>{{ $value->getAction->name}}</td>
+                <td>{{ \Carbon\Carbon::parse($value->getAction->time)->format('d-m-Y') }}</td>
                 <td> 
                     @php
-                       echo $value->confirm == 1 ? "Đã điểm danh - ". $value->join."/".$value->sum: "Chưa điểm danh";
+                       echo $value->getAction->confirm == 1 ? "Đã điểm danh - ". $value->getAction->join."/".$value->getAction->sum: "Chưa điểm danh";
                     @endphp 
                 </td>
                 <td> 
-                    @if ($value->type == 0)
+                    @if ($value->getAction->type == 0)
                         Cả lớp
                     @else
-                        @if ($value->type == 1)
+                        @if ($value->getAction->type == 1)
                             Bắt buộc
                         @else
                             Đăng ký
@@ -35,7 +35,7 @@
                     @endif 
                 </td>
                 <td><a href=""><i class="fas fa-edit" style="color: red"></i></a>  </td>
-                <td><a class="deleteajax" href="{{ route('deleteAction', ['id'=> $value->id_action]) }}"><i class="fas fa-trash" style="color: red"></i></a>  </td>
+                <td><a class="deleteajax" href="{{ route('deleteAction', ['id'=> $value->getAction->id_action]) }}"><i class="fas fa-trash" style="color: red"></i></a>  </td>
             </tr>
         @endforeach
     </tbody>

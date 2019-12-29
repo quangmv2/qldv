@@ -6,15 +6,27 @@ use App\Http\Controllers\ClientController\ClientController;
 use Illuminate\Http\Request;
 
 use App\Action;
-use App\ActionRelationship;
+use App\Attendance;
 use App\Student;
+use App\ActionRelationshipClass;
 
 class AttendanceController extends ClientController
 {
     function getList(Request $request)
     {
         $id_class = $request->session()->get('account')->id_class;
-        $actions = Action::where("id_class", $id_class)->orderby('time', 'desc')->paginate(20);
+        $actions = ActionRelationshipClass::where('id_class', $id_class)
+        ->join('action', 'action_relationship_class.id_action', '=', 'action.id_action')
+        ->orderby('time', 'desc')->paginate(20);
+        foreach ($actions as $key => $value) {
+            
+            $attendance = Attendance::where('id_action', $value->id_action)
+                                ->join('students', 'students.id_student', '=', 'attendance.id_student')
+                                ->where('students.id_class', $value->id_class)
+                                ->select('attendance.*');
+            $value['count'] =  $attendance->count();
+            $value['join'] = $attendance->where('status', 1)->count();
+        }
         if ($request->input('type') == 'ajax') return view('client.attendance.ajax.list', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.attendance.list', ["actions" => $actions]);
     }
@@ -26,18 +38,18 @@ class AttendanceController extends ClientController
         ->with('myErrors', "Hoạt động không tồn tại.");
         $action = $action[0];
         if ($action->confirm == 0){
-            Action::where('id_action', $id_action)->update(['confirm' => 1, 'join' => $action->sum]);
-            ActionRelationship::where('id_action', $id_action)->update(['status' => 1, 'point' => 10]);
+            Action::where('id_action', $id_action)->update(['confirm' => 1]);
+            Attendance::where('id_action', $id_action)->update(['status' => 1, 'point' => 10]);
         }
         Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
-        $students = Student::join('action_relationship', 'students.id_student', '=', 'action_relationship.id_student')
-        ->where('action_relationship.id_action', $id_action)
-        ->select('students.*', 'action_relationship.status', 'action_relationship.note', 'students.id_profile')
+        $students = Student::join('attendance', 'students.id_student', '=', 'attendance.id_student')
+        ->where('attendance.id_action', $id_action)
+        ->select('students.*', 'attendance.status', 'attendance.note', 'students.id_profile')
         ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
         // ->orderby('profiles.last_name', 'asc')
         // ->orderby('profiles.first_name', 'asc')
         ->orderby('students.id_student', 'asc')
-        ->select('students.*', 'action_relationship.status', 'action_relationship.note', 'action_relationship.point')
+        ->select('students.*', 'attendance.status', 'attendance.note', 'attendance.point')
         ->get();
         return view('client.attendance.attendance', ['students' => $students, 'action' => $action]);
     }
@@ -69,7 +81,7 @@ class AttendanceController extends ClientController
             return json_encode($res);
         }
 
-        $AR = ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get();
+        $AR = Attendance::where('id_action', $id_action)->where('id_student', $id_student)->get();
         if (\count($AR) < 1){
             $res = [
                 "code" => 500,
@@ -84,12 +96,10 @@ class AttendanceController extends ClientController
         if ($status == 0) {
             $status = 1;
             $point = 10;
-            $k=1;
         }
         else {
             $status = 0;
             $point = 0;
-            $k=-1;
         }
 
 
@@ -108,15 +118,14 @@ class AttendanceController extends ClientController
         }
 
         echo json_encode($res);
-        ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status, 'point' => $point]);
-        Action::where('id_action', $id_action)->update(['join' => $action->join + $k]);
+        Attendance::where('id_action', $id_action)->where('id_student', $id_student)->update(['status' => $status, 'point' => $point]);
         return;
 
     }
 
     public function postAttendanceNote(Request $request, $id_action, $id_student)
     {
-        $AR = ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get();
+        $AR = Attendance::where('id_action', $id_action)->where('id_student', $id_student)->get();
         if (\count($AR) < 1){
             $res = [
                 "status" => 0,
@@ -128,7 +137,7 @@ class AttendanceController extends ClientController
         $AR =$AR->first();
 
         $note = $request->input('note');
-        ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['note' => $note]);
+        Attendance::where('id_attendance', $AR->id_attendance)->update(['note' => $note]);
 
         $res = [
             "status" => 1,
@@ -141,7 +150,7 @@ class AttendanceController extends ClientController
 
     public function getPoint(Request $request, $id_action, $id_student)
     {
-        $AR = ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get();
+        $AR = Attendance::where('id_action', $id_action)->where('id_student', $id_student)->get();
         if (\count($AR) < 1){
             $res = [
                 "status" => 0,
@@ -153,11 +162,11 @@ class AttendanceController extends ClientController
         $AR =$AR->first();
         if ($request->input('type') == "update") {
             if ($AR->status == 0 && $AR->point > 0)
-            ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['point' => 0]); 
-            return ['point' => ActionRelationship::where('id_action', $id_action)->where('id_student', $id_student)->get()->first()->point];
+            Attendance::where('id_attendance', $AR->id_attendance)->update(['point' => 0]); 
+            return ['point' => Attendance::where('id_action', $id_action)->where('id_student', $id_student)->get()->first()->point];
         }
         $point = $request->input('point');
-        ActionRelationship::where('id_action_relationship', $AR->id_action_relationship)->update(['point' => $point]);
+        Attendance::where('id_attendance', $AR->id_attendance)->update(['point' => $point]);
 
         $res = [
             "status" => 1,

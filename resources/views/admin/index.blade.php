@@ -50,7 +50,7 @@
         <!-- Topbar -->
         @include('admin.component.header')
         <!-- End of Topbar -->
-
+        @include('client.component.notification')
         <!-- Begin Page Content -->
         @yield('content')
         {{-- @include('admin.content') --}}

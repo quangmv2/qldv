@@ -103,24 +103,13 @@ function callServer(page) {
             loadEnd()
         }
     })
-    .fail(() => {
+    .fail((err) => {
         ajaxSuccess()
+        console.log(err)
     })
     
 }
 
-// var dataState = {
-//     urls : [
-
-//     ],
-
-//     titles : [
-
-//     ],
-//     documents : [
-
-//     ]
-// }
 
 
 jQuery(document).ready(function($) {
@@ -131,50 +120,6 @@ jQuery(document).ready(function($) {
         callServer(page)
         $('html, body').animate({scrollTop : 0}, 'slow')
     });
-
-    
-    
-    // $(document).on('click', '.hrefLink a', async function(event) {
-    //     event.preventDefault();
-    //     const url = $(this).attr('href');
-    //     if (url == '#') return;
-    //     var dom;
-    //     documents = dataState.documents;
-    //     await $.ajax({
-    //         method: "GET",
-    //         url : url,
-    //         data : {
-    //             type: 'ajax',
-    //             page : 1,
-                
-    //         },
-    //         dataType: "html",
-    //         success : (response) => { 
-    //             $('#dataPage').html(response)
-    //             documents.push(response)
-    //         }
-    //     })
-
-    //     dataState.documents = documents;
-        
-    //     urls = dataState.urls
-    //     if (urls[urls.length - 1] == url) {
-    //         return;
-    //     }
-
-    //     console.log(url)
-    //     console.log($(this).text().trim())
-    //     titles = dataState.titles;
-    //     titles.push($(this).text().trim())
-    //     dataState.titles = titles
-    //     document.title = $(this).text().trim()
-    //     urls = dataState.urls
-    //     urls.push(url)
-    //     dataState.urls = urls
-
-    //     history.pushState(dataState, $(this).text().trim(), url)
-    // });
-
 });
 
 
@@ -332,11 +277,11 @@ jQuery(document).ready(function($) {
 
 function danhGia(diem) {  
     //convert điểm => xếp loại
-    if (diem >= 90) return "Xuất sắc."
-    if (diem >= 80) return "Tốt."
-    if (diem >= 65) return "Khá."
-    if (diem >= 50) return "Trung bình."
-    if (diem >= 40) return "Yếu."
+    if (diem >= 90) return "Xuất sắc"
+    if (diem >= 80) return "Tốt"
+    if (diem >= 65) return "Khá"
+    if (diem >= 50) return "Trung bình"
+    if (diem >= 40) return "Yếu"
     return "Kém."
 }
 

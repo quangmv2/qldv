@@ -1,5 +1,12 @@
 @extends('client.index')
 @section('title')Điểm rèn luyện của tôi @endsection
+@section('script')
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="{{ asset('assets/js/chart.js') }}"></script>
+@endsection
 @section('content')
 <div class="container-fluid" style="margin-left: 0px;">
 
@@ -9,6 +16,7 @@
         <div class="col-sm-12" >
 
             <h1>DANH SÁCH <small>Hoạt động</small> </h1>
+            <button type="button" class="btn btn-success" id="btnDisplay" style="display: inline; float: right; margin-bottom: 10px;">Biểu đồ</button>
 
         </div>
 
@@ -16,7 +24,7 @@
 
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" id="myContent">
     <div class="row">
         <style>
             td{
@@ -55,5 +63,87 @@
         </div>
     </div>
 </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12" id="myChart"></div>
+    </div>
+</div>
+<figure class="highcharts-figure">
+    <table id="datatable" style="display: none">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Học kì I</th>
+                <th>Học kì II</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($dataChart as $value)
+                <tr>
+                    <th>{{ $value['nam_hoc'] }}</th>
+                    <td>{{ $value['ki_1'] > -1 ? $value['ki_1']: ''}}</td>
+                    <td>{{ $value['ki_2'] > -1 ? $value['ki_2']: ''}}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</figure>
+
+<script>
+    $(document).ready(function () {
+        $('#btnDisplay').on('click', ()=>{
+            console.log($('#myContent').css('display'))
+            if ($('#myContent').css('display') === "none"){
+                $('#myContent').show()
+                $('#myChart').hide()
+                $('#btnDisplay').html('Biểu đồ')
+            } else{
+                $('#myContent').hide()
+                $('#myChart').show()
+                $('#btnDisplay').html('Bảng')
+                showChart()
+            }
+        })
+    });
+    function showChart() {
+        Highcharts.chart('myChart', {
+            data: {
+                table: 'datatable',
+            },
+            chart: {
+                type: 'column',
+            },
+            title: {
+                text: 'Thống kê điểm rèn luyện của bạn'
+            },
+            yAxis: {
+                allowDecimals: false,
+                title: {
+                    text: 'Điểm'
+                }
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/><b>'
+                        + this.point.name.toLowerCase() 
+                        + '</b><br/>Điểm: ' + this.point.y 
+                        + '<br/>Xếp loại: ' + danhGia(this.point.y);
+                }
+            },
+            plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function(e) {
+                            }
+                        }
+                    },
+                }
+            },
+        });
+    }
+    
+</script>
 
 @endsection

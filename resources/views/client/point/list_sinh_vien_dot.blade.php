@@ -34,7 +34,7 @@
                         <td>Điểm</td>
                         <td>Xếp loại</td>
                         <td>Ghi chú</td>
-                        <td>Đánh giá</td>
+                        <td>Tình trạng</td>
                         <td>Tải về</td>
                     </tr>
                 </thead>
@@ -48,7 +48,22 @@
                             <td> {{ $student->total }} </td>
                             <td> {{ danhGia($student->total) }} </td>
                             <td><input type="text" class="form-control" id="{{ $student->id_student }}" value="{{$student->note}}"></td>
-                            <td><a href="{{ route('getDanhGia', ['id_dot' => $id_dot,'id_detail'=> $student->id_point, 'name' => tenKhongDau( $student->first_name . " " . $student->last_name ),'id_student' => $student->id_student]) }}"><i class="fas fa-notes-medical"></i></a></td>
+                            <td><button type="button" class="
+                                @if ($student->status == 1)
+                                    btn btn-success
+                                @else
+                                    btn btn-danger
+                                @endif    
+                            " onclick="tinhTrang(this)"
+                            data-student="{{ $student->id_student }}"
+                            >
+                                @if ($student->status == 1)
+                                    Đang học
+                                @else
+                                    Nghỉ học
+                                @endif
+                            
+                            </button></td>
                             <td><a href="{{ route('downloadPointPDF', ['id_student' => $student->id_student, 'id_dot' => $id_dot]) }}"><i class="fas fa-cloud-download-alt"></i></a>  </td>
                         </tr>
                     @endforeach
@@ -57,6 +72,8 @@
         </div>
     </div>
 </div>
+
+
 
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
@@ -77,6 +94,30 @@
             });
         });
     });
+
+    function tinhTrang(button) { 
+        var id = $(button).data('student');
+        console.log(id)
+        var url = '{{ route('changeStatus', ['id_dot'=>$id_dot]) }}?id_student='+id
+
+        axios({
+            url: url,
+            method: "GET",
+            data: {},
+        })
+        .then((response)=>{
+            console.log(response)
+            if (response.data.ok == 0) return;
+            var data = response.data
+            $(button).html(data.message)
+            $(button).removeClass().addClass(data.class)
+            $('#'+id).val(data.note) 
+        })
+        .catch((err)=>{
+            console.log(err.response)
+        })
+        
+    }
 </script>
 
 @endsection

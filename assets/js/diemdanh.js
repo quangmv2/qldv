@@ -12,13 +12,21 @@ function attendance(btn, id_student) {
         },
         dataType: "json",
         success: function (response) {
+
+            console.log(response)
+            if (response.code == 500) {
+                alert(response.message)
+                $(btn).html(text)
+                return
+            }
             $(btn).removeClass()
             $(btn).addClass(response.class)
             $(btn).html(response.status);
             $('#input'+id).val(response.point)
         }
     })
-    .fail(function() {
+    .fail(function(error) {
+        console.log(error)
         alert('Một ngoại lệ đã xảy ra. Yêu cầu bị chấm dứt. Vui lòng thử lại sau!')
         $(btn).html(text)
     })

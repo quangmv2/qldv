@@ -1,4 +1,4 @@
-@extends('client.index')
+@extends('admin.index')
 @section('title')Thêm mới đợt xét điểm rèn luyện @endsection
 @section('content')
 

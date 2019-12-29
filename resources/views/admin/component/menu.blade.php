@@ -67,63 +67,33 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse">
       <i class="fas fa-fw fa-cog"></i>
-      <span>Điểm học tập</span>
+      <span>Hoạt động</span>
     </a>
     <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="">Danh sách giảng viên</a>
-        <a class="collapse-item" href="">Thêm giảng viên</a>
+        <a class="collapse-item" href="{{ route('listActionAD') }}">Danh sách hoạt động</a>
+        <a class="collapse-item" href="{{ route('addActionAD') }}">Thêm hoạt động</a>
+        <a class="collapse-item" href="{{ route('listCategoryAD') }}">Danh sách thể loại</a>
+        <a class="collapse-item" href="{{ route('addCategoryAD') }}">Thêm thể loại</a>
       </div>
     </div>
   </li>
-
-
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse">
+      <i class="fas fa-fw fa-cog"></i>
+      <span>Điểm rèn luyện</span>
+    </a>
+    <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('addPointAD') }}">Thêm đợt xét rèn luyện</a>
+        <a class="collapse-item" href="">Danh sách lớp</a>
+        <a class="collapse-item" href="{{ route('thongKeAD') }}">Thống kê</a>
+      </div>
+    </div>
+  </li>
   <!-- Nav Item - Utilities Collapse Menu -->
 
 
-  <!-- Divider -->
-  <hr class="sidebar-divider">
-
-  <!-- Heading -->
-  <div class="sidebar-heading">
-    Addons
-  </div>
-
-  <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-      <i class="fas fa-fw fa-folder"></i>
-      <span>Pages</span>
-    </a>
-    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Login Screens:</h6>
-        <a class="collapse-item" href="login.html">Login</a>
-        <a class="collapse-item" href="register.html">Register</a>
-        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-        <div class="collapse-divider"></div>
-        <h6 class="collapse-header">Other Pages:</h6>
-        <a class="collapse-item" href="404.html">404 Page</a>
-        <a class="collapse-item" href="blank.html">Blank Page</a>
-      </div>
-    </div>
-  </li>
-
-  <!-- Nav Item - Charts -->
-  <li class="nav-item">
-    <a class="nav-link" href="">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Điểm rèn luyện</span></a>
-  </li>
-
-  <!-- Nav Item - Tables -->
-  <li class="nav-item">
-    <a class="nav-link" href="tables.html">
-      <i class="fas fa-fw fa-table"></i>
-      <span>Tables</span></a>
-  </li>
-
-  <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
 
   <!-- Sidebar Toggler (Sidebar) -->

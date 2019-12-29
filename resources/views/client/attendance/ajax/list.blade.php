@@ -19,7 +19,7 @@
                     <td>{{ \Carbon\Carbon::parse($value->time)->format('d-m-Y') }}</td>
                     <td> 
                         @php
-                           echo $value->confirm == 1 ? "Đã điểm danh - ". $value->join."/".$value->sum: "Chưa điểm danh";
+                           echo $value->confirm == 1 ? "Đã điểm danh - ". $value->join."/".$value->count: "Chưa điểm danh";
                         @endphp 
                     </td>
                     <td> 

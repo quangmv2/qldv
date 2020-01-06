@@ -213,8 +213,10 @@ class DotXetDiemController extends ClientController
         //     'count' => $count,
         //     'result' => $list,
         // ]);
+        $class = Classs::where('id_class', $request->session()->get('account')->id_class)->get()->first();
         $pdf = PDF::loadView('client.point.download.thong_ke', 
         [
+            'classs' => $class,
             'dot' => $dot,
             'students' => $students,
             'count' => $count,

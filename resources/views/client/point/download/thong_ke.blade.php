@@ -80,7 +80,7 @@
                         <td colspan="2" style="text-align: center"><h3><strong style="text-transform: uppercase;">BẢNG TỔNG HỢP KẾT QUẢ RÈN LUYỆN CỦA SINH VIÊN <br>HỌC KỲ: {{ hocKy($dot->hoc_ki) }} - NĂM HỌC: {{ $dot->nam_hoc }}</strong></h3></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: center">(Lớp: {{ $dot->id_class }} - Khóa học: {{ explode('-', $dot->find_class->start_study)[0]."-".explode('-', $dot->find_class->end_study)[0] }})</td>
+                        <td colspan="2" style="text-align: center">(Lớp: {{ $dot->id_class }} - Khóa học: {{ explode('-', $classs->start_study)[0]."-".explode('-', $classs->end_study)[0] }})</td>
                     </tr>
                 </table>
             </div>

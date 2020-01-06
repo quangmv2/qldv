@@ -41,9 +41,10 @@ class ActionController extends ClientController
         return view('client.action.newActionList', ["actions" => $actions]);
     }
 
-    function getAdd()
+    function getAdd(Request $request)
     {
         $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+            ->where('students.id_class', $request->session()->get('account')->id_class)
             ->select('students.*')
             ->orderby('profiles.last_name', 'asc')
             ->orderby('profiles.first_name', 'asc')->get();

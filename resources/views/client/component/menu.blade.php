@@ -58,13 +58,14 @@
     </a>
   </li>
   <hr class="sidebar-divider">
-  <li class="nav-item" >
-    <a class="nav-link collapsed" href="{{ route('attendanceList') }}">
-      <i class="fas fa-fw fa-cog"></i>
-      <span>Điểm danh</span>
-    </a>
-  </li>
+  
   @if (Auth::check() && Auth::user()->profile->student->id_position != 6)
+    <li class="nav-item" >
+      <a class="nav-link collapsed" href="{{ route('attendanceList') }}">
+        <i class="fas fa-fw fa-cog"></i>
+        <span>Điểm danh</span>
+      </a>
+    </li>
     <li class="nav-item">
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse">
         <i class="fas fa-fw fa-cog"></i>

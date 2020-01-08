@@ -27,8 +27,18 @@ class ActionController extends ClientController
     {
         $id_class = $request->session()->get('account')->id_class;
         $actions = ActionRelationshipClass::where('id_class', $id_class)
-        ->paginate(10);
-        if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page')]);
+        ->join('action', 'action_relationship_class.id_action', '=', 'action.id_action')
+        ->orderby('time', 'desc')->paginate(2);
+        foreach ($actions as $key => $value) {
+            
+            $attendance = Attendance::where('id_action', $value->id_action)
+                                ->join('students', 'students.id_student', '=', 'attendance.id_student')
+                                ->where('students.id_class', $value->id_class)
+                                ->select('attendance.*');
+            $value['count'] =  $attendance->count();
+            $value['join'] = $attendance->where('status', 1)->count();
+        }
+        if ($request->input('type') == 'ajax') return view('client.action.ajax.actionList', ["actions" => $actions, 'page' => $request->input('page', 'default')]);
         return view('client.action.actionList', ["actions" => $actions]);
     }
 
@@ -46,8 +56,7 @@ class ActionController extends ClientController
         $students = Student::join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
             ->where('students.id_class', $request->session()->get('account')->id_class)
             ->select('students.*')
-            ->orderby('profiles.last_name', 'asc')
-            ->orderby('profiles.first_name', 'asc')->get();
+            ->orderby('students.id_student')->get();
         $categorys = Category::all();
         return view('client.action.add', ['students' => $students, 'categorys' => $categorys]);
     }
@@ -124,7 +133,7 @@ class ActionController extends ClientController
         }
 
         if ($request->input('object') == 2){
-            Action::where('id_action', $action->id)->update(["type" => 2, 'sum' => 0]);
+            Action::where('id_action', $action->id)->update(["type" => 2, 'sum' => $request->input('res')]);
         }
         $res = [
             "code" => 200,
@@ -301,6 +310,51 @@ class ActionController extends ClientController
         $data[] = $data_detail;
         return json_encode($data);
 
+    }
+
+    public function getExample(Request $request)
+    {
+        $id = $request->input('category');
+        $count = $request->input('count');
+        $students = Student::where('id_class', $request->session()->get('account')->id_class)
+        ->join('attendance', 'attendance.id_student', '=', 'students.id_student')
+        ->join('action', 'action.id_action', '=', 'attendance.id_action')
+        ->where('action.id_category', $id)
+        ->groupBy('attendance.id_student')
+        
+        ->select('attendance.id_student', DB::raw('count(*) as count'))
+        ->orderBy('attendance.id_student')
+        ->get();
+        $tmp = Student::where('id_class', $request->session()->get('account')->id_class)
+        ->orderBy('id_student')->select('students.id_student')->get();
+        foreach ($tmp as $key => $value) {
+            $value['count'] = 0;
+        }
+        $index = 0;
+        foreach ($tmp as $key => $value) {
+           
+            if ($students[$index]->id_student == $value->id_student) {
+                $value['count'] = $students[$index]->count;
+                $index++;
+                if($index == count($students)) break;
+            }
+        }
+
+        for ($i=0; $i < count($tmp)-1; $i++) { 
+            for ($j=$i; $j < count($tmp); $j++) 
+                if ($tmp[$i]['count'] > $tmp[$j]['count']){
+                    $tt = $tmp[$i];
+                    $tmp[$i] = $tmp[$j];
+                    $tmp[$j] = $tt;
+                }
+        }
+        $arr = [];
+        if (empty($count)) return [];
+        foreach ($tmp as $index => $value) {
+            $arr[] = $value;
+            if ($index == $count-1) break;
+        }
+        return $arr;
     }
     
 }

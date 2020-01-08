@@ -5,9 +5,14 @@ jQuery(document).ready(function ($) {
         var op = $(this).children('option:selected').val();
         if (op == 1){
             $('#chooseStudent').show();
-        } else {
-            $('#chooseStudent').hide();
-        }
+            $('#res').hide()
+        } else if (op == 2){
+                    $('#res').show()
+                    $('#chooseStudent').hide();
+                } else {
+                    $('#chooseStudent').hide();
+                    $('#res').hide()
+                    }
     });
 
     $('#selectClass').change(function (e) { 
@@ -85,13 +90,16 @@ function loadBegin() {
     $('#preloader').css('display', 'block')
 }
 
-function callServer(page) {
+function callServer(page, link) {
     //Get dữ liệu phân trang ajax cho mọi phân trang
     loadBegin()
     if (page == null) page = 1;
+    var url = ''
+    if (link === undefined || link == null || link.length <= 0) url = window.location.href
+        else url = link
     // console.log(window.location.href)
     $.ajax({
-        url: window.location.href,
+        url: url,
         type: 'GET',
         dataType: 'html',
         data: {
@@ -117,7 +125,8 @@ jQuery(document).ready(function($) {
     $(document).on('click', '.pagination a', function(event) {
         event.preventDefault();
         var page = $(this).attr('href').split('page=')[1];
-        callServer(page)
+        var link = $(this).attr('href')
+        callServer(page, link)
         $('html, body').animate({scrollTop : 0}, 'slow')
     });
 });
@@ -239,19 +248,6 @@ jQuery(document).ready(function($) {
         var url = form.attr('action');
         var method = form.attr('method');
         var data = form.serialize();
-        // $.ajax({
-        //     type: method,
-        //     url: window.location.href,
-        //     data: form.serialize(),
-        //     dataType: 'json',
-        //     success: function(data)
-        //     {
-                
-                
-        //     }
-        // }).fail(() => {  
-        // })
-
         axios({
             method : method,
             url : window.location.href,
@@ -285,17 +281,7 @@ function danhGia(diem) {
     return "Kém."
 }
 
-// if($('#dataPage').text() == '') $('#dataPage').html('Không có dữ liệu')
 
-// window.history.pushState('', 'Title', '/page2.php');
-// $(window).bind('scroll', function () {
-//     if ($(window).scrollTop() > 50) {
-//         console.log(1)
-//         $('#accordionSidebar').addClass('fixed');
-//     } else {
-//         $('#accordionSidebar').removeClass('fixed');
-//     }
-// });
 jQuery(document).ready(function ($) {
     $('#form_profile').submit(function (e) { 
         e.preventDefault();

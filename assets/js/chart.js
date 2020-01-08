@@ -1,4 +1,4 @@
-function fillPieChart(data, idDisplay, title, link, subtitle) {
+function fillPieChart(data, idDisplay, title, link, subtitle, idTagA) {
     var chartData = [];
     data.forEach(function(element){
         var ele = {name : element.name, y : parseFloat(element.y) };
@@ -16,7 +16,7 @@ function fillPieChart(data, idDisplay, title, link, subtitle) {
             text: title
         },
         subtitle: {
-            text: 'Nguồn: <a href="'+ link +'">' + subtitle + '</a>'
+            text: 'Nguồn: <a href="'+ link +'" id="' + idTagA +'">' + subtitle + '</a>'
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

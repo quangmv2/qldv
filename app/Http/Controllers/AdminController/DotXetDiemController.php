@@ -19,7 +19,87 @@ use App\DotRelationship;
 
 class DotXetDiemController extends Controller
 {
+
+    public function getList(Request $request)
+    {
+        $type = $request->input('type');
+        $page = $request->input('page');
+        if (empty($type) || $type == null) {
+            return view('admin.point.list');
+        } 
+        switch ($type) {
+            case 'dot':
+                return view('admin.point.ajax.listForDot', ['dots' => $this->getListDots()]);
+                break;
+            case 'class':
+                return view('admin.point.ajax.listForClass', ['classs' => $this->getListClasss()]);
+                break;
+            default:
+                abort('404');
+                break;
+        }
+    }
+
+    public function getListClasss()
+    {
+        $classs = Classs::orderby('id_class')->get();
+        return $classs;
+    }
+
+    public function getListDots()
+    {
+        $dots = DotXetDiem::orderby('id_dot_xet')->orderby('hoc_ki')->get();
+        return $dots;
+    }
+
+    public function getForClass(Request $request, $class)
+    {
+
+        $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+        ->where('id_class', $class)->orderby('nam_hoc')->select('dot_xet_diem.*')->orderby('hoc_ki')->get();
+        foreach ($list as $index  => $value){
+            $list[$index]['xuat_sac'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 90)->count('total');
+            $list[$index]['gioi'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
+            $list[$index]['kha'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 65)->where('total','<', 80)->count('total');
+            $list[$index]['trung_binh'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 50)->where('total','<', 65)->count('total');
+            $list[$index]['yeu'] = Point::where('id_dot', $value->id_dot_xet)->where('total', '>=', 35)->where('total','<', 50)->count('total');
+            $list[$index]['kem'] = Point::where('id_dot', $value->id_dot_xet)->where('confirm', 1)->where('total','<', 35)->count('total');
+        }
+        return view('admin.point.class.class', ['list' => $list, 'id_class' => $class]);
+    }
+
+    public function getDot(Request $request, $id_class, $id_dot)
+    {
+        if ($id_dot == -1) {
+            $dot = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
+            ->where('id_class', $id_class)
+            ->where('nam_hoc', $request->input('nam_hoc'))
+            ->where('hoc_ki', $request->input('hoc_ki'))
+            ->get()->first();
+            if (empty($dot)) return abort('404');
+            return redirect()->route('getDotAD', ['id_dot'=>$dot->id_dot_xet, 'id_class' => $id_class]);
+        }
+
+        $students = Point::where('id_dot', $id_dot)
+        ->join('students', 'students.id_student', '=', 'points.id_student')
+        ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->where('students.id_class', $id_class)
+        ->orderby('students.id_student')
+        ->select('*')
+        ->get();
+        $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
+        
+        if (empty($dot)) return abort('404');
+        // return $students->tojson();
+
+        return view('admin.point.list_sinh_vien',["students" => $students, 'id_dot' => $id_dot, 'dot' => $dot]);
+    }
    
+    public function getForDot(Request $request, $id_dot)
+    {
+        # code...
+    }
+
     function getAdd(Request $request)
     {
         $id_student = $request->session()->get('account')->id_student;
@@ -93,27 +173,29 @@ class DotXetDiemController extends Controller
                 $dot_re->id_dot = $dot->id_dot_xet;
                 $dot_re->save();
             }
+
+            $students = Student::join('class', 'class.id_class', '=', 'students.id_class')
+            ->where('class.id_class', $class->id_class)
+            ->select('students.*')
+            ->get();
+            foreach ($students as $key => $value) {
+                $point = new Point;
+                $point->id_dot = $dot->id_dot_xet;
+                $point->id_student = $value->id_student;
+                $point->confirm = 0;
+                $point->total = 0;
+                $point->save();
+
+                $temp_point = new MyPoint;
+                $temp_point->id_dot = $dot->id_dot_xet;
+                $temp_point->id_student = $value->id_student;
+                $temp_point->confirm = 0;
+                $temp_point->total = 0;
+                $temp_point->save();
+            }
         }
 
-        $students = Student::join('class', 'class.id_class', '=', 'students.id_class')
-        ->where('class.id_class', $request->session()->get('account')->id_class)
-        ->select('students.*')
-        ->get();
-        foreach ($students as $key => $value) {
-            $point = new Point;
-            $point->id_dot = $dot->id_dot_xet;
-            $point->id_student = $value->id_student;
-            $point->confirm = 0;
-            $point->total = 0;
-            $point->save();
-
-            $temp_point = new MyPoint;
-            $temp_point->id_dot = $dot->id_dot_xet;
-            $temp_point->id_student = $value->id_student;
-            $temp_point->confirm = 0;
-            $temp_point->total = 0;
-            $temp_point->save();
-        }
+        
 
         return $res;
     }

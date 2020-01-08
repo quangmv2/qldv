@@ -85,13 +85,15 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
 
                 Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('danh_sach_dot');
 
-                Route::get('chart', "ClientController\DotXetDiemController@danhSachDotChart");
+                Route::get('chart', "ClientController\DotXetDiemController@danhSachDotChart")->name('chartDRL');
 
-                Route::get('chartPhoDiem', "ClientController\DotXetDiemController@danhSachDotChartPhoDiem");
+                Route::get('chartPhoDiem', "ClientController\DotXetDiemController@danhSachDotChartPhoDiem")->name('chartPhoDiem');
 
                 Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
 
                 Route::get('note/{id_dot}/{id_student}', "ClientController\DotXetDiemController@getNote")->name('getDotNote');
+
+                Route::get('changeStatus/{id_dot}', "ClientController\DotXetDiemController@changeStatus")->name('changeStatus');
 
                 Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
 
@@ -130,6 +132,8 @@ Route::group(['middleware' => 'studentMiddleware'], function () {
         Route::get('them-moi', "ClientController\ActionController@getAdd")->name('addAction');
 
         Route::post('them-moi', "ClientController\ActionController@postAdd");
+
+        Route::get('them-moi/example', "ClientController\ActionController@getExample");
 
         Route::get('xoa/{id}', "ClientController\ActionController@getDelete")->name('deleteAction');
 
@@ -181,6 +185,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
         
         Route::get('/', "AdminController\ActionController@getList")->name('listActionAD');
 
+        Route::get('chart/{id_action}', "AdminController\ActionController@getChartList")->name('listActionADChart');
+
+        Route::get('chart-action-class/{id_action}/{id_class}', "AdminController\ActionController@getChartActionClass");
+
+        Route::get('chart-category/{id_action}/{id_class}', "AdminController\ActionController@getChartCategory");
+
         Route::get('add', "AdminController\ActionController@getAdd")->name('addActionAD');
 
         Route::post('add', "AdminController\ActionController@postAdd");
@@ -202,6 +212,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
 
     Route::group(['prefix' => 'diem-ren-luyen'], function () {
 
+        Route::get('/', "AdminController\DotXetDiemController@getList")->name('listDRLAD');
+
         Route::get('them-moi', "AdminController\DotXetDiemController@getAdd")->name('addPointAD');
 
         Route::post('them-moi', "AdminController\DotXetDiemController@postAdd");
@@ -214,24 +226,38 @@ Route::group(['prefix' => 'admin', 'middleware' => 'adminMiddleware'], function 
 
         });
 
-        Route::group(['prefix' => 'danh-sach-dot'], function () {
+        Route::group(['prefix' => 'lop'], function () {
+            
+            Route::get('{id_class}', "AdminController\DotXetDiemController@getForClass")->name('DRLClassAD');
 
-            Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('');
+            Route::get('{id_class}/{id_dot}', "AdminController\DotXetDiemController@getDot")->name('getDotAD');
 
-            Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
-
-            Route::get('changeStatus/{id_dot}', "ClientController\DotXetDiemController@changeStatus")->name('changeStatus');
-
-            Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
-
-            Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
-
-            Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
-
-            Route::get('download/{id_dot}', "ClientController\DotXetDiemController@downloadDotPDF")->name('downDot');
-
-            Route::get('/download/pdf/{id_student}_{id_dot}', "ClientController\PointController@downloadPointPDF")->name('downloadPointPDF');
         });
+
+        Route::group(['prefix' => 'dot-xet-diem'], function () {
+
+            Route::get('{id_dot}', "AdminController\DotXetDiemController@getForDot")->name('DRLDotAD');
+
+        });
+
+        // Route::group(['prefix' => 'danh-sach-dot'], function () {
+
+        //     Route::get('/', "ClientController\DotXetDiemController@danhSachDot")->name('');
+
+        //     Route::get('/delete/{id_dot}', "ClientController\DotXetDiemController@delete")->name('get_xoa_dot');
+
+        //     Route::get('changeStatus/{id_dot}', "ClientController\DotXetDiemController@changeStatus")->name('changeStatus');
+
+        //     Route::get('/{id_dot}', "ClientController\DotXetDiemController@getDot")->name('getDot');
+
+        //     Route::get('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@getDanhGia")->name('getDanhGia');
+
+        //     Route::post('/{id_dot}_{id_detail}/{name}_{id_student}', "ClientController\PointController@postDanhGia");
+
+        //     Route::get('download/{id_dot}', "ClientController\DotXetDiemController@downloadDotPDF")->name('downDot');
+
+        //     Route::get('/download/pdf/{id_student}_{id_dot}', "ClientController\PointController@downloadPointPDF")->name('downloadPointPDF');
+        // });
 
 
 

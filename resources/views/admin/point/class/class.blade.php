@@ -1,4 +1,4 @@
-@extends('client.index')
+@extends('admin.index')
 @section('title')Danh sách đợt xét @endsection
 @section('script')
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -34,14 +34,12 @@
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12" id="dataPage">
             @foreach ($list as $item)
                 <div class="card text-white bg-dark mb-3">
-                    <div class="card-header" style="color: black"><h4><a href="{{ route('getDot', ['id_dot'=>$item->id_dot_xet]) }}">Học kỳ {{$item->hoc_ki}} năm học {{$item->nam_hoc}}.</a></h4> </div>
+                    <div class="card-header" style="color: black"><h4><a href="{{ route('getDotAD', ['id_dot'=>$item->id_dot_xet, 'id_class' => $id_class]) }}">Học kỳ {{$item->hoc_ki}} năm học {{$item->nam_hoc}}.</a></h4> </div>
                     <div class="card-body">
                         <h5 class="card-title">Xuất sắc: {{ $item->xuat_sac }}. Giỏi: {{ $item->gioi }}. Khá: {{ $item->kha }}. Trung bình: {{ $item->trung_binh }}. Yếu: {{ $item->yeu }}. Kém: {{ $item->kem }}.</h5>
                         <div style="float: right;">
-                            <a href="{{ route('downDot', ['id_dot'=> $item->id_dot_xet]) }}"><i class="fas fa-cloud-download-alt" style="color: red"></i></a>
+                            <a href="{{ route('downDot', ['id_dot'=> $item->id_dot_xet]) }}?type=read"><i class="fas fa-cloud-download-alt" style="color: red"></i></a>
                             <a href=""><i class="fa fa-lock" aria-hidden="true" style="color: red"></i></a>
-                            {{-- <a href=""><i class="fas fa-edit" style="color: red"></i></a> --}}
-                            <a href="{{ route('get_xoa_dot', ['id_dot'=>$item->id_dot_xet]) }}"><i class="fas fa-trash" style="color: red"></i></a>
                         </div>
                     </div>
                 </div>
@@ -86,10 +84,7 @@
         </tbody>
     </table>
 </figure>
-
-<script>
-    callServer(1)
-</script>
+<p id="id_class_tmp" style="display: none">{{$id_class}}</p>
 <script>
     $(document).ready(function () {
         $('#btnDisplay').on('click', ()=>{
@@ -112,7 +107,7 @@
                         type: 'column'
                     },
                     title: {
-                        text: 'Thống kê điểm rèn luyện tổng quát của lớp theo từng đợt'
+                        text: 'Thống kê điểm rèn luyện tổng quát của lớp {{mb_strtoupper($id_class)}} theo từng đợt'
                     },
                     yAxis: {
                         allowDecimals: false,
@@ -148,9 +143,9 @@
         var k = context.split(" ")
         var sumary = k[2]
         var year = k[4]
-        
+        var id_class = $('#id_class_tmp').text()
         axios({
-            url: window.location.href + "/chart?nam_hoc=" + year + "&hoc_ki=" + sumary,
+            url: '{{ route('chartDRL') }}' + "?nam_hoc=" + year + "&hoc_ki=" + sumary+"&admin=true&lop=" + id_class,
             method: "GET",
             data: {}
         })
@@ -164,7 +159,7 @@
         })
 
         axios({
-            url: window.location.href + "/chartPhoDiem?nam_hoc=" + year + "&hoc_ki=" + sumary,
+            url: '{{ route('chartPhoDiem') }}' + "?nam_hoc=" + year + "&hoc_ki=" + sumary + "&admin=true&lop=" + id_class,
             method: "GET",
             data: {}
         })

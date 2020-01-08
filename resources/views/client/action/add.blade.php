@@ -1,7 +1,47 @@
 @extends('client.index')
 @section('title')Thêm mới hoạt động @endsection
-@section('content')
 
+@section('content')
+<script>
+
+    $(document).ready(function () {
+        
+        $('#autoSelect').click(async function (e) { 
+            e.preventDefault();
+            var list = {}
+            var category = $('#category :selected').val()
+            await axios({
+                method: "GET",
+                url: window.location.href +"/example?category=" + category + '&count=' + $('#countRes').val(),
+                data: {
+
+                },
+            })
+            .then((response)=>{
+                console.log(response)
+                list = response.data
+            })
+            .catch((err)=>{
+                console.log(err.response)
+            })
+
+            await $('#myForm :input:checkbox').each(function (index, element) {
+                var checkbox = this
+                $(checkbox).attr('checked', false)
+                var id_student = $(this).val()
+                $.each(list, function (indexInArray, valueOfElement) { 
+                    if (id_student == valueOfElement.id_student) $(checkbox).attr('checked', true)
+                });
+            });
+
+            console.log('inp')
+            
+        });
+    });
+
+   
+
+</script>
 <div class="container-fluid" style="margin-left: 0px;">
 
     <div class="row">
@@ -37,7 +77,7 @@
 
                         <label>Thể  loại</label>
 
-                        <select name="category" class="form-control" id="">
+                        <select name="category" class="form-control" id="category">
                             @foreach ($categorys as $category)
                                 <option value="{{ $category->id_category }}">{{ $category->name }}</option>
                             @endforeach
@@ -87,7 +127,19 @@
                         </select>
 			        
                     </div>
+                    
+                    <div class="form-group" id="res" style="display: none">
+
+                        <label style="display:inline;">Số lượng</label>
+                        <input type="number" class=" col-sm-2 form-control" name="res" value="0" style="display: inline">
+                
+                    </div>    
+                
                     <div id="chooseStudent" style="display: none">
+                        <div class="col-sm-1" style="float: left">
+                            <input type="number" class="form-control" value="0" id="countRes">
+                        </div>
+                        <button type="button" class="btn btn-success" id="autoSelect" style="float: right; margin-bottom: 10px">Tự chọn</button>
                         <table class="table table-striped table-bordered table-hover">
 
                             <thead>
@@ -120,6 +172,8 @@
 
     </div>
 </div>
+
+
 <style>
     /* Base for label styling */
     [type="checkbox"]:not(:checked),

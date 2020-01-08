@@ -62,7 +62,7 @@ class LoginController extends Controller
         //     return;
         // }
         // if (k==0) return \redirect()->route('logout');
-        $acc = User::where("email", $users->email)->get();
+        // $acc = User::where("email", 'nthnhung.19it1@sict.udn.vn')->get();
         if (count($acc) < 1) return \redirect()->route("logout");
         $acc = $acc[0];
         Auth::login($acc, false);

@@ -28,6 +28,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
+  @yield('script')
 </head>
 
 <body id="page-top">
@@ -88,6 +89,22 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
           <a class="btn btn-primary" href="{{ route('logout') }}">Đăng xuất</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content">
+      <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+          <h5 class="modal-title" id="exampleModalLabel" id="modalTableTitle"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="modalTableContent" style="padding-left: 10px; padding-right: 10px">
+
         </div>
       </div>
     </div>

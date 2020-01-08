@@ -47,13 +47,23 @@ class DotXetDiemController extends ClientController
 
     public function danhSachDotChart(Request $request)
     {
+        $admin = $request->input('admin');
+        if($admin == 'true'){
+            $id_class = $request->input('lop');
+            echo 'admin';
+            die();
+        } else{
+            $id_class = $request->session()->get('account')->id_class;
+        }
+
         $nam_hoc = $request->input('nam_hoc');
         $hoc_ki = $request->input('hoc_ki');
         $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
-        ->where('id_class', $request->session()->get('account')->id_class)
+        ->where('id_class', $id_class)
         ->where('nam_hoc', $nam_hoc)
         ->where('hoc_ki', $hoc_ki)
         ->get()->first();
+        if (empty($list)) return [];
         $count = Point::where('id_dot', $list->id_dot_xet)->count('total');
         $list['xuat_sac'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 90)->count('total');
         $list['gioi'] = Point::where('id_dot', $list->id_dot_xet)->where('total', '>=', 80)->where('total','<', 90)->count('total');
@@ -93,10 +103,16 @@ class DotXetDiemController extends ClientController
 
     public function danhSachDotChartPhoDiem(Request $request)
     {
+        $admin = $request->input('admin');
+        if($admin == 'true'){
+            $id_class = $request->input('lop');
+        } else{
+            $id_class = $request->session()->get('account')->id_class;
+        }
         $nam_hoc = $request->input('nam_hoc');
         $hoc_ki = $request->input('hoc_ki');
         $list = DotXetDiem::join('dot_xet_diem_rela_class', 'dot_xet_diem_rela_class.id_dot', '=', 'dot_xet_diem.id_dot_xet')
-        ->where('id_class', $request->session()->get('account')->id_class)
+        ->where('id_class', $id_class)
         ->where('nam_hoc', $nam_hoc)
         ->where('hoc_ki', $hoc_ki)
         ->get()->first();
@@ -137,11 +153,13 @@ class DotXetDiemController extends ClientController
         $students = Point::where('id_dot', $id_dot)
         ->join('students', 'students.id_student', '=', 'points.id_student')
         ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->where('students.id_class', $request->session()->get('account')->id_class)
         ->orderby('students.id_student')
         ->select('*')
         ->get();
         $dot = DotXetDiem::where('id_dot_xet', $id_dot)->get()->first();
-
+        
+        if (empty($dot)) return abort('404');
         // return $students->tojson();
 
         return view('client.point.list_sinh_vien_dot',["students" => $students, 'id_dot' => $id_dot, 'dot' => $dot]);
@@ -222,6 +240,8 @@ class DotXetDiemController extends ClientController
             'count' => $count,
             'result' => $list,
         ])->setPaper('a4');
+        $type = $request->input('type');
+        if ($type == 'read') return $pdf->stream($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
         return $pdf->download($dot->id_class."_".$dot->nam_hoc."_".$dot->hoc_ki.".pdf");
     }
 

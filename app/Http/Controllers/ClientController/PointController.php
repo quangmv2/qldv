@@ -247,6 +247,18 @@ class PointController extends ClientController
             'student' => $student,
             'dot' => $dot,
         ])->setPaper('a4');
+        $type = $request->input('type');
+        if ($type == 'read') {
+            return $pdf->stream("Phiếu đánh giá kết quả rèn luyện sinh viên ".$student->first_name." ".$student->last_name." - Học kỳ: ".hocKy($dot->hoc_ki)." - Năm học: ". $dot->nam_hoc.'.pdf');
+        } else if ($type == 'html') {
+            return view('client.point.download.danh_gia',
+                    [
+                        'my_point' => $my_point,
+                        'my_temp_point' => $my_temp_point,
+                        'student' => $student,
+                        'dot' => $dot,
+                    ]);
+        }
         return $pdf->download("Phiếu đánh giá kết quả rèn luyện sinh viên ".$student->first_name." ".$student->last_name." - Học kỳ: ".hocKy($dot->hoc_ki)." - Năm học: ". $dot->nam_hoc.'.pdf');
 
     }

@@ -33,15 +33,20 @@ class AttendanceController extends ClientController
 
     function getAttendance(Request $request, $id_action)
     {
-        $action = Action::where('id_action', $id_action)->get();
+        $action = Action::where('action.id_action', $id_action)
+        ->join('action_relationship_class', 'action_relationship_class.id_action', '=', 'action.id_action')
+        ->where('action_relationship_class.id_class', $request->session()->get('account')->id_class)
+        ->get();
+       
         if (count($action) < 1) return redirect()->route('attendanceList')
         ->with('myErrors', "Hoạt động không tồn tại.");
         $action = $action[0];
         if ($action->confirm == 0){
-            Action::where('id_action', $id_action)->update(['confirm' => 1]);
+            ActionRelationshipClass::where('id_action', $id_action)
+            ->where('action_relationship_class.id_class', $request->session()->get('account')->id_class)
+            ->update(['confirm' => 1]);
             Attendance::where('id_action', $id_action)->update(['status' => 1, 'point' => 10]);
         }
-        Action::where('id_action', $id_action)->update(['author' => $request->session()->get('account')->id_student]);
         $students = Student::join('attendance', 'students.id_student', '=', 'attendance.id_student')
         ->where('attendance.id_action', $id_action)
         ->select('students.*', 'attendance.status', 'attendance.note', 'students.id_profile')
@@ -63,6 +68,7 @@ class AttendanceController extends ClientController
             ];
             return json_encode($res);
         }
+        
         $action = Action::where('id_action', $id_action)->get();
         if (count($action) < 1){
             $res = [
@@ -73,14 +79,14 @@ class AttendanceController extends ClientController
         }
 
         $action = $action[0];
-        if ($action->confirm == 0){
-            $res = [
-                "code" => 500,
-                "message" => "Yêu cầu không hợp lệ. Vui lòng tải lại trang.",
-            ];
-            return json_encode($res);
-        }
-
+        // if ($action->confirm == 0){
+        //     $res = [
+        //         "code" => 500,
+        //         "message" => "Yêu cầu không hợp lệ. Vui lòng tải lại trang.",
+        //     ];
+        //     return json_encode($res);
+        // }
+        
         $AR = Attendance::where('id_action', $id_action)->where('id_student', $id_student)->get();
         if (\count($AR) < 1){
             $res = [

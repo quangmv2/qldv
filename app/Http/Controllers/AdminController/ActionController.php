@@ -5,6 +5,8 @@ namespace App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Action;
 use App\Attendance;
 use App\Category;
@@ -16,6 +18,49 @@ class ActionController extends Controller
 {
     public function getList(Request $request)
     {
+        // $actions = ActionRelationshipClass::groupby('id_action')
+        // ->select('action_relationship_class.id_action', DB::raw('count(*) as count'))
+        // ->having('count', '>', 1)
+        // ->get();
+        // $actions = Action::where('author', 1)
+        // ->orderby('time', 'desc')
+        // ->paginate(20);
+        $type = $request->input('type');
+        $category = $request->input('category');
+        $page = $request->input('page');
+        $dau = '=';
+        if (empty($category) || $category == 'all') {
+            $category = 0;
+            $dau = '>';
+        }
+        $categories = Category::where('id_category', $dau, $category)->orderby('name')->get();
+        $actions = ActionRelationshipClass::join('action', 'action_relationship_class.id_action', '=', 'action.id_action')
+        ->where('action.id_category', $dau, $category)
+        ->where('action.author', 1)
+        ->orderby('time', 'desc')
+        ->groupby('action_relationship_class.id_action')
+        ->select('action_relationship_class.id_action')
+        ->paginate(50);
+        foreach ($actions as $key => $value) {
+            
+            $attendance = Attendance::where('id_action', $value->id_action)
+                                ->join('students', 'students.id_student', '=', 'attendance.id_student')
+                                ->where('students.id_class', $value->id_class)
+                                ->select('attendance.*');
+            $value['count'] =  $attendance->count();
+            $value['join'] = $attendance->where('status', 1)->count();
+        }
+        switch ($type) {
+            case 'ajaxCategory':
+                return view('admin.action.ajax.list', ['actions' => $actions, 'page' => $page]);
+                break;
+            
+            default:
+                if (empty($page)) return view('admin.action.list', ['actions' => $actions, 'categories' => $categories]);
+                return view('admin.action.ajax.list', ['actions' => $actions, 'page' => $page]);
+                break;
+        }
+        
         
     }
 
@@ -58,9 +103,8 @@ class ActionController extends Controller
         $action->name = $request->input('name');
         $action->time = $request->input('time');
         $action->content = $request->input('content');
-        $action->confirm = 0;
         $action->id_category = $request->input('category');
-        $action->join = 0;
+        $action->author = '1';
 
         $action->save();
 
@@ -127,6 +171,81 @@ class ActionController extends Controller
     {
         Category::find($id)->delete();
         return redirect()->back();
+    }
+
+    public function getChartList(Request $request, $id_action)
+    {
+        $type = $request->input('type');
+
+        $data = [];
+        $actions = ActionRelationshipClass::where('id_action', $id_action)->orderby('id_class')->get();
+        foreach ($actions as $key => $action) {
+            $tmp = [];
+            $attendances = Attendance::where('id_action', $action->id_action)
+            ->join('students', 'students.id_student', '=', 'attendance.id_student')
+            ->where('students.id_class', $action->id_class)
+            ->select('attendance.*')
+            ->get();
+            $sum = 0;
+            $count = 0;
+            foreach ($attendances as $key => $attendance) {
+                if ($attendance->status == 1) $count-=-1;
+                $sum-=-1;
+            }
+            $data_detail['name'] = "Tham gia";
+            $data_detail['count'] = $count;
+            $data_detail['y'] = (float) ($count/$sum)*100;
+            $tmp[] = $data_detail;
+            $data_detail['name'] = "Không ham gia";
+            $data_detail['count'] = $sum - $count;
+            $data_detail['y'] = (float) (($sum - $count)/$sum)*100;
+            $tmp[] = $data_detail;
+
+            $detail = [
+                "data" => $tmp,
+                "id_class" => $action->id_class,
+                "name" => $action->getAction->name,
+                "id_action" => $action->id_action,
+            ];
+
+            $data[] = $detail;
+
+        }
+        // return $data;
+        switch ($type) {
+            case 'chart':
+                return view('admin.action.ajax.thong_ke_action', ['data' => $data]);
+                break;
+            case 'table':
+                return view('admin.action.ajax.thong_ke_action_table', ['data' => $data]);
+            default:
+                return $data;
+                break;
+        }
+        
+    }
+
+    public function getChartActionClass(Request $request, $id_action, $id_class)
+    {
+        $students = Student::where('id_class', $id_class)
+        ->join('attendance', 'attendance.id_student', '=', 'students.id_student')
+        ->where('attendance.id_action', $id_action)
+        ->orderby('students.id_student')
+        ->join('profiles', 'profiles.id_profile', '=', 'students.id_profile')
+        ->select('profiles.first_name', 'profiles.last_name', 'attendance.status', 'attendance.note', 'students.id_student')
+        ->get();
+        return $students;
+    }
+
+    public function getChartCategory(Request $request)
+    {
+        $category = $request->input('category');
+        $dau = '=';
+        if (empty($category) || $category=='all'){
+            $category = -1;
+            $dau = '>';
+        }
+
     }
 
 }
